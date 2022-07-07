@@ -1,16 +1,17 @@
 package dungeonmania;
 
+import dungeonmania.DungeonObjects.DungeonState;
 import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.response.models.DungeonResponse;
 import dungeonmania.util.Direction;
+import dungeonmania.util.DungeonBuilder;
 import dungeonmania.util.FileLoader;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class DungeonManiaController {
+    private DungeonState dungeonState;
+
     public String getSkin() {
         return "default";
     }
@@ -37,41 +38,46 @@ public class DungeonManiaController {
      * /game/new
      */
     public DungeonResponse newGame(String dungeonName, String configName) throws IllegalArgumentException {
-        return null;
+        dungeonState = DungeonBuilder.buildDungeon(dungeonName, configName);
+        return dungeonState.toDungeonResponse();
     }
 
     /**
      * /game/dungeonResponseModel
      */
     public DungeonResponse getDungeonResponseModel() {
-        return null;
+        return dungeonState.toDungeonResponse();
     }
 
     /**
      * /game/tick/item
      */
     public DungeonResponse tick(String itemUsedId) throws IllegalArgumentException, InvalidActionException {
-        return null;
+        dungeonState.tick(itemUsedId);
+        return dungeonState.toDungeonResponse();
     }
 
     /**
      * /game/tick/movement
      */
     public DungeonResponse tick(Direction movementDirection) {
-        return null;
+        dungeonState.tick(movementDirection);
+        return dungeonState.toDungeonResponse();
     }
 
     /**
      * /game/build
      */
     public DungeonResponse build(String buildable) throws IllegalArgumentException, InvalidActionException {
-        return null;
+        dungeonState.build(buildable);
+        return dungeonState.toDungeonResponse();
     }
 
     /**
      * /game/interact
      */
     public DungeonResponse interact(String entityId) throws IllegalArgumentException, InvalidActionException {
-        return null;
+        dungeonState.interact(entityId);
+        return dungeonState.toDungeonResponse();
     }
 }
