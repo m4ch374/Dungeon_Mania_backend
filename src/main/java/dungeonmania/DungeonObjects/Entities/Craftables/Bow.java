@@ -8,7 +8,7 @@ import static dungeonmania.DungeonObjects.EntityTypes.BOW;
 import org.json.JSONObject;
 
 public class Bow implements IEquipment {
-    public static final String TYPE = BOW;
+    public static final String TYPE = BOW.toString();
 
     private int durability;
 
