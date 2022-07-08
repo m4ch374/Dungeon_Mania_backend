@@ -1,9 +1,10 @@
-package dungeonmania.DungeonObjects.Statics;
+package dungeonmania.DungeonObjects.Entities.Statics;
 
 import dungeonmania.DungeonObjects.Entities.Entity;
 import dungeonmania.Interfaces.IStaticInteractable;
 
-public class Boulder extends Entity implements IStaticInteractable {
+public class Door extends Entity implements IStaticInteractable {
+    private String keyId;
 
     @Override
     public void interactedBy(Entity interactor) { }

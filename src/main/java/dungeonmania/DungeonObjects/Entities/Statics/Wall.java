@@ -1,4 +1,4 @@
-package dungeonmania.DungeonObjects.Statics;
+package dungeonmania.DungeonObjects.Entities.Statics;
 
 import dungeonmania.DungeonObjects.Entities.Entity;
 
