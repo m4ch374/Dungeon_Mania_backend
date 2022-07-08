@@ -4,9 +4,10 @@ import dungeonmania.DungeonObjects.DungeonState;
 import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.response.models.DungeonResponse;
 import dungeonmania.util.Direction;
-import dungeonmania.util.DungeonBuilder;
 import dungeonmania.util.FileLoader;
+import dungeonmania.util.DungeonFactory.DungeonBuilder;
 
+import java.io.IOException;
 import java.util.List;
 
 public class DungeonManiaController {
@@ -38,7 +39,12 @@ public class DungeonManiaController {
      * /game/new
      */
     public DungeonResponse newGame(String dungeonName, String configName) throws IllegalArgumentException {
-        dungeonState = DungeonBuilder.buildDungeon(dungeonName, configName);
+        try {
+            dungeonState = DungeonBuilder.setConfig(dungeonName, configName).build();
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Wrong dungeon or config name");
+        }
+        
         return dungeonState.toDungeonResponse();
     }
 
