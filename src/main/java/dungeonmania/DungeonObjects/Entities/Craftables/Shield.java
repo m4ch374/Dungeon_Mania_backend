@@ -8,7 +8,7 @@ import static dungeonmania.DungeonObjects.EntityTypes.SHIELD;
 import org.json.JSONObject;
 
 public class Shield implements IEquipment {
-    public static final String TYPE = SHIELD;
+    public static final String TYPE = SHIELD.toString();
 
     private int durability;
     private int defense;

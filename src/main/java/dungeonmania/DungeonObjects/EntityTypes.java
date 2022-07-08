@@ -1,36 +1,51 @@
 package dungeonmania.DungeonObjects;
 
+import java.util.HashMap;
+import java.util.Map;
+
 // A list of types
-public class EntityTypes {
+public enum EntityTypes {
+    PLAYER("player"),
+    WALL("wall"),
+    EXIT("exit"),
+    BOULDER("boulder"),
+    FLOOR_SWITCH("switch"),
+    DOOR("door"),
+    PORTAL("portal"),
+    ZOMBIE_TOAST_SPAWNER("zombie_toast_spawner"),
+    SPIDER("spider"),
+    ZOMBIE_TOAST("zombie_toast"),
+    MERCENARY("mercenary"),
+    TREASURE("treasure"),
+    KEY("key"),
+    INVINCIBILITY_POTION("invincibility_potion"),
+    INVISIBILITY_POTION("invisibility_potion"),
+    WOOD("wood"),
+    ARROWS("arrow"),
+    BOMB("bomb"),
+    SWORD("sowrd"),
+    BOW("bow"),
+    SHIELD("shield");
 
-    // Player
-    public static final String PLAYER               = "player";
+    // Map of value to enum
+    private static final Map<String, EntityTypes> map = new HashMap<String, EntityTypes>();
+    static {
+        for (EntityTypes e : values())
+            map.put(e.TYPE, e);
+    }
 
-    // Static Entities
-    public static final String WALL                 = "wall";
-    public static final String EXIT                 = "exit";
-    public static final String BOULDER              = "boulder";
-    public static final String FLOOR_SWITCH         = "switch";
-    public static final String DOOR                 = "door";
-    public static final String PORTAL               = "portal";
-    public static final String ZOMBIE_TOAST_SPAWNER = "zombie_toast_spawner";
+    private final String TYPE;
 
-    // Movables
-    public static final String SPIDER               = "spider";
-    public static final String ZOMBIE_TOAST         = "zombie_toast";
-    public static final String MERCENARY            = "mercenary";
+    private EntityTypes(String TYPE) {
+        this.TYPE = TYPE;
+    }
 
-    // Collectables
-    public static final String TREASURE             = "treasure";
-    public static final String KEY                  = "key";
-    public static final String INVINCIBILITY_POTION = "invincibility_potion";
-    public static final String INVISIBILITY_POTION  = "invisibility_potion";
-    public static final String WOOD                 = "wood";
-    public static final String ARROWS               = "arrow";
-    public static final String BOMB                 = "bomb";
-    public static final String SWORD                = "sword";
+    public static EntityTypes lookupEnum(String type) {
+        return map.get(type);
+    }
 
-    // Craftables
-    public static final String BOW                  = "bow";
-    public static final String SHIELD               = "shield";
+    @Override
+    public String toString() {
+        return TYPE;
+    }
 }
