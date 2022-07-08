@@ -55,6 +55,11 @@ public class DungeonMap {
     // Place an entity to the map
     public void placeEntityAt(Entity entity, Position pos) {
         DungeonCell cell = map.get(pos);
+
+        if (cell == null) {
+            cell = new DungeonCell();
+            map.put(pos, cell);
+        }
         cell.addToCell(entity);
 
         lookup.put(entity, pos);

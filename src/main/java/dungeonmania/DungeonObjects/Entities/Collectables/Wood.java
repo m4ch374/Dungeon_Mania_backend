@@ -6,12 +6,10 @@ import dungeonmania.Interfaces.IEquipment;
 import dungeonmania.response.models.ItemResponse;
 import dungeonmania.util.DungeonFactory.EntityStruct;
 
-public class Key extends Entity implements ICollectable, IEquipment {
-    private int keyId;
+public class Wood extends Entity implements ICollectable, IEquipment {
 
-    public Key(EntityStruct metaData, int keyId) {
+    public Wood(EntityStruct metaData) {
         super(metaData);
-        this.keyId = keyId;
     }
 
     @Override
