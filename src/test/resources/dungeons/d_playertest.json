@@ -1,0 +1,127 @@
+{
+    "entities": [
+        {
+            "type" : "bomb",
+            "x" : 0,
+            "y" : 2
+        },
+        {
+            "type" : "treasure",
+            "x" : 0,
+            "y" : 3
+        },
+        {
+            "type" : "wall",
+            "x" : 0,
+            "y" : 4
+        },
+        {
+            "type" : "boulder",
+            "x" : 1,
+            "y" : 0
+        },
+        {
+            "type" : "switch",
+            "x" : 1,
+            "y" : 1
+        },
+        {
+            "type" : "treasure",
+            "x" : 1,
+            "y" : 3
+        },
+        {
+            "type" : "wall",
+            "x" : 1,
+            "y" : 4
+        },
+        {
+            "type" : "wood",
+            "x" : 2,
+            "y" : 0
+        },
+        {
+            "type" : "wood",
+            "x" : 2,
+            "y" : 1
+        },
+        {
+            "type" : "wood",
+            "x" : 2,
+            "y" : 2
+        },
+        {
+            "type" : "player",
+            "x" : 2,
+            "y" : 3
+        },
+        {
+            "type" : "arrow",
+            "x" : 2,
+            "y" : 4
+        },
+        {
+            "type" : "arrow",
+            "x" : 2,
+            "y" : 5
+        },
+        {
+            "type" : "arrow",
+            "x" : 2,
+            "y" : 6
+        },
+        {
+            "type" : "bomb",
+            "x" : 3,
+            "y" : 1
+        },
+        {
+            "type" : "bomb",
+            "x" : 3,
+            "y" : 2
+        },
+        {
+            "type" : "key",
+            "x" : 3,
+            "y" : 3,
+            "key" : 1
+        },
+        {
+            "type" : "invincibility_potion",
+            "x" : 3,
+            "y" : 4
+        },
+        {
+            "type" : "invincibility_potion",
+            "x" : 3,
+            "y" : 5
+        },
+        {
+            "type" : "sword",
+            "x" : 3,
+            "y" : 6
+        },
+        {
+            "type" : "key",
+            "x" : 4,
+            "y" : 3,
+            "key" : 2
+        },
+        {
+            "type" : "invisibility_potion",
+            "x" : 4,
+            "y" : 4
+        },
+        {
+            "type" : "invisibility_potion",
+            "x" : 4,
+            "y" : 5
+        },
+        {
+            "type" : "sword",
+            "x" : 4,
+            "y" : 6
+        }
+    ],
+    "goal-condition": {"goal": "exit"}
+}
