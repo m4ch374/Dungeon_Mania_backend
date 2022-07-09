@@ -5,19 +5,26 @@ import dungeonmania.response.models.ItemResponse;
 
 import static dungeonmania.DungeonObjects.EntityTypes.SHIELD;
 
-import org.json.JSONObject;
-
 public class Shield implements IEquipment {
-    public static final String TYPE = SHIELD.toString();
 
     private int durability;
-    private int defense;
+    private final String id;
 
-    public Shield(JSONObject config) {
-        this.durability = config.getInt("shield_durability");
-        this.defense = config.getInt("shield_defence");
+    public Shield(String id, int durability) {
+        this.id = id;
+        this.durability = durability;
+    }
+
+    public int getDurability() {
+        return this.durability;
+    }
+
+    public void reduceDurability(int times) {
+        this.durability -= times;
     }
 
     @Override
-    public ItemResponse toItemResponse() { return null; }
+    public ItemResponse toItemResponse() {
+        return new ItemResponse(this.id, SHIELD.toString());
+    }
 }

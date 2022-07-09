@@ -16,6 +16,14 @@ public class Entity {
         map = metaData.getMap();
     }
 
+    protected String getId() {
+        return this.id;
+    }
+
+    protected DungeonMap getMap() {
+        return this.map;
+    }
+
     public EntityResponse toEntityResponse() {
         return new EntityResponse(id, type, map.getEntityPos(this), false);
     }
