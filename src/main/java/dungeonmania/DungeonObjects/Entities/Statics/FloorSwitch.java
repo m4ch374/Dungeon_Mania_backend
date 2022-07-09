@@ -6,6 +6,12 @@ import dungeonmania.util.DungeonFactory.EntityStruct;
 
 public class FloorSwitch extends Entity implements IStaticInteractable {
 
+    private boolean active = false;
+
+    public boolean isActive() {
+        return this.active;
+    }
+
     public FloorSwitch(EntityStruct metaData) {
         super(metaData);
     }

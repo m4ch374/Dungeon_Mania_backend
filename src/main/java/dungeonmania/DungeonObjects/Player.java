@@ -8,20 +8,20 @@ import java.util.List;
 
 import org.json.JSONObject;
 
-import dungeonmania.DungeonObjects.DungeonMap.DungeonMap;
 import dungeonmania.DungeonObjects.Entities.Entity;
 import dungeonmania.DungeonObjects.Entities.Collectables.Bomb;
+import dungeonmania.DungeonObjects.Entities.Collectables.InvincibilityPotion;
+import dungeonmania.DungeonObjects.Entities.Collectables.InvisibilityPotion;
 import dungeonmania.DungeonObjects.Entities.Collectables.Key;
 import dungeonmania.DungeonObjects.Entities.Statics.Wall;
 import dungeonmania.Interfaces.ICollectable;
+import dungeonmania.Interfaces.IEquipment;
 import dungeonmania.Interfaces.IMovingStrategy;
 import dungeonmania.Interfaces.IStaticInteractable;
 import dungeonmania.exceptions.InvalidActionException;
+import dungeonmania.response.models.ItemResponse;
 
 public class Player extends Entity {
-
-    private int x;
-    private int y;
 
     private int health;
     private int attackDamage;
@@ -40,7 +40,7 @@ public class Player extends Entity {
 
     private Backpack backpack;
 
-    // TODO don know how this work yet
+    // TODO dont know how this work yet
     private IMovingStrategy moveStrat;
 
     public Player(EntityStruct metaData, JSONObject config) {
@@ -60,13 +60,20 @@ public class Player extends Entity {
         this.backpack = new Backpack(config.getInt("bow_durability"), config.getInt("shield_durability"));
     }
 
-    public boolean isDead() {
-        return (this.health <= 0);
+    public List<ItemResponse> getPlayerItems() {
+        return backpack.getItemResponse();
     }
 
-    private void setPosition(int x, int y) {
-        this.x = x;
-        this.y = y;
+    public List<String> getBuildables() {
+        return backpack.getBuildables();
+    }
+
+    public Position getPos() {
+        return getMap().getEntityPos(this);
+    }
+
+    public boolean isDead() {
+        return (this.health <= 0);
     }
 
     public boolean isInvincible() {
@@ -130,24 +137,22 @@ public class Player extends Entity {
         backpack.make(type);
     }
 
-    public void useItem(String type) throws InvalidActionException {
-        if (type.equals(EntityTypes.INVINCIBILITY_POTION.toString())) {
-            backpack.useInvincibility();
+    public void useItem(String itemUsedId) throws InvalidActionException {
+        IEquipment item = backpack.useItem(itemUsedId);
+
+        if (item instanceof InvincibilityPotion) {
             this.InvincibilityRemainingTime += this.invincibility_potion_duration;
-        } else if (type.equals(EntityTypes.INVISIBILITY_POTION.toString())) {
-            backpack.useInvisibility();
+        } else if (item instanceof InvisibilityPotion) {
             this.InvisibilityRemainingTime += this.invisibility_potion_duration;
-        } else if (type.equals(EntityTypes.BOMB.toString())) {
-            Bomb bomb = backpack.useBomb();
-            getMap().placeEntityAt(bomb, new Position(x, y));
-        } else if (type.equals(EntityTypes.SWORD.toString())) {
-            backpack.useSword();
-        } else if (type.equals(EntityTypes.BOW.toString())) {
-            backpack.useBow();
-        } else if (type.equals(EntityTypes.SHIELD.toString())) {
-            backpack.useShield();
-        } else {
-            throw new InvalidActionException("Can not use this item");
+        } else if (item instanceof Bomb) {
+            Bomb bomb = (Bomb) item;
+            int x = getPos().getX();
+            int y = getPos().getY();
+            if (userCloseActiveSwitch(x, y)) {
+                getMap().destroyInRange(new Position(x, y), bomb.getBombRadius());
+            } else {
+                getMap().placeEntityAt(bomb, new Position(x, y));
+            }
         }
     }
 
@@ -159,6 +164,7 @@ public class Player extends Entity {
         for (Entity entity : inCell) {
             if (entity instanceof IStaticInteractable) {
                 // TODO complete static entity interation here
+                move = false;
                 break;
             }
 
@@ -182,41 +188,51 @@ public class Player extends Entity {
     }
 
     public void move(Direction direction) throws InvalidActionException {
-        // TODO get destination
-        // if (ableToMove(direction)) {
-        //     switch (direction) {
-        //         case LEFT:
-                    
-        //             break;
-        //         case RIGHT:
-                    
-        //             break;
-        //         case UP:
-                    
-        //             break;
-        //         case DOWN:
-                    
-        //             break;
-        //     }
-        // } else {
-        //     throw new InvalidActionException("ERROR: Can not move " + direction);
-        // }
+        int a = 0;
+        int b = 0;
+        int x = getPos().getX();
+        int y = getPos().getY();
+
+        switch (direction) {
+            case UP:
+                a = -1;
+                break;
+            case DOWN:
+                a = 1;
+                break;
+            case LEFT:
+                b = -1;
+                break;
+            case RIGHT:
+                b = 1;
+                break;
+        }
+
+        Position destination = new Position(x + a, y + b);
+
+        if (ableToMove(destination)) {
+            getMap().moveEntityTo(this, destination);
+        } else {
+            throw new InvalidActionException("ERROR: Can not move " + direction);
+        }
     }
 
     // TODO for the man in charge of battle
     public void initiateBattle() {}
+
+    /* TODO for each iterable entirety (wall, spider...) there will be a unique method, deal with the effects on the player */
 
     // This is a template that can be changed by whoever is responsible for static entity interactions
     public void openDoor(int key) throws InvalidActionException {
         if (!backpack.hasAKey() || backpack.hasKey(key)) {
             throw new InvalidActionException("Can not open the door");
         } else {
-            backpack.useKey();
+            backpack.useItem(EntityTypes.KEY.toString());
             // go in the door
         }
     }
 
-    // TODO This is a template that can be changed by whoever is responsible for static entity interactions
+    // This is a template that can be changed by whoever is responsible for static entity interactions
     public void goInPortal(int x, int y) throws InvalidActionException {
         if (getMap().getEntitiesAt(new Position(x, y)) instanceof Wall) {
             throw new InvalidActionException("Can not go in th portal");

@@ -25,6 +25,11 @@ public class Wood extends Entity implements ICollectable, IEquipment {
         this.quantity = quantity;
     }
 
+    @Override
+    public String getId() {
+        return super.getId();
+    }
+
     public int getQuantity() {
         return this.quantity;
     }

@@ -1,7 +1,8 @@
 package dungeonmania.DungeonObjects;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import dungeonmania.DungeonObjects.Entities.Collectables.Arrow;
 import dungeonmania.DungeonObjects.Entities.Collectables.Bomb;
@@ -14,21 +15,23 @@ import dungeonmania.DungeonObjects.Entities.Collectables.InvisibilityPotion;
 import dungeonmania.DungeonObjects.Entities.Craftables.Bow;
 import dungeonmania.DungeonObjects.Entities.Craftables.Shield;
 import dungeonmania.Interfaces.ICollectable;
+import dungeonmania.Interfaces.IEquipment;
 import dungeonmania.exceptions.InvalidActionException;
+import dungeonmania.response.models.ItemResponse;
 
 public final class Backpack {
 
     private Key key = null;
-    private int treasure = 0;
-    private int InvincibilityPotion = 0;
-    private int InvisibilityPotion = 0;
-    private int Woods = 0;
-    private int Arrows = 0;
+    private ArrayList<Treasure> treasure = new ArrayList<Treasure>();
+    private ArrayList<InvincibilityPotion> InvincibilityPotion = new ArrayList<InvincibilityPotion>();
+    private ArrayList<InvisibilityPotion> InvisibilityPotion = new ArrayList<InvisibilityPotion>();
+    private ArrayList<Wood> Woods = new ArrayList<Wood>();
+    private ArrayList<Arrow> Arrows = new ArrayList<Arrow>();
     private ArrayList<Bomb> Bombs = new ArrayList<Bomb>();
     private ArrayList<Sword> Swords = new ArrayList<Sword>();
 
-    private int bow_num = 0;
-    private int shield_num = 0;
+    private int bow_idx = 0;
+    private int shield_idx = 0;
     private ArrayList<Bow> Bows = new ArrayList<Bow>();
     private ArrayList<Shield> Shields = new ArrayList<Shield>();
 
@@ -38,131 +41,6 @@ public final class Backpack {
     public Backpack(int bow_durability, int shield_durability) {
         this.bow_durability = bow_durability;
         this.shield_durability = shield_durability;
-    }
-
-    public HashMap<String, Integer> getState() {
-        HashMap<String, Integer> state = new HashMap<>();
-
-        state.put(EntityTypes.TREASURE.toString(), this.treasure);
-        if (this.key != null) state.put(EntityTypes.KEY.toString(), 1);
-        else state.put(EntityTypes.KEY.toString(), 0);
-        state.put(EntityTypes.INVINCIBILITY_POTION.toString(), this.InvincibilityPotion);
-        state.put(EntityTypes.INVISIBILITY_POTION.toString(), this.InvisibilityPotion);
-        state.put(EntityTypes.WOOD.toString(), this.Woods);
-        state.put(EntityTypes.ARROWS.toString(), this.Arrows);
-        state.put(EntityTypes.BOMB.toString(), this.Bombs.size());
-
-        return state;
-    }
-
-    public void make(String type) throws InvalidActionException {
-        if (type.equals(EntityTypes.BOW.toString())) {
-            if (this.Woods >= 1 && this.Arrows >= 3) {
-                useWoods(1);
-                useArrows(3);
-                String id = "user_bow_" + this.bow_num;
-                this.Bows.add(new Bow(id, bow_durability));
-                this.bow_num += 1;
-            } else {
-                throw new InvalidActionException("ERROR: Not Enough Material For " + type);
-            }
-        } else if (type.equals(EntityTypes.SHIELD.toString())) {
-            if (this.Woods >= 2 && this.treasure >= 1) {
-                useWoods(2);
-                useTreasure(1);
-                String id = "user_shield_" + this.shield_num;
-                this.Shields.add(new Shield(id, shield_durability));
-                this.shield_num += 1;
-            } else if (this.Woods >= 2 && this.key != null) {
-                useWoods(2);
-                useKey();
-                String id = "user_shield_" + this.shield_num;
-                this.Shields.add(new Shield(id, shield_durability));
-                this.shield_num += 1;
-            } else {
-                throw new InvalidActionException("ERROR: Not Enough Material For " + type);
-            }
-        } else {
-            throw new InvalidActionException("ERROR: Can Not Make Item " + type);
-        }
-    }
-
-    public void addItem(ICollectable item) throws InvalidActionException {
-        if (item instanceof Treasure) {
-            Treasure treasure = (Treasure) item;
-            this.treasure += treasure.getQuantity();
-        } else if (item instanceof Key) {
-            this.key = (Key) item;
-        } else if (item instanceof InvincibilityPotion) {
-            this.InvincibilityPotion += 1;
-        } else if (item instanceof InvisibilityPotion) {
-            this.InvisibilityPotion += 1;
-        } else if (item instanceof Wood) {
-            Wood wood = (Wood) item;
-            this.InvisibilityPotion += wood.getQuantity();
-        } else if (item instanceof Arrow) {
-            Arrow arrow = (Arrow) item;
-                this.InvisibilityPotion += arrow.getQuantity();
-        } else if (item instanceof Bomb) {
-            this.Bombs.add((Bomb) item);
-        } else if (item instanceof Sword) {
-            this.Swords.add((Sword) item);
-        } else {
-            throw new InvalidActionException("ERROR: Can Not Collect Item ");
-        }
-    }
-
-    public boolean hasAKey() {
-        return (this.key != null);
-    }
-
-    public boolean hasKey(int key) {
-        return (this.key.getKey() == key);
-    }
-
-    public void useKey() {
-        this.key = null;
-    }
-
-    public void useTreasure(int quantity) {
-        this.treasure -= quantity;
-    }
-
-    public void useWoods(int quantity) {
-        this.Woods -= quantity;
-    }
-
-    public void useArrows(int quantity) {
-        this.Arrows -= quantity;
-    }
-
-    public void useInvincibility() throws InvalidActionException {
-        if (this.InvincibilityPotion == 0) {
-            throw new InvalidActionException("Do Not Have Potion");
-        }
-
-        this.InvincibilityPotion -= 1;
-    }
-
-    public void useInvisibility() throws InvalidActionException {
-        if (this.InvincibilityPotion == 0) {
-            throw new InvalidActionException("Do Not Have Potion");
-        }
-
-        this.InvisibilityPotion -= 1;
-    }
-
-    public Bomb useBomb() throws InvalidActionException {
-        if (this.Bombs.size() <= 0) {
-            throw new InvalidActionException("Do Not Have Bomb");
-        }
-
-        Bomb bomb = this.Bombs.get(0);
-        this.Bombs.remove(bomb);
-
-        bomb.drop();
-
-        return bomb;
     }
 
     public boolean hasSword() {
@@ -177,12 +55,184 @@ public final class Backpack {
         return (this.Shields.size() >= 1);
     }
 
-    public void useSword() throws InvalidActionException {
-        if (this.Shields.size() == 0) {
-            throw new InvalidActionException("Do Not Have A Sword");
+    public List<ItemResponse> getItemResponse() {
+        ArrayList<ItemResponse> items = new ArrayList<ItemResponse>();
+
+        if (key != null) items.add(key.toItemResponse());
+        treasure.stream().forEach(e -> items.add(e.toItemResponse()));
+        InvincibilityPotion.stream().forEach(e -> items.add(e.toItemResponse()));
+        InvisibilityPotion.stream().forEach(e -> items.add(e.toItemResponse()));
+        Woods.stream().forEach(e -> items.add(e.toItemResponse()));
+        Arrows.stream().forEach(e -> items.add(e.toItemResponse()));
+        Bombs.stream().forEach(e -> items.add(e.toItemResponse()));
+        Swords.stream().forEach(e -> items.add(e.toItemResponse()));
+        Bows.stream().forEach(e -> items.add(e.toItemResponse()));
+        Shields.stream().forEach(e -> items.add(e.toItemResponse()));
+
+        return items;
+    }
+
+    public List<String> getBuildables() {
+        ArrayList<String> Buildables = new ArrayList<String>();
+
+        if (this.Woods.size() >= 1 && this.Arrows.size() >= 3) {
+            Buildables.add(EntityTypes.BOW.toString());
         }
 
-        Sword sword = this.Swords.get(0);
+        if (this.Woods.size() >= 2 && (this.treasure.size() >= 1 || this.key != null)) {
+            Buildables.add(EntityTypes.SHIELD.toString());
+        }
+
+        return Buildables;
+    }
+
+    public void make(String type) throws InvalidActionException {
+        if (type.equals(EntityTypes.BOW.toString())) {
+            if (this.Woods.size() >= 1 && this.Arrows.size() >= 3) {
+                useWoods(1);
+                useArrows(3);
+                String id = "bow_" + this.bow_idx;
+                this.Bows.add(new Bow(id, bow_durability));
+                this.bow_idx += 1;
+            } else {
+                throw new InvalidActionException("ERROR: Not Enough Material For " + type);
+            }
+        } else if (type.equals(EntityTypes.SHIELD.toString())) {
+            if (this.Woods.size() >= 2 && this.treasure.size() >= 1) {
+                useWoods(2);
+                useTreasure(1);
+                String id = "shield_" + this.shield_idx;
+                this.Shields.add(new Shield(id, shield_durability));
+                this.shield_idx += 1;
+            } else if (this.Woods.size() >= 2 && this.key != null) {
+                useWoods(2);
+                useKey();
+                String id = "shield_" + this.shield_idx;
+                this.Shields.add(new Shield(id, shield_durability));
+                this.shield_idx += 1;
+            } else {
+                throw new InvalidActionException("ERROR: Not Enough Material For " + type);
+            }
+        } else {
+            throw new InvalidActionException("ERROR: Can Not Make Item " + type);
+        }
+    }
+
+    public void addItem(ICollectable item) throws InvalidActionException {
+        if (item instanceof Treasure) {
+            this.treasure.add((Treasure) item);
+        } else if (item instanceof Key) {
+            this.key = (Key) item;
+        } else if (item instanceof InvincibilityPotion) {
+            this.InvincibilityPotion.add((InvincibilityPotion) item);
+        } else if (item instanceof InvisibilityPotion) {
+            this.InvisibilityPotion.add((InvisibilityPotion) item);
+        } else if (item instanceof Wood) {
+            this.Woods.add((Wood) item);
+        } else if (item instanceof Arrow) {
+            this.Arrows.add((Arrow) item);
+        } else if (item instanceof Bomb) {
+            this.Bombs.add((Bomb) item);
+        } else if (item instanceof Sword) {
+            this.Swords.add((Sword) item);
+        } else {
+            throw new InvalidActionException("ERROR: Can Not Collect Item ");
+        }
+    }
+
+    private IEquipment getItemById(String itemUsedId) throws InvalidActionException {
+        ArrayList<IEquipment> item = new ArrayList<IEquipment>();
+
+        item.addAll(InvincibilityPotion.stream().filter(e -> e.getId().equals(itemUsedId)).collect(Collectors.toList()));
+        item.addAll(InvisibilityPotion.stream().filter(e -> e.getId().equals(itemUsedId)).collect(Collectors.toList()));
+        item.addAll(Bombs.stream().filter(e -> e.getId().equals(itemUsedId)).collect(Collectors.toList()));
+        item.addAll(Swords.stream().filter(e -> e.getId().equals(itemUsedId)).collect(Collectors.toList()));
+        item.addAll(Bows.stream().filter(e -> e.getId().equals(itemUsedId)).collect(Collectors.toList()));
+        item.addAll(Shields.stream().filter(e -> e.getId().equals(itemUsedId)).collect(Collectors.toList()));
+
+        if (item.size() == 0 || item.size() > 1) {
+            throw new InvalidActionException("Can not match item id");
+        }
+
+        return item.get(0);
+    }
+
+    public IEquipment useItem(String itemUsedId) throws InvalidActionException {
+        if (itemUsedId.equals(EntityTypes.KEY.toString())) {
+            if (this.key == null) {
+                throw new InvalidActionException("Do not have a key");
+            }
+
+            Key key = this.key;
+            useKey();
+            return key;
+        }
+
+        IEquipment item = getItemById(itemUsedId);
+
+        if (item instanceof InvincibilityPotion) {
+            useInvincibility((InvincibilityPotion) item);
+        } else if (item instanceof InvisibilityPotion) {
+            useInvisibility((InvisibilityPotion) item);
+        } else if (item instanceof Bomb) {
+            useBomb((Bomb) item);
+        } else if (item instanceof Sword) {
+            useSword((Sword) item);
+        } else if (item instanceof Bow) {
+            useBow((Bow) item);
+        } else if (item instanceof Shield) {
+            useShield((Shield) item);
+        } else {
+            throw new InvalidActionException("Can not use this item");
+        }
+
+        return item;
+    }
+
+    public boolean hasAKey() {
+        return (this.key != null);
+    }
+
+    public boolean hasKey(int key) {
+        return (this.key.getKey() == key);
+    }
+
+    private void useKey() {
+        this.key = null;
+    }
+
+    private void useTreasure(int quantity) {
+        for (int i = 0; i < quantity; i++) {
+            this.treasure.remove(0);
+        }
+    }
+
+    private void useWoods(int quantity) {
+        for (int i = 0; i < quantity; i++) {
+            this.Woods.remove(0);
+        }
+    }
+
+    private void useArrows (int quantity) {
+        for (int i = 0; i < quantity; i++) {
+            this.Arrows.remove(0);
+        }
+    }
+
+    private void useInvincibility(InvincibilityPotion potion) {
+        this.InvincibilityPotion.remove(potion);
+    }
+
+    private void useInvisibility(InvisibilityPotion potion) {
+        this.InvisibilityPotion.remove(potion);
+    }
+
+    private void useBomb(Bomb bomb) {
+        bomb.drop();
+        this.Bombs.remove(bomb);
+    }
+
+    private void useSword(Sword sword) {
 
         sword.reduceDurability(1);
 
@@ -191,12 +241,7 @@ public final class Backpack {
         }
     }
 
-    public void useBow() throws InvalidActionException {
-        if (this.Shields.size() == 0) {
-            throw new InvalidActionException("Do Not Have A Bow");
-        }
-
-        Bow bow = this.Bows.get(0);
+    private void useBow(Bow bow) {
 
         bow.reduceDurability(1);
 
@@ -205,12 +250,7 @@ public final class Backpack {
         }
     }
 
-    public void useShield() throws InvalidActionException {
-        if (this.Shields.size() == 0) {
-            throw new InvalidActionException("Do Not Have A Shield");
-        }
-
-        Shield shield = this.Shields.get(0);
+    private void useShield(Shield shield) {
 
         shield.reduceDurability(1);
 

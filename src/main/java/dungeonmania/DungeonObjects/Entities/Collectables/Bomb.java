@@ -22,6 +22,11 @@ public class Bomb extends Entity implements ICollectable, IEquipment {
         this.bombRadius = config.getInt("bomb_radius");
     }
 
+    @Override
+    public String getId() {
+        return super.getId();
+    }
+
     public int getBombRadius() {
         return this.bombRadius;
     }

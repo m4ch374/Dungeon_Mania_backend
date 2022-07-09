@@ -20,6 +20,11 @@ public class Treasure extends Entity implements ICollectable, IEquipment {
         this.quantity = 1;
     }
 
+    @Override
+    public String getId() {
+        return super.getId();
+    }
+
     public Treasure(EntityStruct metaData, int quantity) {
         super(metaData);
         this.quantity = quantity;

@@ -27,4 +27,9 @@ public class Bow implements IEquipment {
     public ItemResponse toItemResponse() {
         return new ItemResponse(this.id, BOW.toString());
     }
+
+    @Override
+    public String getId() {
+        return this.id;
+    }
 }

@@ -11,11 +11,6 @@
             "y" : 3
         },
         {
-            "type" : "wall",
-            "x" : 0,
-            "y" : 4
-        },
-        {
             "type" : "boulder",
             "x" : 1,
             "y" : 0
@@ -29,11 +24,6 @@
             "type" : "treasure",
             "x" : 1,
             "y" : 3
-        },
-        {
-            "type" : "wall",
-            "x" : 1,
-            "y" : 4
         },
         {
             "type" : "wood",

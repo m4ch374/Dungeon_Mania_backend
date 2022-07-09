@@ -27,4 +27,9 @@ public class Shield implements IEquipment {
     public ItemResponse toItemResponse() {
         return new ItemResponse(this.id, SHIELD.toString());
     }
+
+    @Override
+    public String getId() {
+        return this.id;
+    }
 }

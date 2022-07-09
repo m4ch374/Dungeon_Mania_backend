@@ -76,11 +76,6 @@ public class PlayerCollectionTest {
         expectedPlayer = new EntityResponse(Player.getId(), Player.getType(), new Position(1, 3), false);
         assertEquals(expectedPlayer, Player);
 
-        DungonRes = dmc.tick(Direction.RIGHT);
-        Player = getPlayer(DungonRes).get();
-        expectedPlayer = new EntityResponse(Player.getId(), Player.getType(), new Position(1, 3), false);
-        assertEquals(expectedPlayer, Player);
-
         DungonRes = dmc.tick(Direction.DOWN);
         Player = getPlayer(DungonRes).get();
         expectedPlayer = new EntityResponse(Player.getId(), Player.getType(), new Position(2, 3), false);
@@ -103,13 +98,16 @@ public class PlayerCollectionTest {
         DungeonManiaController dmc = new DungeonManiaController();
         DungeonResponse DungonRes = dmc.newGame("d_playertest", "c_playertest");
 
-        assertEquals(DungonRes.getInventory().size(), 21);
+        assertEquals(0, DungonRes.getInventory().size());
+        assertEquals(22, DungonRes.getEntities().size());
 
         pickAll(dmc);
 
         DungonRes = dmc.getDungeonResponseModel();
-        // a key
-        assertEquals(DungonRes.getInventory().size(), 1);
+
+        assertEquals(18, DungonRes.getInventory().size());
+        assertEquals(3, DungonRes.getEntities().size());
+
     }
 
     @Test
@@ -117,24 +115,31 @@ public class PlayerCollectionTest {
     public void testUsePotion() throws IllegalArgumentException, InvalidActionException {
         DungeonManiaController dmc = new DungeonManiaController();
         dmc.newGame("d_playertest", "c_playertest");
+        DungeonResponse DungonRes;
 
         pickAll(dmc);
 
         try {
-            dmc.tick("invincibility_potion_1");
-            dmc.tick("invincibility_potion_2");
+            DungonRes = dmc.tick("invincibility_potion_1");
+            DungonRes = dmc.tick("invincibility_potion_2");
+            assertEquals(16, DungonRes.getInventory().size());
         } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
             assertEquals(true, false);
         } catch (InvalidActionException e) {
+            System.out.println(e.getMessage());
             assertEquals(true, false);
         }
 
         try {
-            dmc.tick("invisibility_potion_1");
-            dmc.tick("invisibility_potion_2");
+            DungonRes = dmc.tick("invisibility_potion_1");
+            DungonRes = dmc.tick("invisibility_potion_2");
+            assertEquals(14, DungonRes.getInventory().size());
         } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
             assertEquals(true, false);
         } catch (InvalidActionException e) {
+            System.out.println(e.getMessage());
             assertEquals(true, false);
         }
     }
@@ -208,20 +213,26 @@ public class PlayerCollectionTest {
         DungeonManiaController dmc = new DungeonManiaController();
         DungeonResponse DungonRes = dmc.newGame("d_playertest", "c_playertest");
 
-        assertEquals(DungonRes.getInventory().size(), 21);
+        assertEquals(0, DungonRes.getInventory().size());
+        assertEquals(22, DungonRes.getEntities().size());
 
         dmc.tick(Direction.LEFT);
         dmc.tick(Direction.UP);
         dmc.tick(Direction.UP);
         dmc.tick(Direction.DOWN);
-        assertEquals(DungonRes.getInventory().size(), 19);
+
+        assertEquals(2, DungonRes.getInventory().size());
+        assertEquals(20, DungonRes.getEntities().size());
 
         try {
             DungonRes = dmc.tick("bomb_1");
-            assertEquals(DungonRes.getInventory().size(), 20);
+            assertEquals(1, DungonRes.getInventory().size());
+            assertEquals(21, DungonRes.getEntities().size());
         } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
             assertEquals(true, false);
         } catch (InvalidActionException e) {
+            System.out.println(e.getMessage());
             assertEquals(true, false);
         }
     }
@@ -232,32 +243,38 @@ public class PlayerCollectionTest {
         DungeonManiaController dmc = new DungeonManiaController();
         DungeonResponse DungonRes = dmc.newGame("d_playertest", "c_playertest");
 
-        assertEquals(DungonRes.getInventory().size(), 21);
+        assertEquals(0, DungonRes.getInventory().size());
+        assertEquals(22, DungonRes.getEntities().size());
 
         dmc.tick(Direction.LEFT);
         dmc.tick(Direction.UP);
         dmc.tick(Direction.UP);
         dmc.tick(Direction.DOWN);
-        assertEquals(DungonRes.getInventory().size(), 19);
+
+        assertEquals(2, DungonRes.getInventory().size());
+        assertEquals(20, DungonRes.getEntities().size());
 
         try {
             DungonRes = dmc.tick("bomb_1");
-            assertEquals(DungonRes.getInventory().size(), 20);
+            assertEquals(1, DungonRes.getInventory().size());
+            assertEquals(21, DungonRes.getEntities().size());
 
             dmc.tick(Direction.DOWN);
             EntityResponse Player = getPlayer(DungonRes).get();
             EntityResponse expectedPlayer = new EntityResponse(Player.getId(), Player.getType(), new Position(2, 2), false);
             assertEquals(expectedPlayer, Player);
-            assertEquals(DungonRes.getInventory().size(), 20);
+            assertEquals(1, DungonRes.getInventory().size());
 
             dmc.tick(Direction.UP);
             Player = getPlayer(DungonRes).get();
             expectedPlayer = new EntityResponse(Player.getId(), Player.getType(), new Position(2, 2), false);
             assertEquals(expectedPlayer, Player);
-            assertEquals(DungonRes.getInventory().size(), 20);
+            assertEquals(1, DungonRes.getInventory().size());
         } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
             assertEquals(true, false);
         } catch (InvalidActionException e) {
+            System.out.println(e.getMessage());
             assertEquals(true, false);
         }
     }
@@ -268,7 +285,7 @@ public class PlayerCollectionTest {
         DungeonManiaController dmc = new DungeonManiaController();
         DungeonResponse DungonRes = dmc.newGame("d_playertest", "c_playertest");
 
-        assertEquals(DungonRes.getInventory().size(), 21);
+        assertEquals(22, DungonRes.getEntities().size());
 
         dmc.tick(Direction.LEFT);
         dmc.tick(Direction.UP);
@@ -282,15 +299,15 @@ public class PlayerCollectionTest {
         dmc.tick(Direction.RIGHT);
         dmc.tick(Direction.RIGHT);
         dmc.tick(Direction.DOWN);
-
-        assertEquals(DungonRes.getInventory().size(), 19);
 
         try {
             DungonRes = dmc.tick("bomb_1");
-            assertEquals(DungonRes.getInventory().size(), 8);
+            assertEquals(8, DungonRes.getEntities().size());
         } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
             assertEquals(true, false);
         } catch (InvalidActionException e) {
+            System.out.println(e.getMessage());
             assertEquals(true, false);
         }
     }

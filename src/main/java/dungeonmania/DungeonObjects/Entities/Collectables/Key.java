@@ -18,6 +18,11 @@ public class Key extends Entity implements ICollectable, IEquipment {
         this.keyId = keyId;
     }
 
+    @Override
+    public String getId() {
+        return super.getId();
+    }
+
     public int getKey() {
         return this.keyId;
     }

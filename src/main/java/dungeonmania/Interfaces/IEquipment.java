@@ -4,4 +4,6 @@ import dungeonmania.response.models.ItemResponse;
 
 public interface IEquipment {
     public ItemResponse toItemResponse();
+
+    public String getId();
 }

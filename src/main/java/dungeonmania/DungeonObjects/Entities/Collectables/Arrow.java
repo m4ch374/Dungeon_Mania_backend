@@ -19,6 +19,11 @@ public class Arrow extends Entity implements ICollectable, IEquipment {
         this.quantity = 1;
     }
 
+    @Override
+    public String getId() {
+        return super.getId();
+    }
+
     public Arrow(EntityStruct metaData, int quantity) {
         super(metaData);
         this.quantity = quantity;

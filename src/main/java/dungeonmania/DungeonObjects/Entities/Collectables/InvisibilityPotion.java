@@ -13,11 +13,14 @@ import dungeonmania.util.DungeonFactory.EntityStruct;
 import static dungeonmania.DungeonObjects.EntityTypes.INVISIBILITY_POTION;;
 
 public class InvisibilityPotion extends Entity implements ICollectable, IEquipment {
-    private int duration;
 
     public InvisibilityPotion(EntityStruct metaData, JSONObject config) {
         super(metaData);
-        this.duration = config.getInt("invisibility_potion_duration");
+    }
+
+    @Override
+    public String getId() {
+        return super.getId();
     }
 
     @Override
