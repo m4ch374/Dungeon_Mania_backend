@@ -5,17 +5,31 @@ import dungeonmania.response.models.ItemResponse;
 
 import static dungeonmania.DungeonObjects.EntityTypes.BOW;
 
-import org.json.JSONObject;
-
 public class Bow implements IEquipment {
-    public static final String TYPE = BOW.toString();
 
     private int durability;
+    private final String id;
 
-    public Bow(JSONObject config) {
-        this.durability = config.getInt("bow_durability");
+    public Bow(String id, int durability) {
+        this.id = id;
+        this.durability = durability;
+    }
+
+    public int getDurability() {
+        return this.durability;
+    }
+
+    public void reduceDurability(int times) {
+        this.durability -= times;
     }
 
     @Override
-    public ItemResponse toItemResponse() { return null; }
+    public ItemResponse toItemResponse() {
+        return new ItemResponse(this.id, BOW.toString());
+    }
+
+    @Override
+    public String getId() {
+        return this.id;
+    }
 }

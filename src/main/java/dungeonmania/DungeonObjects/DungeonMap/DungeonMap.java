@@ -70,4 +70,25 @@ public class DungeonMap {
         removeEntity(entity);
         placeEntityAt(entity, pos);
     }
+
+
+    // Destroy entities within range but not player, used for bomb
+    public void destroyInRange(Position pos, int radius) {
+        int x = pos.getX();
+        int y = pos.getY();
+
+        for (int i = x - radius; i < x + radius; i++) {
+            for (int j = y - radius; i < y + radius; j++) {
+                Position p = new Position(i, j);
+
+                if (map.containsKey(p)) {
+                    DungeonCell cell = map.get(p);
+                    for (Entity e : cell.getAllEntitiesInCell()) {
+                        lookup.remove(e);
+                    }
+                    map.remove(p);
+                }
+            }
+        }
+    }
 }
