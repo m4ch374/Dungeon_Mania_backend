@@ -190,27 +190,25 @@ public class Player extends Entity {
     }
 
     public void move(Direction direction) throws InvalidActionException {
-        int a = 0;
-        int b = 0;
         int x = getPos().getX();
         int y = getPos().getY();
 
         switch (direction) {
             case UP:
-                a = -1;
+                y -= 1;
                 break;
             case DOWN:
-                a = 1;
+                y += 1;
                 break;
             case LEFT:
-                b = -1;
+                x -= 1;
                 break;
             case RIGHT:
-                b = 1;
+                x += 1;
                 break;
         }
 
-        Position destination = new Position(x + a, y + b);
+        Position destination = new Position(x, y);
 
         if (ableToMove(destination)) {
             getMap().moveEntityTo(this, destination);

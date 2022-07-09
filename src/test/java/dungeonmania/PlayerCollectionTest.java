@@ -68,17 +68,17 @@ public class PlayerCollectionTest {
         DungeonResponse DungonRes = dmc.newGame("d_playertest", "c_playertest");
         EntityResponse Player = getPlayer(DungonRes).get();
 
-        EntityResponse expectedPlayer = new EntityResponse(Player.getId(), Player.getType(), new Position(2, 3), false);
+        EntityResponse expectedPlayer = new EntityResponse(Player.getId(), Player.getType(), new Position(3, 2), false);
         assertEquals(expectedPlayer, Player);
 
         DungonRes = dmc.tick(Direction.UP);
         Player = getPlayer(DungonRes).get();
-        expectedPlayer = new EntityResponse(Player.getId(), Player.getType(), new Position(1, 3), false);
+        expectedPlayer = new EntityResponse(Player.getId(), Player.getType(), new Position(3, 1), false);
         assertEquals(expectedPlayer, Player);
 
         DungonRes = dmc.tick(Direction.DOWN);
         Player = getPlayer(DungonRes).get();
-        expectedPlayer = new EntityResponse(Player.getId(), Player.getType(), new Position(2, 3), false);
+        expectedPlayer = new EntityResponse(Player.getId(), Player.getType(), new Position(3, 2), false);
         assertEquals(expectedPlayer, Player);
 
         DungonRes = dmc.tick(Direction.LEFT);
@@ -88,7 +88,7 @@ public class PlayerCollectionTest {
 
         DungonRes = dmc.tick(Direction.RIGHT);
         Player = getPlayer(DungonRes).get();
-        expectedPlayer = new EntityResponse(Player.getId(), Player.getType(), new Position(2, 3), false);
+        expectedPlayer = new EntityResponse(Player.getId(), Player.getType(), new Position(3, 2), false);
         assertEquals(expectedPlayer, Player);
     }
 
