@@ -38,6 +38,14 @@ public class DungeonState {
     }
 
     public void tick(Direction movementDirection) {
+        try {
+            player.move(movementDirection);
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        } catch (InvalidActionException e) {
+            System.out.println(e.getMessage());
+        }
+
         // Structure would be something like this:
         //
         // player.updatePos() ---> update player position

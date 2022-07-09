@@ -159,6 +159,8 @@ public class Player extends Entity {
     private boolean ableToMove(Position destination) {
         List<Entity> inCell = getMap().getEntitiesAt(destination);
 
+        if (inCell == null) return true;
+
         boolean move = true;
 
         for (Entity entity : inCell) {
