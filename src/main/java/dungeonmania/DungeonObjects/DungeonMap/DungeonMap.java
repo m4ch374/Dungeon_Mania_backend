@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import dungeonmania.DungeonObjects.Player;
 import dungeonmania.DungeonObjects.Entities.Entity;
+import dungeonmania.Interfaces.IMovable;
 import dungeonmania.util.Position;
 
 public class DungeonMap {
@@ -99,5 +100,16 @@ public class DungeonMap {
     public void moveEntityTo(Entity entity, Position pos) {
         removeEntity(entity);
         placeEntityAt(entity, pos);
+    }
+
+    // Update all movable's position except for player
+    public void updateCharPos() {
+        // Ugly but works
+        List<IMovable> characters = getAllEntities().stream()
+                                    .filter(e -> e instanceof IMovable)
+                                    .map(e -> (IMovable) e)
+                                    .collect(Collectors.toList());
+
+        characters.forEach(c -> c.move());
     }
 }
