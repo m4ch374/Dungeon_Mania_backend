@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import dungeonmania.DungeonObjects.Player;
 import dungeonmania.DungeonObjects.Entities.Entity;
 import dungeonmania.util.Position;
 
@@ -38,6 +39,35 @@ public class DungeonMap {
 
     public Position getEntityPos(Entity entity) { 
         return lookup.get(entity);
+    }
+
+    // Removes every entity at a position
+    public void removeAllAtPos(Position pos) {
+        if (!map.containsKey(pos))
+            return;
+
+        DungeonCell currCell = map.get(pos);
+        List<Entity> cellEntities = currCell.getAllEntitiesInCell();
+
+        map.remove(pos);
+
+        cellEntities.forEach(e -> lookup.remove(e));
+    }
+
+    // Removes every entity at a posision except for Player
+    public void removeAtPosExceptPlayer(Position pos) {
+        if (!map.containsKey(pos))
+            return;
+
+        DungeonCell currCell = map.get(pos);
+        List<Entity> celleEntities = currCell.getAllEntitiesInCell();
+
+        celleEntities.stream()
+                    .filter(e -> !(e instanceof Player))
+                    .forEach(e -> {
+                        currCell.removeEntity(e);
+                        lookup.remove(e);
+                    });
     }
 
     // Removes an entity form a map
