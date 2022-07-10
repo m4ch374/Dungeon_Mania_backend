@@ -41,9 +41,9 @@ public class DungeonState {
         try {
             player.move(movementDirection);
         } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
+            System.out.println("DungeonState: Player " + e.getMessage());
         } catch (InvalidActionException e) {
-            System.out.println(e.getMessage());
+            System.out.println("DungeonState: Player " + e.getMessage());
         }
 
         // Structure would be something like this:
