@@ -33,8 +33,9 @@ public class DungeonState {
         config          = builder.getConfig();
     }
     
+    // Would it move all the npc like tick(direction) does?
     public void tick(String itemUsedId) throws IllegalArgumentException, InvalidActionException {
-        player.useItem(itemUsedId);;
+        player.useItem(itemUsedId);
     }
 
     public void tick(Direction movementDirection) {
@@ -45,6 +46,8 @@ public class DungeonState {
         } catch (InvalidActionException e) {
             System.out.println("DungeonState: Player " + e.getMessage());
         }
+
+        map.updateCharPos();
 
         // Structure would be something like this:
         //

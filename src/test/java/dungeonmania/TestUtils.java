@@ -30,6 +30,10 @@ public class TestUtils {
         return getEntitiesStream(res, type).collect(Collectors.toList());
     }
 
+    public static EntityResponse getEntityById(DungeonResponse res, String id) {
+        return res.getEntities().stream().filter(e -> e.getId().equals(id)).findFirst().get();
+    }
+
     public static List<ItemResponse> getInventory(DungeonResponse res, String type) {
         return res.getInventory().stream()
                                  .filter(it -> it.getType().startsWith(type))
@@ -55,6 +59,4 @@ public class TestUtils {
         
         return null;
     }
-
-    
 }
