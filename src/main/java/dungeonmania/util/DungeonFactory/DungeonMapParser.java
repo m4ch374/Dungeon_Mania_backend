@@ -87,7 +87,7 @@ public class DungeonMapParser {
         idMap.putIfAbsent(type, 0);
         int currId = idMap.get(type);
         String entityId = currId == 0 ? type : type + String.valueOf(currId);
-        idMap.put(type, currId++);
+        idMap.put(type, ++currId);
         return entityId;
     }
 }
