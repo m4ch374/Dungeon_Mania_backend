@@ -293,9 +293,7 @@ public class PlayerCollectionTest {
         assertEquals(1, bomb_id.size());
 
         try {
-            DungonRes = dmc.tick(bomb_id.get(0));
-            assertEquals(1, DungonRes.getInventory().size());
-            assertEquals(21, DungonRes.getEntities().size());
+            dmc.tick(bomb_id.get(0));
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
             assertEquals(true, false);
@@ -304,12 +302,14 @@ public class PlayerCollectionTest {
             assertEquals(true, false);
         }
 
-        dmc.tick(Direction.DOWN);
+        DungonRes = dmc.tick(Direction.DOWN);
+        assertEquals(1, DungonRes.getInventory().size());
+        assertEquals(21, DungonRes.getEntities().size());
         Player = getPlayer(DungonRes).get();
         assertEquals(new Position(2, 2), Player.getPosition());
         assertEquals(1, DungonRes.getInventory().size());
 
-        dmc.tick(Direction.UP);
+        DungonRes = dmc.tick(Direction.UP);
         Player = getPlayer(DungonRes).get();
         assertEquals(new Position(2, 2), Player.getPosition());
         assertEquals(1, DungonRes.getInventory().size());
