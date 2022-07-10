@@ -3,11 +3,13 @@ package dungeonmania.DungeonObjects.Entities.Collectables;
 import org.json.JSONObject;
 
 import dungeonmania.DungeonObjects.Player;
+import dungeonmania.DungeonObjects.DungeonMap.DungeonCell;
 import dungeonmania.DungeonObjects.Entities.Entity;
 import dungeonmania.Interfaces.ICollectable;
 import dungeonmania.Interfaces.IEquipment;
 import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.response.models.ItemResponse;
+import dungeonmania.util.Position;
 import dungeonmania.util.DungeonFactory.EntityStruct;
 
 import static dungeonmania.DungeonObjects.EntityTypes.BOMB;
@@ -55,6 +57,23 @@ public class Bomb extends Entity implements ICollectable, IEquipment {
                 // should never happened
                 // user's move already stop before this
                 // refer to Player.java line 157 - ableToMove()
+            }
+        }
+    }
+
+    // Destroy entities within range but not player
+    public void activate(Position pos) {
+        int x = pos.getX();
+        int y = pos.getY();
+
+        for (int i = x - bombRadius; i < x + bombRadius; i++) {
+            for (int j = y - bombRadius; i < y + bombRadius; j++) {
+                Position p = new Position(i, j);
+                if (i == x && j == y) {
+                    getMap().removeAtPosExceptPlayer(p);
+                } else {
+                    getMap().removeAllAtPos(p);
+                }
             }
         }
     }

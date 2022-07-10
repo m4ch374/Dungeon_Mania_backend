@@ -151,7 +151,7 @@ public final class Backpack {
         item.addAll(Shields.stream().filter(e -> e.getId().equals(itemUsedId)).collect(Collectors.toList()));
 
         if (item.size() == 0 || item.size() > 1) {
-            throw new InvalidActionException("Can not match item id");
+            throw new InvalidActionException("ERROR: Can not match item id");
         }
 
         return item.get(0);
@@ -160,7 +160,7 @@ public final class Backpack {
     public IEquipment useItem(String itemUsedId) throws InvalidActionException {
         if (itemUsedId.equals(EntityTypes.KEY.toString())) {
             if (this.key == null) {
-                throw new InvalidActionException("Do not have a key");
+                throw new InvalidActionException("ERROR: Do not have a key");
             }
 
             Key key = this.key;
@@ -183,7 +183,7 @@ public final class Backpack {
         } else if (item instanceof Shield) {
             useShield((Shield) item);
         } else {
-            throw new InvalidActionException("Can not use this item");
+            throw new InvalidActionException("ERROR: Can not use this item");
         }
 
         return item;

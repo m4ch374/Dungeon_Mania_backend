@@ -4,6 +4,7 @@ import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 import dungeonmania.util.DungeonFactory.EntityStruct;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONObject;
@@ -13,6 +14,7 @@ import dungeonmania.DungeonObjects.Entities.Collectables.Bomb;
 import dungeonmania.DungeonObjects.Entities.Collectables.InvincibilityPotion;
 import dungeonmania.DungeonObjects.Entities.Collectables.InvisibilityPotion;
 import dungeonmania.DungeonObjects.Entities.Collectables.Key;
+import dungeonmania.DungeonObjects.Entities.Statics.FloorSwitch;
 import dungeonmania.DungeonObjects.Entities.Statics.Wall;
 import dungeonmania.Interfaces.ICollectable;
 import dungeonmania.Interfaces.IEquipment;
@@ -137,6 +139,27 @@ public class Player extends Entity {
         backpack.make(type);
     }
 
+    private boolean playerCloseActiveSwitch(int x, int y) {
+        Position up = new Position(x - 1, y);
+        Position down = new Position(x + 1, y);
+        Position left = new Position(x, y - 1);
+        Position right = new Position(x, y + 1);
+
+        List<Entity> entityList = new ArrayList<Entity>();
+        entityList.addAll(getMap().getEntitiesAt(up));
+        entityList.addAll(getMap().getEntitiesAt(down));
+        entityList.addAll(getMap().getEntitiesAt(left));
+        entityList.addAll(getMap().getEntitiesAt(right));
+
+        boolean activeSwitch = entityList
+                                .stream()
+                                .filter(e -> e.getType().equals(EntityTypes.FLOOR_SWITCH.toString()))
+                                .map(e -> (FloorSwitch) e)
+                                .anyMatch(e -> e.isActive());
+
+        return activeSwitch;
+    }
+
     public void useItem(String itemUsedId) throws InvalidActionException {
         IEquipment item = backpack.useItem(itemUsedId);
 
@@ -148,8 +171,8 @@ public class Player extends Entity {
             Bomb bomb = (Bomb) item;
             int x = getPos().getX();
             int y = getPos().getY();
-            if (userCloseActiveSwitch(x, y)) {
-                getMap().destroyInRange(new Position(x, y), bomb.getBombRadius());
+            if (playerCloseActiveSwitch(x, y)) {
+                bomb.activate(new Position(x, y));
             } else {
                 getMap().placeEntityAt(bomb, new Position(x, y));
             }
@@ -157,19 +180,12 @@ public class Player extends Entity {
     }
 
     private boolean ableToMove(Position destination) {
-        List<Entity> inCell = getMap().getEntitiesAt(destination);
-
-        if (inCell == null) return true;
+        ArrayList<Entity> inCell = new ArrayList<Entity>();
+        inCell.addAll(getMap().getEntitiesAt(destination));
 
         boolean move = true;
 
         for (Entity entity : inCell) {
-            if (entity instanceof IStaticInteractable) {
-                // TODO complete static entity interation here
-                move = false;
-                break;
-            }
-
             if (entity instanceof ICollectable) {
                 if (entity instanceof Bomb) {
                     Bomb bomb = (Bomb) entity;
@@ -183,6 +199,12 @@ public class Player extends Entity {
                     ICollectable collection = (ICollectable) entity;
                     collection.collectedBy(this);
                 }
+            }
+
+            if (entity instanceof IStaticInteractable) {
+                // TODO complete static entity interation here
+                move = false;
+                break;
             }
         }
 
