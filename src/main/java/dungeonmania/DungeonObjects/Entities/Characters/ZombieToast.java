@@ -5,6 +5,7 @@ import org.json.JSONObject;
 import dungeonmania.DungeonObjects.Entities.Entity;
 import dungeonmania.Interfaces.IMovable;
 import dungeonmania.Interfaces.IMovingStrategy;
+import dungeonmania.MovingStrategies.ZombieMoveStrat;
 import dungeonmania.response.models.RoundResponse;
 import dungeonmania.util.DungeonFactory.EntityStruct;
 
@@ -12,7 +13,7 @@ public class ZombieToast extends Entity implements IMovable {
     private int attackDamage;
     private int health;
 
-    private IMovingStrategy moveStrat;
+    private IMovingStrategy moveStrat = new ZombieMoveStrat(this, super.getMap());
 
     public ZombieToast(EntityStruct metaData, JSONObject config) {
         super(metaData);
@@ -20,8 +21,18 @@ public class ZombieToast extends Entity implements IMovable {
         this.health = config.getInt("zombie_health");
     }
 
+    public int getAttackDamage() {
+        return attackDamage;
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
     @Override
-    public void move() {}
+    public void move() {
+        moveStrat.moveEntity();
+    }
 
     @Override
     public RoundResponse battleWith(Entity opponent) { return null; }
