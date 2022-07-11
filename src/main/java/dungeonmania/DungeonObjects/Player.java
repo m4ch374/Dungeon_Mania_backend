@@ -161,6 +161,7 @@ public class Player extends Entity {
         return activeSwitch;
     }
 
+    // do not use this for bribe mercenaries
     public void useItem(String itemUsedId) throws InvalidActionException {
         IEquipment item = backpack.useItem(itemUsedId);
 
@@ -253,10 +254,15 @@ public class Player extends Entity {
         }
     }
 
+    // used for bribe mercenaries
+    public void spendMoney(int quantity) throws InvalidActionException {
+        backpack.useTreasures(quantity);
+    }
+
     // TODO for the man in charge of battle
     public void initiateBattle() {}
 
-    /* TODO for each iterable entirety (wall, spider...) there will be a unique method, deal with the effects on the player */
+    /* TODO for each iterable entirety (door, portal...) there will be a unique method, deal with the effects on the player */
 
     // This is a template that can be changed by whoever is responsible for static entity interactions
     public void openDoor(int key) throws InvalidActionException {
