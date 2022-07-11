@@ -1,6 +1,5 @@
 package dungeonmania.MovingStrategies;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -11,12 +10,12 @@ import dungeonmania.Interfaces.IMovingStrategy;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
-public class ZombieMoveStrat implements IMovingStrategy {
+public class ConfusedMoveStrat implements IMovingStrategy {
 
     private DungeonMap map;
     private Entity mover;
 
-    public ZombieMoveStrat(Entity mover, DungeonMap map) {
+    public ConfusedMoveStrat(Entity mover, DungeonMap map) {
         this.mover = mover;
         this.map = map;
     }
