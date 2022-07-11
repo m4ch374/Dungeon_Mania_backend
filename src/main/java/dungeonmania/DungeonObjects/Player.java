@@ -15,6 +15,7 @@ import dungeonmania.DungeonObjects.Entities.Collectables.InvincibilityPotion;
 import dungeonmania.DungeonObjects.Entities.Collectables.InvisibilityPotion;
 import dungeonmania.DungeonObjects.Entities.Collectables.Key;
 import dungeonmania.DungeonObjects.Entities.Statics.FloorSwitch;
+import dungeonmania.DungeonObjects.Entities.Statics.Boulder;
 import dungeonmania.DungeonObjects.Entities.Statics.Wall;
 import dungeonmania.Interfaces.ICollectable;
 import dungeonmania.Interfaces.IEquipment;
@@ -202,7 +203,20 @@ public class Player extends Entity {
             }
 
             if (entity instanceof IStaticInteractable) {
-                // TODO complete static entity interation here
+                if (entity instanceof Boulder) {
+                    Boulder boulder = (Boulder) entity;
+                    Position boulderPos1 = this.getMap().getEntityPos(boulder);
+                    boulder.interactedBy(this);
+                    // Need to let Player know whether boulder has moved or not
+                    // IFF positons have changed, boulder's moved, then Player can move!
+                    Position boulderPos2 = this.getMap().getEntityPos(boulder);
+                    if (!boulderPos1.equals(boulderPos2)) {
+                        move = false;
+                        break;
+                    }
+
+                }
+                // TODO add more here
                 move = false;
                 break;
             }
