@@ -31,9 +31,6 @@ import dungeonmania.util.Position;
 public class BoulderTests {
     private static final String DIR_NAME = "d_BoulderTests/";
     // Add helper fncs here!
-    /*
-     * Fnc that returns where the boulder to move to ('U', 'D', 'L', 'R'), based in player movement
-     */
 
     @Test
     @DisplayName("Boulder 1: Test boulder move East")
@@ -138,7 +135,7 @@ public class BoulderTests {
         // Player pushes boulder which has another boulder to its east, but player and both boulders dont move
         DungeonManiaController dmc = new DungeonManiaController();
         // Player set to POS(1, 1), Boulder2 set to POS(2,3), Boulder3 set to POS(3,3) Switch2 set to POS(4,3)
-        DungeonResponse dungeonRes = dmc.newGame(DIR_NAME + "d_boulderTest_moveOntoFloorSwitch", "c_DoorsKeysTest_useKeyWalkThroughOpenDoor");
+        DungeonResponse dungeonRes = dmc.newGame(DIR_NAME + "d_boulderTest_overlapsFloorSwitch", "c_DoorsKeysTest_useKeyWalkThroughOpenDoor");
         
         // EntityResponse player = getPlayer(dungeonRes).get();
         EntityResponse boulder2 = getEntities(dungeonRes, "boulder").get(1);
@@ -159,15 +156,15 @@ public class BoulderTests {
 
 
     @Test
-    @DisplayName("Boulder 5: Test boulder move onto floor switch")
-    public void testBoulderMoveOntoFloorSwitch() {
-        // When boulder is moved onto floor switch, it would "trigger" it i.e. put it in a "triggered" STATE
+    @DisplayName("Boulder 5: Test boulder overlaps onto floor switch")
+    public void testBoulderOverlapsFloorSwitch() {
+        // IGNORE: When boulder is moved onto floor switch, it would "trigger" it i.e. put it in a "triggered" STATE
         // this would also contribute to Tracker's counting of goals (if a goal is having a boulder on all floor switches)
         // So here, game's basic goal is to have a boulder on all switches
         // NOTE: you dont need to test any of this, only test the boulder is on the same position as the switch
-        // (repeat test1, but how one floor switch where boulder will be pushed onto)
+        
         DungeonManiaController dmc = new DungeonManiaController();
-        DungeonResponse dungeonRes = dmc.newGame(DIR_NAME + "d_boulderTest_moveOntoFloorSwitch", "c_DoorsKeysTest_useKeyWalkThroughOpenDoor");
+        DungeonResponse dungeonRes = dmc.newGame(DIR_NAME + "d_boulderTest_overlapsFloorSwitch", "c_DoorsKeysTest_useKeyWalkThroughOpenDoor");
         
         // Get switch info 
         // LEGACY: EntityResponse floorSwitch1 = TestUtils.getEntityById(dungeonRes, "switch");
@@ -175,109 +172,105 @@ public class BoulderTests {
         // Get boulder info 
         EntityResponse boulder1 = getEntities(dungeonRes, "boulder").get(0);
         // Confirm boulder's existence
-        EntityResponse expectedBoulder = new EntityResponse(boulder1.getId(), boulder1.getType(), new Position(2, 1), true);
-        assertEquals(expectedBoulder, boulder1);
+        EntityResponse expectedBoulder1 = new EntityResponse(boulder1.getId(), boulder1.getType(), new Position(2, 1), true);
+        assertEquals(expectedBoulder1, boulder1);
         // Move player east
         dungeonRes = dmc.tick(Direction.RIGHT);
-        // Check the boulder has moved via comparing entity res to expectedBoulder's position
-        expectedBoulder = new EntityResponse(boulder1.getId(), boulder1.getType(), new Position(3, 1), true);
-        assertEquals(expectedBoulder, boulder1);
+        // Check the boulder has moved via comparing entity res to expectedBoulder1's position
+        assertEquals(new Position(3, 1), boulder1.getPosition());
         // Confirm this is also same position as the switch
         assertEquals(floorSwitch1.getPosition(), boulder1.getPosition());
-        
-        // Now move boulder off the switch
-        dungeonRes = dmc.tick(Direction.RIGHT);
-        expectedBoulder = new EntityResponse(boulder1.getId(), boulder1.getType(), new Position(4, 1), true);
-        assertEquals(expectedBoulder, boulder1);
     }
     
 
     @Test
-    @DisplayName("Boulder 6: Test boulder cannot move onto a collectable")
-    public void testBoulderMoveOntoCollectable() {
+    @DisplayName("Boulder 6: Test boulder overlaps with a collectable")
+    public void testBoulderOverlapsCollectable() {
         // Playerset to POS(1,1), Treasure set to POS(3,1), Boulder set to POS(2,1)
-        // So after Tick(RIGHT), player should not move, and boulder and treasure should stay in place
-        // Thus player cant move boulder since a non-switch entity is cardinally adjacent ot boulder. 
+        // So after Tick(RIGHT), player should move into boulders position and boulder and treasure should overlap each other
+        // Thus boulders overlap collectables (safest option for now). 
         DungeonManiaController dmc = new DungeonManiaController();
-        DungeonResponse dungeonRes = dmc.newGame(DIR_NAME + "d_boulderTest_moveOntoCollectable", "c_DoorsKeysTest_useKeyWalkThroughOpenDoor");
+        DungeonResponse dungeonRes = dmc.newGame(DIR_NAME + "d_boulderTest_overlapsCollectable", "c_DoorsKeysTest_useKeyWalkThroughOpenDoor");
         
-        // EntityResponse treasure = getEntities(dungeonRes, "treasure").get(0);
+        EntityResponse treasure = getEntities(dungeonRes, "treasure").get(0);
         EntityResponse boulder = getEntities(dungeonRes, "boulder").get(0);
         // Confirm boulder's existence
         EntityResponse expectedBoulder = new EntityResponse(boulder.getId(), boulder.getType(), new Position(3, 1), true);
         assertEquals(expectedBoulder, boulder);
         // Move player east
         dungeonRes = dmc.tick(Direction.RIGHT);
-        // Check the boulder has NOT moved
-        assertEquals(expectedBoulder, boulder);
+        // Check the boulder overlaps with treasure
+        assertEquals(treasure.getPosition(), boulder.getPosition());
         
     }
 
+
     @Test
-    @DisplayName("Boulder 7: Test boulder cannot move onto a static")
-    public void testBoulderMoveOntoStatic() {
-        // Playerset to POS(1,1), XXXXXX set to POS(3,1), Boulder set to POS(2,1)
-        // So after Tick(RIGHT), player should not move, and boulder and XXXXXX should stay in place
-        // Thus player cant move boulder since a non-switch entity is cardinally adjacent ot boulder. 
+    @DisplayName("Boulder 7: Test boulder overlaps with a portal")
+    public void testBoulderOverlapsPortal() {
+        // Playerset to POS(1,1), Portal1 set to POS(3,1), Portal2 set to POS(3,3) and Boulder set to POS(2,1)
+        // So after Tick(RIGHT), player should move where bouldar was, and boulder and Portal should overlap
+        // Thus boulders overlap static entities (safest option for now).
         DungeonManiaController dmc = new DungeonManiaController();
-        DungeonResponse dungeonRes = dmc.newGame(DIR_NAME + "d_boulderTest_moveOntoCollectable", "c_DoorsKeysTest_useKeyWalkThroughOpenDoor");
+        DungeonResponse dungeonRes = dmc.newGame(DIR_NAME + "d_boulderTest_overlapsPortal", "c_DoorsKeysTest_useKeyWalkThroughOpenDoor");
         
-        // EntityResponse treasure = getEntities(dungeonRes, "treasure").get(0);
+        EntityResponse portal1 = getEntities(dungeonRes, "portal").get(0);
+        // EntityResponse portal2 = getEntities(dungeonRes, "portal").get(1);
         EntityResponse boulder = getEntities(dungeonRes, "boulder").get(0);
         // Confirm boulder's existence
         EntityResponse expectedBoulder = new EntityResponse(boulder.getId(), boulder.getType(), new Position(3, 1), true);
         assertEquals(expectedBoulder, boulder);
-        // Move player east
+        // Move player east, push boulder over
         dungeonRes = dmc.tick(Direction.RIGHT);
-        // Check the boulder has NOT moved
-        assertEquals(expectedBoulder, boulder);
+        // Check the boulder overlaps with portal
+        assertEquals(portal1.getPosition(), boulder.getPosition());
         
     }
     
     
-    @Test
-    @DisplayName("Boulder 8: Test boulder cannot move onto an entity")
-    public void testBoulderMoveOntoEntity() {
-        // Similar to Test 8
-        // Player set to POS(2,1), Merc set to POS(4,1), Boulder set to POS(3,1), and Walls at (1,2), (2,2), (3,2), (4,2), (5,2) and (5,1)
-        // Thus the walls and boulder block locks Merc in place (since merc cant move boulder) 
-        // So after Tick(RIGHT), player should not move, and boulder and Merc should stay in place
-        // Thus player cant move boulder since a non-switch entity is cardinally adjacent ot boulder. 
-        DungeonManiaController dmc = new DungeonManiaController();
-        DungeonResponse dungeonRes = dmc.newGame(DIR_NAME + "d_boulderTest_moveByMerc", "c_DoorsKeysTest_useKeyWalkThroughOpenDoor");
+    // @Test
+    // @DisplayName("Boulder 8: Test boulder blocks entity")
+    // public void testBoulderMoveOntoEntity() {
+    //     // Similar to Test 8
+    //     // Player set to POS(2,1), Merc set to POS(4,1), Boulder set to POS(3,1), and Walls at (1,2), (2,2), (3,2), (4,2), (5,2) and (5,1)
+    //     // Thus the walls and boulder blocks Merc in place (since merc cant move boulder) 
+    //     // So after Tick(RIGHT), player should not move, and boulder and Merc should stay in place
+    //     // Thus player cant move boulder since a non-switch entity is cardinally adjacent ot boulder. 
+    //     DungeonManiaController dmc = new DungeonManiaController();
+    //     DungeonResponse dungeonRes = dmc.newGame(DIR_NAME + "d_boulderTest_moveByMerc", "c_DoorsKeysTest_useKeyWalkThroughOpenDoor");
         
-        // EntityResponse merc = getEntities(dungeonRes, "mercenary").get(0);
-        EntityResponse boulder = getEntities(dungeonRes, "boulder").get(0);
-        // Confirm boulder's existence
-        EntityResponse expectedBoulder = new EntityResponse(boulder.getId(), boulder.getType(), new Position(3, 1), true);
-        assertEquals(expectedBoulder, boulder);
-        // Move player east
-        dungeonRes = dmc.tick(Direction.RIGHT);
-        // Check the boulder has NOT moved
-        assertEquals(expectedBoulder, boulder);
+    //     // EntityResponse merc = getEntities(dungeonRes, "mercenary").get(0);
+    //     EntityResponse boulder = getEntities(dungeonRes, "boulder").get(0);
+    //     // Confirm boulder's existence
+    //     EntityResponse expectedBoulder = new EntityResponse(boulder.getId(), boulder.getType(), new Position(3, 1), true);
+    //     assertEquals(expectedBoulder, boulder);
+    //     // Move player east
+    //     dungeonRes = dmc.tick(Direction.RIGHT);
+    //     // Check the boulder has NOT moved
+    //     assertEquals(expectedBoulder, boulder);
         
-    }
+    // }
     
     
     @Test
-    @DisplayName("Boulder 9: Test boulder cannot be moved by non-Player entity")
-    public void testBoulderMoveByNonPlayer() {
+    @DisplayName("Boulder 9: Test boulder overlaps with Mercenary")
+    public void testBoulderOverlapsMercenary() {
         // SYNOPSIS:
         // Playerset to POS(2,1), Merc set to POS(4,1), Boulder set to POS(3,1), and Walls at (1,2), (2,2), (3,2), (4,2), (5,2) and (5,1)
         // Thus the walls block Merc from moving around the boulder
-        // So after Tick(LEFT), player will be at (1,1), and boulder and Merc should stay in place
+        // So after Tick(LEFT), player will be at (1,1), and Merc should overlap into boulder's same position
         DungeonManiaController dmc = new DungeonManiaController();
-        DungeonResponse dungeonRes = dmc.newGame(DIR_NAME + "d_boulderTest_moveByMerc", "c_DoorsKeysTest_useKeyWalkThroughOpenDoor");
+        DungeonResponse dungeonRes = dmc.newGame(DIR_NAME + "d_boulderTest_overlapsMercenary", "c_DoorsKeysTest_useKeyWalkThroughOpenDoor");
         
-        // EntityResponse merc = getEntities(dungeonRes, "mercenary").get(0);
+        EntityResponse merc = getEntities(dungeonRes, "mercenary").get(0);
         EntityResponse boulder = getEntities(dungeonRes, "boulder").get(0);
         // Confirm boulder's existence
         EntityResponse expectedBoulder = new EntityResponse(boulder.getId(), boulder.getType(), new Position(3, 1), true);
         assertEquals(expectedBoulder, boulder);
-        // Move player west
+        // Move player west, thus causing Merc to move west
         dungeonRes = dmc.tick(Direction.LEFT);
-        // Check the boulder has NOT moved
-        assertEquals(expectedBoulder, boulder);
+        // Check the boulder overlaps with Merc
+        assertEquals(merc.getPosition(), boulder.getPosition());
     }
     
 }
