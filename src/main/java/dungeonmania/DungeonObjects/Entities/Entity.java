@@ -1,7 +1,13 @@
 package dungeonmania.DungeonObjects.Entities;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import dungeonmania.DungeonObjects.EntityTypes;
 import dungeonmania.DungeonObjects.DungeonMap.DungeonMap;
+import dungeonmania.DungeonObjects.Entities.Statics.FloorSwitch;
 import dungeonmania.response.models.EntityResponse;
+import dungeonmania.util.Position;
 import dungeonmania.util.DungeonFactory.EntityStruct;
 
 public class Entity {
@@ -14,6 +20,18 @@ public class Entity {
         id = metaData.getId();
         type = metaData.getType();
         map = metaData.getMap();
+    }
+
+    protected String getId() {
+        return this.id;
+    }
+
+    protected DungeonMap getMap() {
+        return this.map;
+    }
+
+    public String getType() {
+        return this.type;
     }
 
     public EntityResponse toEntityResponse() {
