@@ -22,13 +22,10 @@ public class Boulder extends Entity implements IStaticInteractable {
         if (!(interactor instanceof Player)) {return;}
         // SECOND determine new position, relative to interactor's
         Position newPos = determineNewPosition(interactor);
-
-        System.out.println("newPos " + newPos); ///////////////////////////////////////////////////////
-
         // THIRD check if the moveTo position contains a boulder OR Wall
         if (!canMoveIntoNewPositionCell(newPos)) {return;}
         // Finally, move the boulder
-        move(this, newPos);
+        move(newPos);
     }
 
     public Position determineNewPosition(Entity interactor) {
@@ -56,18 +53,18 @@ public class Boulder extends Entity implements IStaticInteractable {
     public boolean canMoveIntoNewPositionCell(Position newPos) {
         // Confirm there are no Boulders OR Walls at new position
         List<Entity> entities = super.getMap().getEntitiesAt(newPos);
-        // thank u Henry for this code which i totally understand :D
-        boolean hasWall = !(entities.stream().filter(e -> e.getType().equals(EntityTypes.WALL.toString())).count() == 0);
-        boolean hasBoulder = !(entities.stream().filter(e -> e.getType().equals(EntityTypes.BOULDER.toString())).count() == 0);
+        // Returns true if their are 0 items in the given postion of the given type
+        boolean noWall = (entities.stream().filter(e -> e.getType().equals(EntityTypes.WALL.toString())).count() == 0);
+        boolean noBoulder = (entities.stream().filter(e -> e.getType().equals(EntityTypes.BOULDER.toString())).count() == 0);
         
-        System.out.println("canMove? " + (hasWall || hasBoulder)); ///////////////////////////////////////////////////////
+        // System.out.println("canMove? " + !(noWall && noBoulder) + (noWall && noBoulder) + noWall + noBoulder); ///////////////////////////////////////////////////////
         
-        return (hasWall || hasBoulder);
+        return (noWall && noBoulder);
 
     }
 
-    public void move(Boulder boulder, Position newPos) {
-       super.getMap().moveEntityTo(boulder, newPos);
+    public void move(Position newPos) {
+       super.getMap().moveEntityTo(this, newPos);
     }
     
 }
