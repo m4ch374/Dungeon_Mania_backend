@@ -6,6 +6,7 @@ import dungeonmania.util.DungeonFactory.EntityStruct;
 
 public class Portal extends Entity implements IStaticInteractable {
     private String colour;
+    public Portal pairPortal;
 
     public Portal(EntityStruct metaData, String colour) {
         super(metaData);
@@ -14,5 +15,5 @@ public class Portal extends Entity implements IStaticInteractable {
 
     @Override
     public void interactedBy(Entity interactor) { }
-    
+    // NOTE: PLAY THE PORTALS_ADVANCED SETTING !!!!!!
 }

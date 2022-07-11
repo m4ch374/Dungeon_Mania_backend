@@ -24,6 +24,7 @@ public class DungeonCell {
     // Get all entities in ascending order of layer
     // i.e. top layer goes first
     public List<Entity> getAllEntitiesInCell() {
+        // iirc, can only have two entities in a cell at once IFF one of them is a floor_switch
         return cell;
     }
 }
