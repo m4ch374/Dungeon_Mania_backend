@@ -23,7 +23,7 @@ public enum EntityTypes {
     WOOD("wood"),
     ARROWS("arrow"),
     BOMB("bomb"),
-    SWORD("sowrd"),
+    SWORD("sword"),
     BOW("bow"),
     SHIELD("shield");
 

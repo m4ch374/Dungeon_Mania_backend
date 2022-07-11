@@ -56,7 +56,8 @@ public class DungeonMapParser {
             case ZOMBIE_TOAST_SPAWNER:
                 return new ZombieToastSpawner(metaData, config);
             case SPIDER:
-                return new Spider(metaData, config);
+                Position initialPos = new Position(entityJson.getInt("x"), entityJson.getInt("y"));
+                return new Spider(metaData, config, initialPos);
             case ZOMBIE_TOAST:
                 return new ZombieToast(metaData, config);
             case MERCENARY:
@@ -87,7 +88,7 @@ public class DungeonMapParser {
         idMap.putIfAbsent(type, 0);
         int currId = idMap.get(type);
         String entityId = currId == 0 ? type : type + String.valueOf(currId);
-        idMap.put(type, currId++);
+        idMap.put(type, ++currId);
         return entityId;
     }
 }

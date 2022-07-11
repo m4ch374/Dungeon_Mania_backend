@@ -15,6 +15,11 @@ import dungeonmania.util.FileLoader;
 
 public class TestUtils {
     public static Stream<EntityResponse> getEntitiesStream(DungeonResponse res, String type) {
+        if (type.equals("zombie_toast")){
+            return res.getEntities().stream()
+                    .filter(it -> it.getType().startsWith(type))
+                    .filter(it -> !it.getType().startsWith("zombie_toast_spawner"));
+        }
         return res.getEntities().stream().filter(it -> it.getType().startsWith(type));
     }
 
@@ -28,6 +33,10 @@ public class TestUtils {
 
     public static List<EntityResponse> getEntities(DungeonResponse res, String type) {
         return getEntitiesStream(res, type).collect(Collectors.toList());
+    }
+
+    public static EntityResponse getEntityById(DungeonResponse res, String id) {
+        return res.getEntities().stream().filter(e -> e.getId().equals(id)).findFirst().get();
     }
 
     public static List<ItemResponse> getInventory(DungeonResponse res, String type) {
@@ -55,6 +64,4 @@ public class TestUtils {
         
         return null;
     }
-
-    
 }

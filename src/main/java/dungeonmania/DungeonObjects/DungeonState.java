@@ -33,9 +33,22 @@ public class DungeonState {
         config          = builder.getConfig();
     }
     
-    public void tick(String itemUsedId) throws IllegalArgumentException, InvalidActionException {}
+    // Would it move all the npc like tick(direction) does?
+    public void tick(String itemUsedId) throws IllegalArgumentException, InvalidActionException {
+        player.useItem(itemUsedId);
+    }
 
     public void tick(Direction movementDirection) {
+        try {
+            player.move(movementDirection);
+        } catch (IllegalArgumentException e) {
+            System.out.println("DungeonState: Player " + e.getMessage());
+        } catch (InvalidActionException e) {
+            System.out.println("DungeonState: Player " + e.getMessage());
+        }
+
+        map.updateCharPos();
+
         // Structure would be something like this:
         //
         // player.updatePos() ---> update player position
@@ -52,12 +65,14 @@ public class DungeonState {
         // player.initiateBattle() ---> initiates battle with all overlapped enemies
     }
 
-    public void build(String buildable) throws IllegalArgumentException, InvalidActionException {}
+    public void build(String buildable) throws IllegalArgumentException, InvalidActionException {
+        player.make(buildable);
+    }
 
     public void interact(String entityId) throws IllegalArgumentException, InvalidActionException {}
 
     public DungeonResponse toDungeonResponse() {
         List<EntityResponse> entities = map.getAllEntities().stream().map(e -> e.toEntityResponse()).collect(Collectors.toList());
-        return new DungeonResponse(dungeonId, dungeonName, entities, null, null, null, null);
+        return new DungeonResponse(dungeonId, dungeonName, entities, player.getPlayerItems(), null, player.getBuildables(), null);
     }
 }
