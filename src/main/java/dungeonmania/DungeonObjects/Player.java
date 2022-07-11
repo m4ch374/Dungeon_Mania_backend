@@ -5,6 +5,7 @@ import dungeonmania.util.Position;
 import dungeonmania.util.DungeonFactory.EntityStruct;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.json.JSONObject;
@@ -71,19 +72,19 @@ public class Player extends Entity {
         return backpack.getBuildables();
     }
 
-    public Position getPos() {
+    private Position getPos() {
         return getMap().getEntityPos(this);
     }
 
-    public boolean isDead() {
+    private boolean isDead() {
         return (this.health <= 0);
     }
 
-    public boolean isInvincible() {
+    private boolean isInvincible() {
         return (this.InvincibilityRemainingTime > 0);
     }
 
-    public boolean isInvisible() {
+    private boolean isInvisible() {
         return (this.InvisibilityRemainingTime > 0);
     }
 
@@ -99,7 +100,7 @@ public class Player extends Entity {
         return backpack.hasShield();
     }
 
-    public double getAttackDamage() {
+    private double getAttackDamage() {
         double ad = this.attackDamage;
 
         if (holdingSword()) ad += this.sword_attack;
@@ -257,6 +258,20 @@ public class Player extends Entity {
     // used for bribe mercenaries
     public void spendMoney(int quantity) throws InvalidActionException {
         backpack.useTreasures(quantity);
+    }
+
+    public HashMap<String, Object> getState() {
+        HashMap<String, Object> state = new HashMap<String, Object>();
+
+        state.put("invincible", isInvincible());
+        state.put("invisible", isInvisible());
+        state.put("dead", isDead());
+        state.put("sword", holdingSword());
+        state.put("bow", holdingBow());
+        state.put("shield", holdingShield());
+        state.put("attackDamage", getAttackDamage());
+
+        return state;
     }
 
     // TODO for the man in charge of battle
