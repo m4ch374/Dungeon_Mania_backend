@@ -165,6 +165,31 @@ public final class Backpack {
         }
     }
 
+    public void useEquipment(String type) {
+        if (type.equals(EntityTypes.BOW.toString())) {
+            Bow bow = this.Bows.get(0);
+            bow.reduceDurability(1);
+
+            if (bow.getDurability() <= 0) {
+                this.Bows.remove(bow);
+            }
+        } else if (type.equals(EntityTypes.SWORD.toString())) {
+            Sword sword = this.Swords.get(0);
+            sword.reduceDurability(1);
+
+            if (sword.getDurability() <= 0) {
+                this.Swords.remove(sword);
+            }
+        } else if (type.equals(EntityTypes.SHIELD.toString())) {
+            Shield shield = this.Shields.get(0);
+            shield.reduceDurability(1);
+
+            if (shield.getDurability() <= 0) {
+                this.Shields.remove(shield);
+            }
+        }
+    }
+
     public IEquipment useItem(String itemUsedId) throws InvalidActionException {
         if (itemUsedId.equals(EntityTypes.KEY.toString())) {
             if (this.key == null) {

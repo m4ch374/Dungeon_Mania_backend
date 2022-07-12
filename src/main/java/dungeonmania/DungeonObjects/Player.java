@@ -103,9 +103,15 @@ public class Player extends Entity {
     private double getAttackDamage() {
         double ad = this.attackDamage;
 
-        if (holdingSword()) ad += this.sword_attack;
+        if (holdingSword()) {
+            ad += this.sword_attack;
+            backpack.useEquipment(EntityTypes.SWORD.toString());
+        }
 
-        if (holdingBow()) ad *= 2;
+        if (holdingBow()) {
+            ad *= 2;
+            backpack.useEquipment(EntityTypes.BOW.toString());
+        }
 
         ad += this.allyNum * this.allyAttackBonous;
 
@@ -117,9 +123,16 @@ public class Player extends Entity {
 
         defence += this.allyNum * this.allyDefenceBonous;
 
-        if (holdingShield()) defence = this.shield_defence;
+        if (holdingShield()) {
+            defence = this.shield_defence;
+            backpack.useEquipment(EntityTypes.SHIELD.toString());
+        }
 
         this.health -= ((ad - defence) / 5);
+
+        if (isDead()) {
+            getMap().removeEntity(this);
+        }
     }
 
     public void collect(ICollectable item) throws InvalidActionException {
@@ -186,15 +199,12 @@ public class Player extends Entity {
         ArrayList<Entity> inCell = new ArrayList<Entity>();
         inCell.addAll(getMap().getEntitiesAt(destination));
 
-        boolean move = true;
-
         for (Entity entity : inCell) {
             if (entity instanceof ICollectable) {
                 if (entity instanceof Bomb) {
                     Bomb bomb = (Bomb) entity;
                     if (!bomb.isCollectible()) {
-                        move = false;
-                        break;
+                        return false;
                     } else {
                         bomb.collectedBy(this);
                     }
@@ -213,18 +223,18 @@ public class Player extends Entity {
                     // IFF positons have changed, boulder's moved, then Player can move!
                     Position boulderPos2 = this.getMap().getEntityPos(boulder);
                     if (!boulderPos1.equals(boulderPos2)) {
-                        move = false;
-                        break;
+                        return false;
                     }
-
+                } else if (entity instanceof Wall) {
+                    return false;
                 }
+
                 // TODO add more here
-                move = false;
-                break;
+                return false;
             }
         }
 
-        return move;
+        return true;
     }
 
     public void move(Direction direction) throws InvalidActionException {
@@ -256,20 +266,26 @@ public class Player extends Entity {
     }
 
     // used for bribe mercenaries
-    public void spendMoney(int quantity) throws InvalidActionException {
-        backpack.useTreasures(quantity);
+    public void bribe(int quantity) throws InvalidActionException {
+        try {
+            backpack.useTreasures(quantity);
+            this.allyNum += 1;
+        } catch (InvalidActionException e) {
+            throw e;
+        }
     }
 
     public HashMap<String, Object> getState() {
         HashMap<String, Object> state = new HashMap<String, Object>();
 
-        state.put("invincible", isInvincible());
-        state.put("invisible", isInvisible());
-        state.put("dead", isDead());
-        state.put("sword", holdingSword());
-        state.put("bow", holdingBow());
-        state.put("shield", holdingShield());
-        state.put("attackDamage", getAttackDamage());
+        state.put("health", this.health);               // double
+        state.put("invincible", isInvincible());        // boolean
+        state.put("invisible", isInvisible());          // boolean
+        state.put("dead", isDead());                    // boolean
+        state.put("sword", holdingSword());             // boolean
+        state.put("bow", holdingBow());                 // boolean
+        state.put("shield", holdingShield());           // boolean
+        state.put("attackDamage", getAttackDamage());   // double
 
         return state;
     }
