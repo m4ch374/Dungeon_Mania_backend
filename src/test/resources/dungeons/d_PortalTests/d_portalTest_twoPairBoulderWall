@@ -2,8 +2,8 @@
     "entities": [
         {
             "type" : "player",
-            "x" : 1,
-            "y" : 1
+            "x" : 3,
+            "y" : 2
         },
         {
             "type": "exit",
@@ -12,27 +12,37 @@
         }, 
         {
             "type": "portal",
-            "x": 2,
-            "y": 1,
+            "x": 4,
+            "y": 2,
             "colour": "Red"
         }, 
         {
             "type": "portal",
-            "x": 1,
-            "y": 3,
-            "colour": "Red"
-        }, 
-        {
-            "type": "portal",
-            "x": 2,
+            "x": 4,
             "y": 4,
+            "colour": "Red"
+        }, 
+        {
+            "type": "portal",
+            "x": 2,
+            "y": 2,
             "colour": "Blue"
         }, 
         {
             "type": "portal",
             "x": 3,
-            "y": 2,
+            "y": 4,
             "colour": "Blue"
+        },
+        {
+            "type": "boulder",
+            "x": 2,
+            "y": 4
+        },
+        {
+            "type": "wall",
+            "x": 5,
+            "y": 4
         }
     ],
     "goal-condition": {

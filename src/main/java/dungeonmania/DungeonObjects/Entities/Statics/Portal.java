@@ -7,6 +7,13 @@ import dungeonmania.util.DungeonFactory.EntityStruct;
 public class Portal extends Entity implements IStaticInteractable {
     private String colour;
     private Portal pairPortal;
+    // #################################################################################
+    /* NOTE !!!!!!!!
+    * Read section 4.1.1 -> portals are linked via colours!! never will be 4 portals of same colour !!
+    * so remove that extra constructor !!!
+    */ 
+    // #################################################################################
+
 
     // Constructor called for the first pair Portal
     public Portal(EntityStruct metaData, String colour) {

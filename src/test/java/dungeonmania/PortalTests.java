@@ -39,13 +39,28 @@ public class PortalTests {
     // then gets teleported to (2,3), which is east of pair red Portal at (1,3)
     public void testPortalTeleportsPlayerBasic() {
         DungeonManiaController dmc = new DungeonManiaController();
-        // Player set to POS(1, 1), Door set to POS(3,1), Exit set to POS(1,3)
         DungeonResponse dungeonRes = dmc.newGame(DIR_NAME + "d_portalTest_basic", "c_DoorsKeysTest_useKeyWalkThroughOpenDoor");
         
         EntityResponse player = getPlayer(dungeonRes).get();
         // Get both portal info 
-        EntityResponse portal1 = TestUtils.getEntityById(dungeonRes, "portal");
-        EntityResponse portal2 = TestUtils.getEntityById(dungeonRes, "portal1");
+        EntityResponse portal = TestUtils.getEntityById(dungeonRes, "portal");
+        EntityResponse portal1 = TestUtils.getEntityById(dungeonRes, "portal1");
+        // assert their existence
+        EntityResponse expectedPortal = new EntityResponse(portal.getId(), portal.getType(), new Position(2, 1), true)
+        assertEquals(expectedPortal.getPosition(), portal.getPosition());
+        EntityResponse expectedPortal1 = new EntityResponse(portal1.getId(), portal1.getType(), new Position(1, 3), true);        
+        assertEquals(expectedPortal1.getPosition(), portal1.getPosition());
+
+        // Player moves East into Portal, thus teleports east of Portal1 (2,3)
+        dungeonRes = dmc.tick(Direction.RIGHT);
+        // Assert Portals are still in same location
+        expectedPortal = TestUtils.getEntityById(dungeonRes, "portal");
+        expectedPortal1 = TestUtils.getEntityById(dungeonRes, "portal1");
+        assertEquals(expectedPortal.getPosition(), portal.getPosition());
+        assertEquals(expectedPortal1.getPosition(), portal1.getPosition());
+        // Now assert the player has teleported
+        player = getPlayer(dungeonRes).get();
+        assertEquals(new Position(2, 3), player.getPosition());
         
     }
 
@@ -59,11 +74,67 @@ public class PortalTests {
     // then gets teleported to (3,3), which is south of pair blue portal at (2,3)
     public void testPortalTeleportsPlayerEastThenSouth() {
         DungeonManiaController dmc = new DungeonManiaController();
-        // Player set to POS(1, 1), Door set to POS(3,1), Exit set to POS(1,3)
         DungeonResponse dungeonRes = dmc.newGame(DIR_NAME + "d_portalTest_twoPair", "c_DoorsKeysTest_useKeyWalkThroughOpenDoor");
         
         EntityResponse player = getPlayer(dungeonRes).get();
-        // Get both portal info 
+        // Get both portal info
+        // // NOTE: skip testing for "portal" and "portal1", as that was done in Test 1
+        EntityResponse portal2 = TestUtils.getEntityById(dungeonRes, "portal2");
+        EntityResponse portal3 = TestUtils.getEntityById(dungeonRes, "portal3");
+        // assert their existence
+        EntityResponse expectedPortal2 = new EntityResponse(portal2.getId(), portal2.getType(), new Position(2, 4), true);
+        assertEquals(expectedPortal2.getPosition(), portal2.getPosition());
+        EntityResponse expectedPortal3 = new EntityResponse(portal3.getId(), portal3.getType(), new Position(3, 2), true);        
+        assertEquals(expectedPortal3.getPosition(), portal3.getPosition());
         
+        // Player moves East into Portal, thus teleports east of Portal1 (2,3)
+        // ASSUMING Test 1 passes, we skip checks for this movement
+        dungeonRes = dmc.tick(Direction.RIGHT);
+        // Player moves South into Portal2 (2,4), thus teleports south of Portal2 (3,2), so placed at (3,3)
+        dungeonRes = dmc.tick(Direction.DOWN);
+        // Assert Portals 2 & 3 are still in same location
+        expectedPortal2 = TestUtils.getEntityById(dungeonRes, "portal2");
+        expectedPortal3 = TestUtils.getEntityById(dungeonRes, "portal3");
+        assertEquals(expectedPortal2.getPosition(), portal2.getPosition());
+        assertEquals(expectedPortal3.getPosition(), portal3.getPosition());
+        // Now assert the player has teleported
+        player = getPlayer(dungeonRes).get();
+        assertEquals(new Position(3, 3), player.getPosition());
+
+    }
+
+
+    @Test
+    @DisplayName("Portal 3: Test Player does not teleport due to Wall east of Portal")
+    // SYNOPSIS:
+    // Player at (3,2) attempts to move east into Portal at (4,2), 
+    // Then its Pair, Portal1 at (4,4) determines Player needs to be teleported east of it,
+    // BUT Portal1 detects Wall at (5,4) and does not teleport player
+    public void testPortalNotTeleportsPlayerCauseWall() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse dungeonRes = dmc.newGame(DIR_NAME + "d_portalTest_twoPairBoulderWall", "c_DoorsKeysTest_useKeyWalkThroughOpenDoor");
+        
+        EntityResponse player = getPlayer(dungeonRes).get();
+    }
+    
+
+    @Test
+    @DisplayName("Portal 3: Test Player teleports onto Boulder west of Portal")
+    // SYNOPSIS:
+    // Player at (3,2) moves west into Portal2 at (2,2), 
+    // Then its Pair, Portal3 at (3,4) determines Player needs to be teleported west of it,
+    // Then Portal3 doesnt detects Wall at (2,4) and teleports player, who then interacts with the boulder
+    public void testPortalTeleportsPlayerOntoBoulder() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse dungeonRes = dmc.newGame(DIR_NAME + "d_portalTest_twoPairBoulderWall", "c_DoorsKeysTest_useKeyWalkThroughOpenDoor");
+        
+        EntityResponse player = getPlayer(dungeonRes).get();
+    }
+
+
+    @Test
+    @DisplayName("Portal 3: Test Portal does not teleport Spider")
+    // SYNOPSIS:
+    public void testPortalOverlapsSpider() {
     }
 }
