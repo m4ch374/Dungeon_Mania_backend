@@ -199,15 +199,12 @@ public class Player extends Entity {
         ArrayList<Entity> inCell = new ArrayList<Entity>();
         inCell.addAll(getMap().getEntitiesAt(destination));
 
-        boolean move = true;
-
         for (Entity entity : inCell) {
             if (entity instanceof ICollectable) {
                 if (entity instanceof Bomb) {
                     Bomb bomb = (Bomb) entity;
                     if (!bomb.isCollectible()) {
-                        move = false;
-                        break;
+                        return false;
                     } else {
                         bomb.collectedBy(this);
                     }
@@ -226,18 +223,18 @@ public class Player extends Entity {
                     // IFF positons have changed, boulder's moved, then Player can move!
                     Position boulderPos2 = this.getMap().getEntityPos(boulder);
                     if (!boulderPos1.equals(boulderPos2)) {
-                        move = false;
-                        break;
+                        return false;
                     }
-
+                } else if (entity instanceof Wall) {
+                    return false;
                 }
+
                 // TODO add more here
-                move = false;
-                break;
+                return false;
             }
         }
 
-        return move;
+        return true;
     }
 
     public void move(Direction direction) throws InvalidActionException {
