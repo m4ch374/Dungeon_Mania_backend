@@ -22,12 +22,12 @@ public class Entity {
         map = metaData.getMap();
     }
 
-    protected String getId() {
-        return this.id;
-    }
-
     protected DungeonMap getMap() {
         return this.map;
+    }
+
+    public String getId() {
+        return this.id;
     }
 
     public String getType() {
