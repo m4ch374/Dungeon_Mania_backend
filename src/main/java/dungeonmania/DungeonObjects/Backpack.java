@@ -157,6 +157,14 @@ public final class Backpack {
         return item.get(0);
     }
 
+    public void useTreasures(int quantity) throws InvalidActionException {
+        if (this.treasure.size() < quantity) {
+            throw new InvalidActionException("ERROR: Do not have enough treasure");
+        } else {
+            useTreasure(quantity);
+        }
+    }
+
     public IEquipment useItem(String itemUsedId) throws InvalidActionException {
         if (itemUsedId.equals(EntityTypes.KEY.toString())) {
             if (this.key == null) {
