@@ -43,7 +43,7 @@ public class BoulderTests {
         // Get player info, then move it east into boulder (via dmc's tick() fnc)
         EntityResponse player = getPlayer(dungeonRes).get();
         // Get boulder info 
-        EntityResponse boulder = getEntities(dungeonRes, "boulder").get(0);
+        EntityResponse boulder = TestUtils.getEntityById(dungeonRes, "boulder");
         // Confirm boulder's existence
         EntityResponse expectedBoulder = new EntityResponse(boulder.getId(), boulder.getType(), new Position(2, 1), true);        
         assertEquals(expectedBoulder.getPosition(), boulder.getPosition());
@@ -67,48 +67,53 @@ public class BoulderTests {
         // Player set to POS(1, 1), Boulder set to POS(2,1), Exit set to POS(1,3)
         DungeonResponse dungeonRes = dmc.newGame(DIR_NAME + "d_boulderTest_moveAll", "c_DoorsKeysTest_useKeyWalkThroughOpenDoor");
         
+        // NOTE: when printed out, boulders appear in this order: [W,N,E,S], different to json file
+        // for (int i = 0; i < getEntities(dungeonRes, "boulder").size(); i++) {
+        //     System.out.println(getEntities(dungeonRes, "boulder").get(i));
+        // }
+
         // Player in the middle of 5x5 grid
         // Boulder east of player
-        EntityResponse boulderE = getEntities(dungeonRes, "boulder").get(2); // NOTE: when printed out, they appear in this order: [W,N,E,S]
+        EntityResponse boulderE = TestUtils.getEntityById(dungeonRes, "boulder");
         EntityResponse expectedBoulder = new EntityResponse(boulderE.getId(), boulderE.getType(), new Position(4, 3), true);
         assertEquals(expectedBoulder.getPosition(), boulderE.getPosition());
         // Boulder west of player
-        EntityResponse boulderW = getEntities(dungeonRes, "boulder").get(0);
+        EntityResponse boulderW = TestUtils.getEntityById(dungeonRes, "boulder1");
         expectedBoulder = new EntityResponse(boulderW.getId(), boulderW.getType(), new Position(2, 3), true);
         assertEquals(expectedBoulder.getPosition(), boulderW.getPosition());
         // Boulder north of player
-        EntityResponse boulderN = getEntities(dungeonRes, "boulder").get(1);
+        EntityResponse boulderN = TestUtils.getEntityById(dungeonRes, "boulder2");
         expectedBoulder = new EntityResponse(boulderN.getId(), boulderN.getType(), new Position(3, 2), true);
         assertEquals(expectedBoulder.getPosition(), boulderN.getPosition());
         // Boulder south of player
-        EntityResponse boulderS = getEntities(dungeonRes, "boulder").get(3);
+        EntityResponse boulderS = TestUtils.getEntityById(dungeonRes, "boulder3");
         expectedBoulder = new EntityResponse(boulderS.getId(), boulderS.getType(), new Position(3, 4), true);
         assertEquals(expectedBoulder.getPosition(), boulderS.getPosition());
 
         // Move player east (Player should be at (4,3), and boulderE at (5,3))
         dungeonRes = dmc.tick(Direction.RIGHT);
-        boulderE = getEntities(dungeonRes, "boulder").get(2);
+        boulderE = TestUtils.getEntityById(dungeonRes, "boulder");
         expectedBoulder = new EntityResponse(boulderE.getId(), boulderE.getType(), new Position(5, 3), true);
         assertEquals(expectedBoulder.getPosition(), boulderE.getPosition());
         
         // Move player west TWICE (Player should be at (2,3), and boulderW at (1,3))
         dungeonRes = dmc.tick(Direction.LEFT);
         dungeonRes = dmc.tick(Direction.LEFT);
-        boulderW = getEntities(dungeonRes, "boulder").get(0);
+        boulderW = TestUtils.getEntityById(dungeonRes, "boulder1");
         expectedBoulder = new EntityResponse(boulderW.getId(), boulderW.getType(), new Position(1, 3), true);
         assertEquals(expectedBoulder.getPosition(), boulderW.getPosition());
         
         // Move player east then north (Player should be at (3,2), and boulderN at (3,1))
         dungeonRes = dmc.tick(Direction.RIGHT);
         dungeonRes = dmc.tick(Direction.UP);
-        boulderN = getEntities(dungeonRes, "boulder").get(1);
+        boulderN = TestUtils.getEntityById(dungeonRes, "boulder2");
         expectedBoulder = new EntityResponse(boulderN.getId(), boulderN.getType(), new Position(3, 1), true);
         assertEquals(expectedBoulder.getPosition(), boulderN.getPosition());
         
         // Move player south TWICE (Player should be at (3,4), and boulderN at (3,5))
         dungeonRes = dmc.tick(Direction.DOWN);
         dungeonRes = dmc.tick(Direction.DOWN);
-        boulderS = getEntities(dungeonRes, "boulder").get(3);
+        boulderS = TestUtils.getEntityById(dungeonRes, "boulder3");
         expectedBoulder = new EntityResponse(boulderS.getId(), boulderS.getType(), new Position(3, 5), true);
         assertEquals(expectedBoulder.getPosition(), boulderS.getPosition());
     }
@@ -150,14 +155,14 @@ public class BoulderTests {
         // }
 
         // EntityResponse player = getPlayer(dungeonRes).get();
-        EntityResponse boulder2 = getEntities(dungeonRes, "boulder").get(2);
-        EntityResponse boulder3 = getEntities(dungeonRes, "boulder").get(0);
+        EntityResponse boulder2 = TestUtils.getEntityById(dungeonRes, "boulder1");
+        EntityResponse boulder3 = TestUtils.getEntityById(dungeonRes, "boulder2");
         // Confirm both boulder's existence
         EntityResponse expectedBoulder = new EntityResponse(boulder2.getId(), boulder2.getType(), new Position(2, 3), true);
         assertEquals(expectedBoulder.getPosition(), boulder2.getPosition());
         expectedBoulder = new EntityResponse(boulder3.getId(), boulder3.getType(), new Position(3, 3), true);
         assertEquals(expectedBoulder.getPosition(), boulder3.getPosition());
-        // Move player south TWICE, then attempt to move east (into boulder2)
+        // Move player south TWICE, then attempt to move east (into boulder1, which is left of boulder2)
         dungeonRes = dmc.tick(Direction.DOWN);
         dungeonRes = dmc.tick(Direction.DOWN);
         dungeonRes = dmc.tick(Direction.RIGHT);
@@ -179,17 +184,16 @@ public class BoulderTests {
         DungeonResponse dungeonRes = dmc.newGame(DIR_NAME + "d_boulderTest_overlapsFloorSwitch", "c_DoorsKeysTest_useKeyWalkThroughOpenDoor");
         
         // Get switch info 
-        // LEGACY: EntityResponse floorSwitch1 = TestUtils.getEntityById(dungeonRes, "switch");
-        EntityResponse floorSwitch1 = getEntities(dungeonRes, "switch").get(0);
+        EntityResponse floorSwitch1 = TestUtils.getEntityById(dungeonRes, "switch");;
         // Get boulder info 
-        EntityResponse boulder1 = getEntities(dungeonRes, "boulder").get(1);
+        EntityResponse boulder1 = TestUtils.getEntityById(dungeonRes, "boulder");
         // Confirm boulder's existence
         EntityResponse expectedBoulder1 = new EntityResponse(boulder1.getId(), boulder1.getType(), new Position(2, 1), true);
         assertEquals(expectedBoulder1.getPosition(), boulder1.getPosition());
         // Move player east
         dungeonRes = dmc.tick(Direction.RIGHT);
         // Update entity res each time tick() is called
-        boulder1 = getEntities(dungeonRes, "boulder").get(1);
+        boulder1 = TestUtils.getEntityById(dungeonRes, "boulder");
         // Check the boulder has moved via comparing entity res to expectedBoulder1's position
         assertEquals(new Position(3, 1), boulder1.getPosition());
         // Confirm this is also same position as the switch
