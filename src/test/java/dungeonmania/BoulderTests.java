@@ -286,6 +286,7 @@ public class BoulderTests {
         // Move player west, thus causing Merc to move west
         dungeonRes = dmc.tick(Direction.LEFT);
         // Check the boulder overlaps with Merc
+        merc = TestUtils.getEntityById(dungeonRes, "mercenary");
         assertEquals(merc.getPosition(), boulder.getPosition());
     }
     
