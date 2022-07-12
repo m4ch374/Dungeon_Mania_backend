@@ -200,6 +200,9 @@ public class Player extends Entity {
         inCell.addAll(getMap().getEntitiesAt(destination));
 
         for (Entity entity : inCell) {
+            if (entity instanceof Wall)
+                return false;
+
             if (entity instanceof ICollectable) {
                 if (entity instanceof Bomb) {
                     Bomb bomb = (Bomb) entity;
@@ -225,8 +228,6 @@ public class Player extends Entity {
                     if (!boulderPos1.equals(boulderPos2)) {
                         return false;
                     }
-                } else if (entity instanceof Wall) {
-                    return false;
                 }
 
                 // TODO add more here
