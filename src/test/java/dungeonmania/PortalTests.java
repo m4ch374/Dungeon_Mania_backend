@@ -161,10 +161,27 @@ public class PortalTests {
     @Test
     @DisplayName("Portal 5: Test Player does not teleport onto another portal")
     // SYNOPSIS:
-    // to prevent a forever looping game state, where a player is continously being teleported onto
-    // adjacent portals, the behaviour will be as such: portal will not teleport if teleport location is
-    // Portal of another colour (note: logically impossible for it to be Portal of same colour)
     public void testPortalNotTeleportPlayerOntoPortal() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse dungeonRes = dmc.newGame(DIR_NAME + "d_portalTest_overlapsSpider", "c_DoorsKeysTest_useKeyWalkThroughOpenDoor");
+        
+        EntityResponse player = getPlayer(dungeonRes).get();
+        // Get all 4 portal info
+        EntityResponse portal = TestUtils.getEntityById(dungeonRes, "portal");
+        EntityResponse portal1 = TestUtils.getEntityById(dungeonRes, "portal1");
+        EntityResponse portal2 = TestUtils.getEntityById(dungeonRes, "portal2");
+        EntityResponse portal3 = TestUtils.getEntityById(dungeonRes, "portal3");
+        // assert positions of all 4 portals
+        assertEquals(new Position(4, 2), portal.getPosition());
+        assertEquals(new Position(2, 4), portal1.getPosition());
+        assertEquals(new Position(3, 4), portal2.getPosition());
+        assertEquals(new Position(1, 2), portal3.getPosition());
+
+        // Player(3,2) moves East into Portal(4,2), which teleports him to east of Portal1(2,4), at position (3,4)
+        // which is where Portal2(3,4) is at, which then teleports him to east of Portal3(1,2), at position(2,2) 
+        dungeonRes = dmc.tick(Direction.RIGHT);
+        // Assert player has teleported
+        assertEquals(new Position(2, 2), player.getPosition());
     }
     
     
@@ -172,6 +189,7 @@ public class PortalTests {
     @DisplayName("Portal 6: Test Spider does not teleport")
     // SYNOPSIS:
     public void testPortalOverlapsSpider() {
+        // Spider first movement is into Portal(4,2), which overlaps with Spider.
     }
     
 }
