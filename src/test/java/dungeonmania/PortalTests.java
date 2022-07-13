@@ -115,26 +115,63 @@ public class PortalTests {
         DungeonResponse dungeonRes = dmc.newGame(DIR_NAME + "d_portalTest_twoPairBoulderWall", "c_DoorsKeysTest_useKeyWalkThroughOpenDoor");
         
         EntityResponse player = getPlayer(dungeonRes).get();
+        // Get both portal info
+        EntityResponse portal = TestUtils.getEntityById(dungeonRes, "portal");
+        EntityResponse portal1 = TestUtils.getEntityById(dungeonRes, "portal1");
+        // assert this test's portals of interest, of their existence (not portal2 and 3)
+        assertEquals(new Position(4, 2), portal.getPosition());
+        assertEquals(new Position(4, 4), portal1.getPosition());
+
+        // Player attempts to moves East into Portal (4,2), but doesnt teleport to east of Portal1 (5,2), as there is a Wall there
+        dungeonRes = dmc.tick(Direction.RIGHT);
+        // Assert player stays in same position
+        assertEquals(new Position(3, 2), player.getPosition());
     }
     
 
     @Test
-    @DisplayName("Portal 3: Test Player teleports onto Boulder west of Portal")
+    @DisplayName("Portal 4: Test Player teleports onto Boulder west of Portal")
     // SYNOPSIS:
     // Player at (3,2) moves west into Portal2 at (2,2), 
     // Then its Pair, Portal3 at (3,4) determines Player needs to be teleported west of it,
-    // Then Portal3 doesnt detects Wall at (2,4) and teleports player, who then interacts with the boulder
+    // Then Portal3 doesnt detect Wall or another Portal at (2,4) and teleports player, who then interacts with the boulder
     public void testPortalTeleportsPlayerOntoBoulder() {
         DungeonManiaController dmc = new DungeonManiaController();
         DungeonResponse dungeonRes = dmc.newGame(DIR_NAME + "d_portalTest_twoPairBoulderWall", "c_DoorsKeysTest_useKeyWalkThroughOpenDoor");
         
         EntityResponse player = getPlayer(dungeonRes).get();
+        // Get both portal info
+        EntityResponse portal2 = TestUtils.getEntityById(dungeonRes, "portal2");
+        EntityResponse portal3 = TestUtils.getEntityById(dungeonRes, "portal3");
+        // assert this test's portals of interest, of their existence (not portal and portal1)
+        assertEquals(new Position(2, 2), portal2.getPosition());
+        assertEquals(new Position(3, 4), portal3.getPosition());
+
+        // Player attempts to moves West into Portal2 (2,2), and teleports to west of Portal3 (3,4), into a boulder and the pushes the boulder
+        // assert the boulder is there
+        assertEquals(new Position(2, 4), TestUtils.getEntityById(dungeonRes, "boulder").getPosition());
+        dungeonRes = dmc.tick(Direction.LEFT);
+        // Assert player has teleported
+        assertEquals(new Position(2, 4), player.getPosition());
+        // Assert boulder has moved
+        assertEquals(new Position(1, 4), TestUtils.getEntityById(dungeonRes, "boulder").getPosition());
     }
 
 
     @Test
-    @DisplayName("Portal 3: Test Portal does not teleport Spider")
+    @DisplayName("Portal 5: Test Player does not teleport onto another portal")
+    // SYNOPSIS:
+    // to prevent a forever looping game state, where a player is continously being teleported onto
+    // adjacent portals, the behaviour will be as such: portal will not teleport if teleport location is
+    // Portal of another colour (note: logically impossible for it to be Portal of same colour)
+    public void testPortalNotTeleportPlayerOntoPortal() {
+    }
+    
+    
+    @Test
+    @DisplayName("Portal 6: Test Spider does not teleport")
     // SYNOPSIS:
     public void testPortalOverlapsSpider() {
     }
+    
 }

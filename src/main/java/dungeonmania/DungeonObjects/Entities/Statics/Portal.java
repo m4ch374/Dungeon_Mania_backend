@@ -40,5 +40,9 @@ public class Portal extends Entity implements IStaticInteractable {
         // then teleport them adjacent cardinal direction of pair portal
         // i.e if interactor is of left, then teleport them to pairPortal's right
 
+        // To get pair portal, loop through getEntites(type: portal) and check if == this.colour
+        // NOTE: according to spec, there'll NEVER be multiple pairs of the same colour
+
+        // Then check for a wall or portal at the next location, if so, do not teleport.
     }
 }
