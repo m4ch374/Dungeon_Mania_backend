@@ -201,20 +201,16 @@ public class Player extends Entity {
 
         for (Entity entity : inCell) {
             if (entity instanceof ICollectable) {
-                if (entity instanceof Bomb) {
-                    Bomb bomb = (Bomb) entity;
-                    if (!bomb.isCollectible()) {
-                        return false;
-                    } else {
-                        bomb.collectedBy(this);
-                    }
-                } else {
+                try {
                     ICollectable collection = (ICollectable) entity;
                     collection.collectedBy(this);
+                } catch (InvalidActionException e) {
+                    System.out.println(e.getMessage());
+                    if (entity instanceof Bomb) {
+                        return false;
+                    }
                 }
-            }
-
-            if (entity instanceof IStaticInteractable) {
+            } else if (entity instanceof IStaticInteractable) {
                 if (entity instanceof Boulder) {
                     Boulder boulder = (Boulder) entity;
                     Position boulderPos1 = this.getMap().getEntityPos(boulder);
@@ -222,15 +218,16 @@ public class Player extends Entity {
                     // Need to let Player know whether boulder has moved or not
                     // IFF positons have changed, boulder's moved, then Player can move!
                     Position boulderPos2 = this.getMap().getEntityPos(boulder);
-                    if (!boulderPos1.equals(boulderPos2)) {
+                    if (boulderPos1.equals(boulderPos2)) {
                         return false;
                     }
+
+                // do not <return true> inside of the for loop, it will stop the interaction of the rest of entity in the cell
                 } else if (entity instanceof Wall) {
                     return false;
                 }
 
                 // TODO add more here
-                return false;
             }
         }
 
