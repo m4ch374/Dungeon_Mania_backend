@@ -200,6 +200,9 @@ public class Player extends Entity {
         inCell.addAll(getMap().getEntitiesAt(destination));
 
         for (Entity entity : inCell) {
+            if (entity instanceof Wall)
+                return false;
+
             if (entity instanceof ICollectable) {
                 try {
                     ICollectable collection = (ICollectable) entity;
