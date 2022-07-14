@@ -23,6 +23,7 @@ import dungeonmania.Interfaces.IEquipment;
 import dungeonmania.Interfaces.IMovingStrategy;
 import dungeonmania.Interfaces.IStaticInteractable;
 import dungeonmania.exceptions.InvalidActionException;
+import dungeonmania.exceptions.UninteractableException;
 import dungeonmania.response.models.ItemResponse;
 
 public class Player extends Entity {
@@ -206,16 +207,27 @@ public class Player extends Entity {
 
             if (entity instanceof IStaticInteractable) {
                 if (entity instanceof Boulder) {
-                    Boulder boulder = (Boulder) entity;
-                    Position boulderPos1 = this.getMap().getEntityPos(boulder);
-                    boulder.interactedBy(this);
-                    // Need to let Player know whether boulder has moved or not
-                    // IFF positons have changed, boulder's moved, then Player can move!
-                    Position boulderPos2 = this.getMap().getEntityPos(boulder);
-                    if (!boulderPos1.equals(boulderPos2)) {
-                        move = true;
+                    // LOGIC: if interactedBy() does NOT throw the Exception, then the boulder has moved
+                    // thus its safe for player to also move. 
+                    try {
+                        Boulder boulder = (Boulder) entity;
+                        boulder.interactedBy(this);
+                        move = true; // dont need this?
+                        break;
+                    } catch (InvalidActionException e) {
+                        move = false;
                         break;
                     }
+
+                    // Position boulderPos1 = this.getMap().getEntityPos(boulder);
+                    // boulder.interactedBy(this);
+                    // // Need to let Player know whether boulder has moved or not
+                    // // IFF positons have changed, boulder's moved, then Player can move!
+                    // Position boulderPos2 = this.getMap().getEntityPos(boulder);
+                    // if (!boulderPos1.equals(boulderPos2)) {
+                    //     move = true;
+                    //     break;
+                    // }
 
                 }
                 // TODO add more here

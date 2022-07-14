@@ -7,6 +7,7 @@ import dungeonmania.Interfaces.ISpawnable;
 import dungeonmania.Interfaces.IStaticInteractable;
 import dungeonmania.response.models.EntityResponse;
 import dungeonmania.util.DungeonFactory.EntityStruct;
+import dungeonmania.exceptions.*;
 
 public class ZombieToastSpawner extends Entity implements IStaticInteractable, ISpawnable {
     int zombieSpawnRate;
@@ -23,6 +24,6 @@ public class ZombieToastSpawner extends Entity implements IStaticInteractable, I
     public void spawn() {}
 
     @Override
-    public void interactedBy(Entity interactor) {}
+    public void interactedBy(Entity interactor) throws InvalidActionException {}
     
 }

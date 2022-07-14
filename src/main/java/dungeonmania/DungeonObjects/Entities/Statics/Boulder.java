@@ -5,8 +5,8 @@ import dungeonmania.DungeonObjects.Entities.Entity;
 import dungeonmania.Interfaces.IStaticInteractable;
 import dungeonmania.util.DungeonFactory.EntityStruct;
 import dungeonmania.DungeonObjects.EntityTypes;
-import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
+import dungeonmania.exceptions.*;
 
 import java.util.List;
 
@@ -17,13 +17,13 @@ public class Boulder extends Entity implements IStaticInteractable {
     }
 
     @Override
-    public void interactedBy(Entity interactor) { 
+    public void interactedBy(Entity interactor) throws InvalidActionException{ 
         // FIRST check if interactor instanceof Player, since only player can push boulder (for now...)
-        if (!(interactor instanceof Player)) {return;}
+        if (!(interactor instanceof Player)) {throw new InvalidActionException("Only Player can move boulder");}
         // SECOND determine new position, relative to interactor's
         Position newPos = determineNewPosition(interactor);
         // THIRD check if the moveTo position contains a boulder OR Wall
-        if (!canMoveIntoNewPositionCell(newPos)) {return;}
+        if (!canMoveIntoNewPositionCell(newPos)) {throw new InvalidActionException("Player cannot move two boulders at once");}
         // Finally, move the boulder
         move(newPos);
     }

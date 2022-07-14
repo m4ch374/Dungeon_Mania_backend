@@ -159,11 +159,14 @@ public class PortalTests {
 
 
     @Test
-    @DisplayName("Portal 5: Test Player does not teleport onto another portal")
+    @DisplayName("Portal 5: Test Player teleports twice in one movement")
     // SYNOPSIS:
-    public void testPortalNotTeleportPlayerOntoPortal() {
+    // Player (1,1) moves east into Portal (2,1), which teleports him to its pair Portal1 (1,3),
+    // which spits him out east of it (2,3), BUT there is another Portal2 (2,3) there, which then
+    // teleports him to its pair Portal3 (3,2), which spits him out east of it (4,2).
+    public void testPortalMultipleInstantTeleportaion() {
         DungeonManiaController dmc = new DungeonManiaController();
-        DungeonResponse dungeonRes = dmc.newGame(DIR_NAME + "d_portalTest_overlapsSpider", "c_DoorsKeysTest_useKeyWalkThroughOpenDoor");
+        DungeonResponse dungeonRes = dmc.newGame(DIR_NAME + "d_portalTest_twoPairMultipleTelep", "c_DoorsKeysTest_useKeyWalkThroughOpenDoor");
         
         EntityResponse player = getPlayer(dungeonRes).get();
         // Get all 4 portal info
@@ -172,16 +175,15 @@ public class PortalTests {
         EntityResponse portal2 = TestUtils.getEntityById(dungeonRes, "portal2");
         EntityResponse portal3 = TestUtils.getEntityById(dungeonRes, "portal3");
         // assert positions of all 4 portals
-        assertEquals(new Position(4, 2), portal.getPosition());
-        assertEquals(new Position(2, 4), portal1.getPosition());
-        assertEquals(new Position(3, 4), portal2.getPosition());
-        assertEquals(new Position(1, 2), portal3.getPosition());
+        assertEquals(new Position(2, 1), portal.getPosition());
+        assertEquals(new Position(1, 3), portal1.getPosition());
+        assertEquals(new Position(2, 3), portal2.getPosition());
+        assertEquals(new Position(3, 2), portal3.getPosition());
 
-        // Player(3,2) moves East into Portal(4,2), which teleports him to east of Portal1(2,4), at position (3,4)
-        // which is where Portal2(3,4) is at, which then teleports him to east of Portal3(1,2), at position(2,2)
+        // Player moves east into Portal, ends up east of Portal3 ()
         dungeonRes = dmc.tick(Direction.RIGHT);
         // Assert player has teleported
-        assertEquals(new Position(2, 2), player.getPosition());
+        assertEquals(new Position(4, 2), player.getPosition());
     }
 
     
@@ -189,7 +191,7 @@ public class PortalTests {
     @Test
     @DisplayName("Portal 6: Test Merc does not teleport")
     // SYNOPSIS:
-    // Player (2,1) moves east away from Portal(3,1) and Merc(4,1) follows Player's direction, east, into Portal
+    // Player (2,1) moves west away from Portal(3,1) and Merc(4,1) follows Player's direction, east, into Portal
     // but simply overlaps it. They're surrounded by walls at (1,2),(2,2),(3,2),(4,2),(5,2),(5,1)
     public void testPortalOverlapsMerc() {
         // Merc first movement is into Portal(4,2), which overlaps with .

@@ -3,6 +3,7 @@ package dungeonmania.DungeonObjects.Entities.Statics;
 import dungeonmania.DungeonObjects.Entities.Entity;
 import dungeonmania.Interfaces.IStaticInteractable;
 import dungeonmania.util.DungeonFactory.EntityStruct;
+import dungeonmania.exceptions.*;
 
 public class Door extends Entity implements IStaticInteractable {
     private int keyId;
@@ -13,6 +14,6 @@ public class Door extends Entity implements IStaticInteractable {
     }
 
     @Override
-    public void interactedBy(Entity interactor) { }
+    public void interactedBy(Entity interactor) throws InvalidActionException { }
     
 }
