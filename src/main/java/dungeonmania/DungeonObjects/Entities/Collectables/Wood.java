@@ -40,16 +40,11 @@ public class Wood extends Entity implements ICollectable, IEquipment {
     }
 
     @Override
-    public void collectedBy(Entity collector) {
+    public void collectedBy(Entity collector) throws InvalidActionException {
         if (collector instanceof Player) {
             Player player = (Player) collector;
-            try {
-                player.collect(this);
-                getMap().removeEntity(this);
-            } catch (InvalidActionException e) {
-                // do nothing
-                // should never fail
-            }
+            player.collect(this);
+            getMap().removeEntity(this);
         }
     }
 }
