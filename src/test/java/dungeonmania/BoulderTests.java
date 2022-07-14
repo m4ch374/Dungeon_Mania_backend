@@ -233,7 +233,7 @@ public class BoulderTests {
         DungeonManiaController dmc = new DungeonManiaController();
         DungeonResponse dungeonRes = dmc.newGame(DIR_NAME + "d_boulderTest_overlapsPortal", "c_DoorsKeysTest_useKeyWalkThroughOpenDoor");
         
-        EntityResponse portal1 = getEntities(dungeonRes, "portal").get(0);
+        EntityResponse portal = TestUtils.getEntityById(dungeonRes, "portal");
         // EntityResponse portal2 = getEntities(dungeonRes, "portal").get(1);
         EntityResponse boulder = getEntities(dungeonRes, "boulder").get(0);
         // Confirm boulder's existence
@@ -243,7 +243,7 @@ public class BoulderTests {
         dungeonRes = dmc.tick(Direction.RIGHT);
         boulder = getEntities(dungeonRes, "boulder").get(0);
         // Check the boulder overlaps with portal
-        assertEquals(portal1.getPosition(), boulder.getPosition());
+        assertEquals(portal.getPosition(), boulder.getPosition());
         
     }
     

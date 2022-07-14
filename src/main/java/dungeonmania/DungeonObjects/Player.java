@@ -208,12 +208,12 @@ public class Player extends Entity {
                 if (entity instanceof Boulder) {
                     Boulder boulder = (Boulder) entity;
                     Position boulderPos1 = this.getMap().getEntityPos(boulder);
-                    boulder. .interactedBy(this);
+                    boulder.interactedBy(this);
                     // Need to let Player know whether boulder has moved or not
                     // IFF positons have changed, boulder's moved, then Player can move!
                     Position boulderPos2 = this.getMap().getEntityPos(boulder);
                     if (!boulderPos1.equals(boulderPos2)) {
-                        move = false;
+                        move = true;
                         break;
                     }
 
