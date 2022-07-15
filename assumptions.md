@@ -13,3 +13,5 @@ about player & collections:
 - can't drop bomb where already has one(both active non-active)
 
 - a dropped non-activated bomb is like wall
+
+- if multiple portals overlap, always usse the first one, it may be random, but it doesn't matter
