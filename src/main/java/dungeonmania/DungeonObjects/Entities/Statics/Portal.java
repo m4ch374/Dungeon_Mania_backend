@@ -35,7 +35,7 @@ public class Portal extends Entity implements IStaticInteractable {
 
         // FIRST check if interactor is either Player or Merc, since only they can teleport (for now...)
         if (!(interactor instanceof Player || interactor instanceof Mercenary)) {throw new InvalidActionException("Only Player & Merc can teleport");}
-        // SECOND determine where interactor is coming from (N,E,S or W)
+        // SECOND determine where interactor must land from pair Portal, based on where Iteractor is coming from (N,E,S or W)
         Position interactorPos = super.getMap().getEntityPos(interactor);
         Direction destinationDir = determineDestinationDirection(interactorPos);
         // THIRD get pair portal
@@ -67,7 +67,7 @@ public class Portal extends Entity implements IStaticInteractable {
         if ((entitiesAtPos.stream().filter(e -> e.getType().equals(EntityTypes.PORTAL.toString())).count() > 0)) {
             // NOTE: keep MERCs in mind (dont hardcode for player)
             try {
-                List<Portal> portals = super.getMap().getAllEntities().stream().filter(e -> e instanceof Portal).map(e -> (Portal) e).collect(Collectors. toList());
+                List<Portal> portals = entitiesAtPos.stream().filter(e -> e instanceof Portal).map(e -> (Portal) e).collect(Collectors. toList());
                 Portal portalAtNewPos = portals.get(0);
                 portalAtNewPos.interactedBy(interactor);
             } catch (InvalidActionException e) {
