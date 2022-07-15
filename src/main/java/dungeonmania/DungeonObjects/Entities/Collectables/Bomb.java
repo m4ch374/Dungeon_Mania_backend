@@ -3,7 +3,6 @@ package dungeonmania.DungeonObjects.Entities.Collectables;
 import org.json.JSONObject;
 
 import dungeonmania.DungeonObjects.Player;
-import dungeonmania.DungeonObjects.DungeonMap.DungeonCell;
 import dungeonmania.DungeonObjects.Entities.Entity;
 import dungeonmania.Interfaces.ICollectable;
 import dungeonmania.Interfaces.IEquipment;

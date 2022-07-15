@@ -86,7 +86,7 @@ public final class Backpack {
         return Buildables;
     }
 
-    public void make(String type) throws InvalidActionException {
+    public void make(String type) throws InvalidActionException, IllegalArgumentException {
         if (type.equals(EntityTypes.BOW.toString())) {
             if (this.Woods.size() >= 1 && this.Arrows.size() >= 3) {
                 useWoods(1);
@@ -114,7 +114,7 @@ public final class Backpack {
                 throw new InvalidActionException("ERROR: Not Enough Material For " + type);
             }
         } else {
-            throw new InvalidActionException("ERROR: Can Not Make Item " + type);
+            throw new IllegalArgumentException("ERROR: Can not make this type of item: " + type);
         }
     }
 
@@ -136,7 +136,7 @@ public final class Backpack {
         } else if (item instanceof Sword) {
             this.Swords.add((Sword) item);
         } else {
-            throw new InvalidActionException("ERROR: Can Not Collect Item ");
+            throw new InvalidActionException("ERROR: Can not collect item ");
         }
     }
 
@@ -167,30 +167,15 @@ public final class Backpack {
 
     public void useEquipment(String type) {
         if (type.equals(EntityTypes.BOW.toString())) {
-            Bow bow = this.Bows.get(0);
-            bow.reduceDurability(1);
-
-            if (bow.getDurability() <= 0) {
-                this.Bows.remove(bow);
-            }
+            useBow(this.Bows.get(0));
         } else if (type.equals(EntityTypes.SWORD.toString())) {
-            Sword sword = this.Swords.get(0);
-            sword.reduceDurability(1);
-
-            if (sword.getDurability() <= 0) {
-                this.Swords.remove(sword);
-            }
+            useSword(this.Swords.get(0));
         } else if (type.equals(EntityTypes.SHIELD.toString())) {
-            Shield shield = this.Shields.get(0);
-            shield.reduceDurability(1);
-
-            if (shield.getDurability() <= 0) {
-                this.Shields.remove(shield);
-            }
+            useShield(this.Shields.get(0));
         }
     }
 
-    public IEquipment useItem(String itemUsedId) throws InvalidActionException {
+    public IEquipment useItem(String itemUsedId) throws InvalidActionException, IllegalArgumentException {
         if (itemUsedId.equals(EntityTypes.KEY.toString())) {
             if (this.key == null) {
                 throw new InvalidActionException("ERROR: Do not have a key");
@@ -209,14 +194,8 @@ public final class Backpack {
             useInvisibility((InvisibilityPotion) item);
         } else if (item instanceof Bomb) {
             useBomb((Bomb) item);
-        } else if (item instanceof Sword) {
-            useSword((Sword) item);
-        } else if (item instanceof Bow) {
-            useBow((Bow) item);
-        } else if (item instanceof Shield) {
-            useShield((Shield) item);
         } else {
-            throw new InvalidActionException("ERROR: Can not use this item");
+            throw new IllegalArgumentException("ERROR: Can not direct use this item");
         }
 
         return item;

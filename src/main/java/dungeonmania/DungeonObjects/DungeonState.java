@@ -35,12 +35,12 @@ public class DungeonState {
     
     // Would it move all the npc like tick(direction) does?
     public void tick(String itemUsedId) throws IllegalArgumentException, InvalidActionException {
-        player.useItem(itemUsedId);
+        player.tick(Constant.PLAYERUSE, null, itemUsedId);
     }
 
     public void tick(Direction movementDirection) {
         try {
-            player.move(movementDirection);
+            player.tick(Constant.PLAYERMOVE, movementDirection, null);
         } catch (IllegalArgumentException e) {
             System.out.println("DungeonState: Player " + e.getMessage());
         } catch (InvalidActionException e) {
@@ -66,7 +66,7 @@ public class DungeonState {
     }
 
     public void build(String buildable) throws IllegalArgumentException, InvalidActionException {
-        player.make(buildable);
+        player.tick(Constant.PLAYERMAKE, null, buildable);
     }
 
     public void interact(String entityId) throws IllegalArgumentException, InvalidActionException {}
