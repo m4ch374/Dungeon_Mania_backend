@@ -155,4 +155,34 @@ public class MercenaryMovementTest {
             assertTrue(playerPos.equals(mercPos));
         }
     }
+
+    @Test
+    @DisplayName("Test merc blocks by wall")
+    public void testMercBlocksByWall() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame(DIR_NAME + "d_mercTest_blockedByWall", "c_msic_zeroDamage");
+
+        for (int i = 0; i < 100; i++) {
+            res = dmc.tick(Direction.UP);
+            
+            Position mercPos = TestUtils.getEntityById(res, "mercenary").getPosition();
+            System.out.println(mercPos);
+            assertEquals(new Position(1, 5), mercPos);
+        }
+    }
+
+    @Test
+    @DisplayName("Test merc blocks by door")
+    public void testMercBlocksByDoor() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame(DIR_NAME + "d_mercTest_blockByDoor", "c_msic_zeroDamage");
+
+        for (int i = 0; i < 100; i++) {
+            res = dmc.tick(Direction.UP);
+            
+            Position mercPos = TestUtils.getEntityById(res, "mercenary").getPosition();
+            System.out.println(mercPos);
+            assertEquals(new Position(1, 5), mercPos);
+        }
+    }
 }
