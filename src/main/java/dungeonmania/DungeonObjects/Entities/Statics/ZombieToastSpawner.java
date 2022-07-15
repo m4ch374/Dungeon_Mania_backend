@@ -1,23 +1,28 @@
 package dungeonmania.DungeonObjects.Entities.Statics;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import org.json.JSONObject;
 
 import dungeonmania.DungeonObjects.EntityTypes;
+import dungeonmania.DungeonObjects.Player;
 import dungeonmania.DungeonObjects.DungeonMap.DungeonMap;
 import dungeonmania.DungeonObjects.Entities.Entity;
 import dungeonmania.DungeonObjects.Entities.Characters.ZombieToast;
+import dungeonmania.Interfaces.IPlayerInteractable;
 import dungeonmania.Interfaces.ISpawnable;
-import dungeonmania.Interfaces.IStaticInteractable;
+import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.response.models.EntityResponse;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 import dungeonmania.util.DungeonFactory.EntityStruct;
 
-public class ZombieToastSpawner extends Entity implements IStaticInteractable, ISpawnable {
+public class ZombieToastSpawner extends Entity implements IPlayerInteractable, ISpawnable {
     private static int spawnId = 0;
 
     private int zombieSpawnRate;
@@ -60,7 +65,12 @@ public class ZombieToastSpawner extends Entity implements IStaticInteractable, I
     }
 
     @Override
-    public void interactedBy(Entity interactor) {}
+    public void interactedByPlayer(Player player) throws InvalidActionException {
+        if (!(playerInRange(player) && playerHasWeapon(player)))
+            throw new InvalidActionException("Error: player not in range or does not have a weapon");
+
+        map.removeEntity(this);
+    }
     
 
     private List<Position> getPotentialSpawnPos(Position currPos) {
@@ -90,5 +100,20 @@ public class ZombieToastSpawner extends Entity implements IStaticInteractable, I
         }
 
         return false;
+    }
+
+    private boolean playerInRange(Player player) {
+        Position currPos = map.getEntityPos(this);
+        Position playerPos = map.getEntityPos(player);
+
+        List<Position> allowedPos = Arrays.asList(Direction.values()).stream().map(d -> currPos.translateBy(d)).collect(Collectors.toList());
+
+        return allowedPos.contains(playerPos);
+    }
+
+    private boolean playerHasWeapon(Player player) {
+        Map<String, Object> playerState = player.getState();
+
+        return ((boolean)playerState.get("sword") || (boolean)playerState.get("bow"));
     }
 }
