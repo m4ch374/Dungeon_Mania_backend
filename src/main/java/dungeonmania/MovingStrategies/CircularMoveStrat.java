@@ -21,11 +21,9 @@ public class CircularMoveStrat implements IMovingStrategy {
     private boolean startCirculate = false;
     private List<Position> positionMap = new ArrayList<Position>();
 
-    public CircularMoveStrat(Entity mover, DungeonMap map, Position initialPos) {
+    public CircularMoveStrat(Entity mover, DungeonMap map) {
         this.mover = mover;
         this.map = map;
-
-        populatePosMap(initialPos);
     }
 
     // Populate in circular order
@@ -60,6 +58,9 @@ public class CircularMoveStrat implements IMovingStrategy {
 
     @Override
     public void moveEntity() {
+        if (positionMap.isEmpty())
+            populatePosMap(map.getEntityPos(mover));
+
         // Ignores boulder in the first move
         // i.e. heading to the "circle"
         if (!startCirculate) {
