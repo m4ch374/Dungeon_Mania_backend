@@ -22,8 +22,9 @@ public class DungeonMapParser {
 
         for (int i = 0; i < entities.length(); i++) {
             JSONObject entityJson = entities.getJSONObject(i);
-            Position entityPos = new Position(entityJson.getInt("x"), entityJson.getInt("y"));
             Entity entity = buildEntity(entityJson, idMap, map, config);
+            
+            Position entityPos = new Position(entityJson.getInt("x"), entityJson.getInt("y"));
             map.placeEntityAt(entity, entityPos);
         }
 
