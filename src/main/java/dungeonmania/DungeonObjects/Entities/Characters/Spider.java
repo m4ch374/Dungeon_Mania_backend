@@ -7,7 +7,6 @@ import dungeonmania.Interfaces.IMovable;
 import dungeonmania.Interfaces.IMovingStrategy;
 import dungeonmania.MovingStrategies.CircularMoveStrat;
 import dungeonmania.response.models.RoundResponse;
-import dungeonmania.util.Position;
 import dungeonmania.util.DungeonFactory.EntityStruct;
 
 public class Spider extends Entity implements IMovable {
@@ -20,13 +19,13 @@ public class Spider extends Entity implements IMovable {
     
     IMovingStrategy moveStrat;
 
-    public Spider(EntityStruct metaData, JSONObject config, Position initialPos) {
+    public Spider(EntityStruct metaData, JSONObject config) {
         super(metaData);
         this.attackDamage = config.getInt("spider_attack");
         this.health = config.getInt("spider_health");
         this.spawnRate = config.getInt("spider_spawn_rate");
 
-        moveStrat = new CircularMoveStrat(this, super.getMap(), initialPos);
+        moveStrat = new CircularMoveStrat(this, super.getMap());
     }
 
     public int getAttackDamage() {
