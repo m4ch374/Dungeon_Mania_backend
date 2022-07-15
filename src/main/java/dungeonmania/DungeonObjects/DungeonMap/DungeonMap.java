@@ -6,14 +6,28 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.json.JSONObject;
+
 import dungeonmania.DungeonObjects.Player;
 import dungeonmania.DungeonObjects.Entities.Entity;
+import dungeonmania.DungeonObjects.Entities.Characters.Spider;
 import dungeonmania.Interfaces.IMovable;
+import dungeonmania.Interfaces.ISpawnable;
 import dungeonmania.util.Position;
 
 public class DungeonMap {
+    // Assumes the map is not unlimited and surrounded by walls
+    // Map would work even if these restrictions does not satisfy
+    private final Position topLeftCorner;
+    private final Position bottomRightCorner;
+
     private Map<Position, DungeonCell> map = new HashMap<Position, DungeonCell>();
     private Map<Entity, Position> lookup = new HashMap<Entity, Position>();
+
+    public DungeonMap(Position topLeftCorner, Position bottomRightCorner) {
+        this.topLeftCorner = topLeftCorner;
+        this.bottomRightCorner = bottomRightCorner;
+    }
 
     public boolean isEptyCell(Position pos) { 
         return !map.containsKey(pos); 
@@ -102,6 +116,24 @@ public class DungeonMap {
         placeEntityAt(entity, pos);
     }
 
+    // Bound is based on initial position of all the entities
+    // Entities out of bound is supported
+    public int getLeftBound() {
+        return topLeftCorner.getX();
+    }
+
+    public int getTopBound() {
+        return topLeftCorner.getY();
+    }
+
+    public int getRightBound() {
+        return bottomRightCorner.getX();
+    }
+
+    public int getBottomBound() {
+        return bottomRightCorner.getY();
+    }
+
     // Update all movable's position except for player
     public void updateCharPos() {
         // Ugly but works
@@ -111,5 +143,18 @@ public class DungeonMap {
                                     .collect(Collectors.toList());
 
         characters.forEach(c -> c.move());
+    }
+
+    // Spawns all spawnable objects
+    public void spawnEntites(JSONObject config, int currTick) {
+        // Spawn spiders, unfortunately it has to be a bit more white box than usual
+        Spider.spawnSpider(config, currTick, this);
+
+        List<ISpawnable> spawnerEntities = getAllEntities().stream()
+                                            .filter(e -> e instanceof ISpawnable)
+                                            .map(e -> (ISpawnable) e)
+                                            .collect(Collectors.toList());
+        
+        spawnerEntities.forEach(e -> e.spawn(config, currTick));
     }
 }
