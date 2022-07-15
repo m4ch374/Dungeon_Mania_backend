@@ -155,6 +155,6 @@ public class DungeonMap {
                                             .map(e -> (ISpawnable) e)
                                             .collect(Collectors.toList());
         
-        spawnerEntities.forEach(e -> e.spawn());
+        spawnerEntities.forEach(e -> e.spawn(config, currTick));
     }
 }
