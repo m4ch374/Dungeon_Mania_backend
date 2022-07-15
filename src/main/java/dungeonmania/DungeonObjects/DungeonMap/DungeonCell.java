@@ -3,6 +3,7 @@ package dungeonmania.DungeonObjects.DungeonMap;
 import java.util.ArrayList;
 import java.util.List;
 
+import dungeonmania.DungeonObjects.EntityTypes;
 import dungeonmania.DungeonObjects.Entities.Entity;
 
 public class DungeonCell {
@@ -18,7 +19,21 @@ public class DungeonCell {
     }
 
     public void addToCell(Entity entity) {
-        cell.add(0, entity);
+        EntityTypes type = EntityTypes.lookupEnum(entity.getType());
+        int entityLayer = type.getLayer();
+
+        int insertIdx = 0;
+        for (Entity e : cell) {
+            EntityTypes currType = EntityTypes.lookupEnum(e.getType());
+            int currTypeLayer = currType.getLayer();
+
+            if (entityLayer <= currTypeLayer)
+                break;
+
+            insertIdx++;
+        }
+
+        cell.add(insertIdx, entity);
     }
 
     // Get all entities in ascending order of layer
