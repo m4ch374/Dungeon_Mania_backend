@@ -7,6 +7,7 @@ import dungeonmania.DungeonObjects.Player;
 import dungeonmania.DungeonObjects.Entities.Entity;
 import dungeonmania.DungeonObjects.Entities.Characters.Mercenary;
 import dungeonmania.Interfaces.IStaticInteractable;
+import dungeonmania.util.Position;
 import dungeonmania.util.DungeonFactory.EntityStruct;
 import dungeonmania.DungeonObjects.EntityTypes;
 import dungeonmania.util.Direction;

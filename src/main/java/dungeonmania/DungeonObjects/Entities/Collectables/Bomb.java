@@ -3,7 +3,6 @@ package dungeonmania.DungeonObjects.Entities.Collectables;
 import org.json.JSONObject;
 
 import dungeonmania.DungeonObjects.Player;
-import dungeonmania.DungeonObjects.DungeonMap.DungeonCell;
 import dungeonmania.DungeonObjects.Entities.Entity;
 import dungeonmania.Interfaces.ICollectable;
 import dungeonmania.Interfaces.IEquipment;
@@ -47,17 +46,11 @@ public class Bomb extends Entity implements ICollectable, IEquipment {
     }
 
     @Override
-    public void collectedBy(Entity collector) {
+    public void collectedBy(Entity collector) throws InvalidActionException {
         if (collector instanceof Player) {
             Player player = (Player) collector;
-            try {
-                player.collect(this);
-                getMap().removeEntity(this);
-            } catch (InvalidActionException e) {
-                // should never happened
-                // user's move already stop before this
-                // refer to Player.java line 157 - ableToMove()
-            }
+            player.collect(this);
+            getMap().removeEntity(this);
         }
     }
 
