@@ -56,8 +56,7 @@ public class DungeonMapParser {
             case ZOMBIE_TOAST_SPAWNER:
                 return new ZombieToastSpawner(metaData, config);
             case SPIDER:
-                Position initialPos = new Position(entityJson.getInt("x"), entityJson.getInt("y"));
-                return new Spider(metaData, config, initialPos);
+                return new Spider(metaData, config);
             case ZOMBIE_TOAST:
                 return new ZombieToast(metaData, config);
             case MERCENARY:
