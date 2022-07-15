@@ -2,6 +2,7 @@ package dungeonmania.DungeonObjects.Entities.Statics;
 
 import dungeonmania.DungeonObjects.Entities.Entity;
 import dungeonmania.Interfaces.IStaticInteractable;
+import dungeonmania.util.Position;
 import dungeonmania.util.DungeonFactory.EntityStruct;
 
 public class Portal extends Entity implements IStaticInteractable {
@@ -23,6 +24,10 @@ public class Portal extends Entity implements IStaticInteractable {
         super(metaData);
         this.colour = colour;
         this.pairPortal = pairPortal;
+    }
+
+    public Position getDestination() {
+        return null;// TODO
     }
 
     @Override

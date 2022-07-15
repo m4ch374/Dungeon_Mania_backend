@@ -29,6 +29,8 @@ public class Door extends Entity implements IStaticInteractable {
             Player player = (Player) interactor;
             player.openDoor(this.keyId);
             open();
+        } else {
+            throw new InvalidActionException("ERROR: Door cannot interact with this entity");
         }
     }
 }

@@ -17,6 +17,7 @@ import dungeonmania.DungeonObjects.Entities.Collectables.InvincibilityPotion;
 import dungeonmania.DungeonObjects.Entities.Collectables.InvisibilityPotion;
 import dungeonmania.DungeonObjects.Entities.Collectables.Key;
 import dungeonmania.DungeonObjects.Entities.Statics.FloorSwitch;
+import dungeonmania.DungeonObjects.Entities.Statics.Portal;
 import dungeonmania.DungeonObjects.Entities.Statics.Boulder;
 import dungeonmania.DungeonObjects.Entities.Statics.Door;
 import dungeonmania.DungeonObjects.Entities.Statics.Wall;
@@ -213,11 +214,70 @@ public class Player extends Entity {
                                         .map(e -> (ICollectable) e)
                                         .collect(Collectors.toList());
 
+        // check if a fixed bomb exist, exclude interaction
+        Boolean hasFixedBomb = collections
+                        .stream()
+                        .filter(e -> (e instanceof Bomb))
+                        .map(e -> (Bomb) e)
+                        .anyMatch(e -> !e.isCollectible());
+
+        if (hasFixedBomb) return false;
+
         List<IStaticInteractable> staticEntity = inCell
                                                 .stream()
                                                 .filter(e -> (e instanceof IStaticInteractable))
                                                 .map(e -> (IStaticInteractable) e)
                                                 .collect(Collectors.toList());
+
+        // check if a static entity blocking the player, include door interaction
+        for (IStaticInteractable entity : staticEntity) {
+            try {
+                if (entity instanceof Wall) {
+                    return false;
+                } else if (entity instanceof Door) {
+                    Door door = (Door) entity;
+                    if (!door.isOpen()) {
+                        door.interactedBy(this);
+                    }
+                }
+            } catch (InvalidActionException e) {
+                System.out.println(e.getMessage());
+                return false;
+            }
+        }
+
+        // if nothing else block player, check if player can push the boulder
+        for (IStaticInteractable entity : staticEntity) {
+            /* try {
+                if (entity instanceof Boulder) {
+                    Boulder boulder = (Boulder) entity;
+                    Position boulderPos1 = this.getMap().getEntityPos(boulder);
+                    boulder.interactedBy(this);
+                    // Need to let Player know whether boulder has moved or not
+                    // IFF positons have changed, boulder's moved, then Player can move!
+                    Position boulderPos2 = this.getMap().getEntityPos(boulder);
+                    // TODO change to use exception
+                    if (boulderPos1.equals(boulderPos2)) {
+                        return false;
+                    }
+                }
+            } catch (InvalidActionException e) {
+                System.out.println(e.getMessage());
+                return false;
+            } */
+        }
+
+        return true;
+    }
+
+    private void interactWithOverlapCollections(Position destination) throws InvalidActionException {
+        List<Entity> inCell = getMap().getEntitiesAt(destination);
+
+        List<ICollectable> collections = inCell
+                                        .stream()
+                                        .filter(e -> (e instanceof ICollectable))
+                                        .map(e -> (ICollectable) e)
+                                        .collect(Collectors.toList());
 
         // interaction with collections
         for (ICollectable collection : collections) {
@@ -228,69 +288,49 @@ public class Player extends Entity {
 
                 // Inactive bombs will block players as a wall
                 if (collection instanceof Bomb) {
-                    return false;
+                    throw new InvalidActionException("ERROR: Unpickable bomb, should never happened");
                 }
             }
         }
-
-        // do not <return true> inside of the for loop, it will terminate the interaction of the rest of entity in the cell
-        for (IStaticInteractable entity : staticEntity) {
-            try {
-                if (entity instanceof Boulder) {
-                    Boulder boulder = (Boulder) entity;
-                    Position boulderPos1 = this.getMap().getEntityPos(boulder);
-                    boulder.interactedBy(this);
-                    // Need to let Player know whether boulder has moved or not
-                    // IFF positons have changed, boulder's moved, then Player can move!
-                    Position boulderPos2 = this.getMap().getEntityPos(boulder);
-                    if (boulderPos1.equals(boulderPos2)) {
-                        return false;
-                    }
-                } else if (entity instanceof Wall) {
-                    return false;
-                } else if (entity instanceof Door) {
-                    Door door = (Door) entity;
-                    if (!door.isOpen()) {
-                        door.interactedBy(this);
-                    }
-                }
-                // TODO add more here
-            } catch (InvalidActionException e) {
-                System.out.println(e.getMessage());
-                return false;
-            }
-        }
-
-        return true;
     }
 
-    private void move(Direction direction) throws InvalidActionException {
-        int x = getPos().getX();
-        int y = getPos().getY();
-
-        switch (direction) {
-            case UP:
-                y -= 1;
-                break;
-            case DOWN:
-                y += 1;
-                break;
-            case LEFT:
-                x -= 1;
-                break;
-            case RIGHT:
-                x += 1;
-                break;
-        }
-
-        Position destination = new Position(x, y);
-
+    private void move(Position destination) throws InvalidActionException {
         if (ableToMove(destination)) {
+            // Check if something is blocking the player
             getMap().moveEntityTo(this, destination);
-            // TODO separation portal
-        } else {
-            throw new InvalidActionException("ERROR: Can not move " + direction);
+
+            // deal with interaction of collections
+            interactWithOverlapCollections(destination);
+
+            // deal with interaction of overlapped portal
+            Portal portal = getOverlapPortal();
+            if (portal != null) {
+                try {
+                    // TODO get new destination
+                    Position direction_new = portal.getDestination();
+                    move(direction_new);
+                } catch (InvalidActionException e) {
+                    // nothing here, just let the player overlap with portal without teleport
+                    // this structure will allow player go in portal as much as possible
+                    // and player will stop at the portal which he cannot goes in
+                }
+            }
         }
+    }
+
+    private Portal getOverlapPortal() {
+        Position pos = getMap().getEntityPos(this);
+        List<Entity> inCell = getMap().getEntitiesAt(pos);
+        List<Portal> portal = inCell
+                                .stream()
+                                .filter(e -> (e instanceof Portal))
+                                .map(e -> (Portal) e)
+                                .collect(Collectors.toList());
+
+        if (portal.size() == 0) return null;
+
+        // If multiple portals overlap, always take the first one, it may be random, but it doesn't matter
+        return portal.get(0);
     }
 
     public void tick(String action, Direction direction, String str) throws InvalidActionException, IllegalArgumentException {
@@ -301,7 +341,27 @@ public class Player extends Entity {
             make(str);
             updatePotions();
         } else if (action.equals(EntityTypes.PLAYERMOVE.toString())) {
-            move(direction);
+            int x = getPos().getX();
+            int y = getPos().getY();
+
+            switch (direction) {
+                case UP:
+                    y -= 1;
+                    break;
+                case DOWN:
+                    y += 1;
+                    break;
+                case LEFT:
+                    x -= 1;
+                    break;
+                case RIGHT:
+                    x += 1;
+                    break;
+            }
+
+            Position position = new Position(x, y);
+
+            move(position);
             updatePotions();
         } else {
             throw new IllegalArgumentException("ERROR: Undefined player behavior");
@@ -336,22 +396,11 @@ public class Player extends Entity {
     // TODO for the man in charge of battle
     public void initiateBattle() {}
 
-    /* TODO for each iterable entirety (door, portal...) there will be a unique method, deal with the effects on the player */
-
     public void openDoor(int key) throws InvalidActionException {
         if (!backpack.hasAKey() || backpack.hasKey(key)) {
             throw new InvalidActionException("Can not open the door");
         } else {
             backpack.useItem(EntityTypes.KEY.toString());
-        }
-    }
-
-    // This is a template that can be changed by whoever is responsible for static entity interactions
-    public void goInPortal(int x, int y) throws InvalidActionException {
-        if (getMap().getEntitiesAt(new Position(x, y)) instanceof Wall) {
-            throw new InvalidActionException("Can not go in th portal");
-        } else {
-            // to somewhere
         }
     }
 }
