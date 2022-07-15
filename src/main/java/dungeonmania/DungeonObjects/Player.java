@@ -164,7 +164,10 @@ public class Player extends Entity {
         backpack.make(type);
     }
 
-    private boolean playerCloseActiveSwitch(int x, int y) {
+    private boolean playerCloseActiveSwitch(Position pos) {
+        int x = pos.getX();
+        int y = pos.getY();
+
         Position up = new Position(x - 1, y);
         Position down = new Position(x + 1, y);
         Position left = new Position(x, y - 1);
@@ -195,12 +198,11 @@ public class Player extends Entity {
             this.InvisibilityRemainingTime += this.invisibility_potion_duration;
         } else if (item instanceof Bomb) {
             Bomb bomb = (Bomb) item;
-            int x = getPos().getX();
-            int y = getPos().getY();
-            if (playerCloseActiveSwitch(x, y)) {
-                bomb.activate(new Position(x, y));
+            Position pos = getPos();
+            if (playerCloseActiveSwitch(pos)) {
+                bomb.activate(pos);
             } else {
-                getMap().placeEntityAt(bomb, new Position(x, y));
+                getMap().placeEntityAt(bomb, pos);
             }
         }
     }
@@ -295,8 +297,9 @@ public class Player extends Entity {
     }
 
     private void move(Position destination) throws InvalidActionException {
+        // Check if something is blocking the player
         if (ableToMove(destination)) {
-            // Check if something is blocking the player
+            // move the player
             getMap().moveEntityTo(this, destination);
 
             // deal with interaction of collections
@@ -400,7 +403,7 @@ public class Player extends Entity {
         if (!backpack.hasAKey() || backpack.hasKey(key)) {
             throw new InvalidActionException("Can not open the door");
         } else {
-            backpack.useItem(EntityTypes.KEY.toString());
+            backpack.useKey();
         }
     }
 }

@@ -176,15 +176,6 @@ public final class Backpack {
     }
 
     public IEquipment useItem(String itemUsedId) throws InvalidActionException, IllegalArgumentException {
-        if (itemUsedId.equals(EntityTypes.KEY.toString())) {
-            if (this.key == null) {
-                throw new InvalidActionException("ERROR: Do not have a key");
-            }
-
-            Key key = this.key;
-            useKey();
-            return key;
-        }
 
         IEquipment item = getItemById(itemUsedId);
 
@@ -209,7 +200,7 @@ public final class Backpack {
         return (this.key.getKey() == key);
     }
 
-    private void useKey() {
+    public void useKey() {
         this.key = null;
     }
 
