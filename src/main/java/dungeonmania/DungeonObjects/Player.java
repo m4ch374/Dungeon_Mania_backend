@@ -192,6 +192,15 @@ public class Player extends Entity {
 
         if (hasFixedBomb) return false;
 
+        // check if a fixed bomb exist, exclude interaction
+        Boolean hasFixedBomb = collections
+                        .stream()
+                        .filter(e -> (e instanceof Bomb))
+                        .map(e -> (Bomb) e)
+                        .anyMatch(e -> !e.isCollectible());
+
+        if (hasFixedBomb) return false;
+
         List<IStaticInteractable> staticEntity = inCell
                                                 .stream()
                                                 .filter(e -> (e instanceof IStaticInteractable))
@@ -217,7 +226,7 @@ public class Player extends Entity {
 
         // if nothing else block player, check if player can push the boulder
         for (IStaticInteractable entity : staticEntity) {
-            try {
+            /* try {
                 if (entity instanceof Boulder) {
                     Boulder boulder = (Boulder) entity;
                     boulder.interactedBy(this);
@@ -225,7 +234,7 @@ public class Player extends Entity {
             } catch (InvalidActionException e) {
                 System.out.println(e.getMessage());
                 return false;
-            }
+            } */
         }
 
         return true;
