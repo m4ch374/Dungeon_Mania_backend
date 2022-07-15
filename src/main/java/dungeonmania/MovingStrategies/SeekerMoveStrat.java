@@ -65,6 +65,9 @@ public class SeekerMoveStrat implements IMovingStrategy {
         Position moverPos = map.getEntityPos(mover);
         Position seekingPos = map.getEntityPos(seekingEntity);
 
+        if (moverPos.equals(seekingPos))
+            return;
+
         Position relativeVect = Position.calculatePositionBetween(moverPos, seekingPos);
 
         double radian = Math.atan2(relativeVect.getY(), relativeVect.getX());
