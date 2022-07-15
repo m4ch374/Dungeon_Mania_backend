@@ -17,6 +17,7 @@ import dungeonmania.DungeonObjects.Entities.Collectables.InvisibilityPotion;
 import dungeonmania.DungeonObjects.Entities.Collectables.Key;
 import dungeonmania.DungeonObjects.Entities.Statics.FloorSwitch;
 import dungeonmania.DungeonObjects.Entities.Statics.Boulder;
+import dungeonmania.DungeonObjects.Entities.Statics.Portal;
 import dungeonmania.DungeonObjects.Entities.Statics.Wall;
 import dungeonmania.Interfaces.ICollectable;
 import dungeonmania.Interfaces.IEquipment;
@@ -213,12 +214,10 @@ public class Player extends Entity {
                         Boulder boulder = (Boulder) entity;
                         boulder.interactedBy(this);
                         move = true; // dont need this?
-                        break;
                     } catch (InvalidActionException e) {
                         move = false;
-                        break;
                     }
-
+                    // // LEGACY:
                     // Position boulderPos1 = this.getMap().getEntityPos(boulder);
                     // boulder.interactedBy(this);
                     // // Need to let Player know whether boulder has moved or not
@@ -228,7 +227,22 @@ public class Player extends Entity {
                     //     move = true;
                     //     break;
                     // }
-
+                } else if (entity instanceof Portal) {
+                    try {
+                        Portal portal = (Portal) entity;
+                        portal.interactedBy(this);
+                        // FALSE, since Portal has already teleported player
+                        move = false;
+                        break; // include break here since Portal is the last Entity in the inCell<List>
+                    } catch (InvalidActionException e) {
+                        // There is an obstruction at the Position to teleport to
+                        move = false;
+                        break; // include break here since Portal (should be) is the last Entity in the inCell<List>
+                    } // maybe throw another exception 
+                    
+                    // // Whether Player's been teleported or not, Player doesn't have to move himself, so set to False
+                    // move = false;
+                    // break
                 }
                 // TODO add more here
                 move = false;

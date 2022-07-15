@@ -24,6 +24,9 @@ public class ZombieToastSpawner extends Entity implements IStaticInteractable, I
     public void spawn() {}
 
     @Override
-    public void interactedBy(Entity interactor) throws InvalidActionException {}
+    public void interactedBy(Entity interactor) throws InvalidActionException {
+        // Gets destroyed if player has a weapon
+        // but does weapon wear & tear??
+    }
     
 }

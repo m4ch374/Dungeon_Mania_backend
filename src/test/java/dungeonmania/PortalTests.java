@@ -189,14 +189,14 @@ public class PortalTests {
     
     
     @Test
-    @DisplayName("Portal 6: Test Merc does not teleport")
+    @DisplayName("Portal 6: Test Merc does teleport")
     // SYNOPSIS:
     // Player (2,1) moves west away from Portal(3,1) and Merc(4,1) follows Player's direction, east, into Portal
     // but simply overlaps it. They're surrounded by walls at (1,2),(2,2),(3,2),(4,2),(5,2),(5,1)
     public void testPortalOverlapsMerc() {
         // Merc first movement is into Portal(4,2), which overlaps with .
         DungeonManiaController dmc = new DungeonManiaController();
-        DungeonResponse dungeonRes = dmc.newGame(DIR_NAME + "d_portalTest_overlapsMerc", "c_DoorsKeysTest_useKeyWalkThroughOpenDoor");
+        DungeonResponse dungeonRes = dmc.newGame(DIR_NAME + "d_portalTest_teleportsMerc", "c_DoorsKeysTest_useKeyWalkThroughOpenDoor");
         
         // Get all portal info
         EntityResponse portal = TestUtils.getEntityById(dungeonRes, "portal");
@@ -208,10 +208,10 @@ public class PortalTests {
         EntityResponse mercenary = TestUtils.getEntityById(dungeonRes, "mercenary");
 
 
-        // Player moves East, Merc follows, but overlaps onto Portal(3,1) 
+        // Player moves West, Merc follows onto Portal(3,1), and gets teleported to east of Portal1(2,3) 
         dungeonRes = dmc.tick(Direction.LEFT);
-        // Assert Merc overlaps with Portal
-        assertEquals(portal.getPosition(), mercenary.getPosition());
+        // Assert Merc is east (1,3) of Portal1(2,3)
+        assertEquals(new Position(1, 3), mercenary.getPosition());
     }
     
 }

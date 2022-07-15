@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import dungeonmania.DungeonObjects.Player;
 import dungeonmania.DungeonObjects.Entities.Entity;
+import dungeonmania.DungeonObjects.Entities.Characters.Mercenary;
 import dungeonmania.Interfaces.IStaticInteractable;
 import dungeonmania.util.DungeonFactory.EntityStruct;
 import dungeonmania.DungeonObjects.EntityTypes;
@@ -35,14 +36,20 @@ public class Portal extends Entity implements IStaticInteractable {
         // then teleport them adjacent cardinal direction of pair portal
         // i.e if interactor is of left, then teleport them to pairPortal's right
 
-        // FIRST check if interactor instanceof Player, since only player can teleport (for now...)
-        if (!(interactor instanceof Player)) {throw new InvalidActionException("Only Player can move boulder");}
+        // FIRST check if interactor is either Player or Merc, since only they can teleport (for now...)
+        if (!(interactor instanceof Player || interactor instanceof Mercenary)) {throw new InvalidActionException("Only Player & Merc can teleport");}
         // SECOND determine where interactor is coming from (N,E,S or W)
         Position interactorPos = super.getMap().getEntityPos(interactor);
         Direction relInteractionDir = determineRelativeInteractionDirection(interactorPos);
         // THIRD get pair portal
         Portal pairPortal = getPairPortal(this.colour);
-        // Then check for a wall at the next location, if so, do not teleport.
+        
+        // FINAL CHECKINGS ###############
+        // FIRST check for a wall at the next location, if so, do not teleport.
+        // SECOND iff its a mercenary, and theres a boulder at next location, do not teleport
+        // THIRD iff its a player, and theres a boulder at next location, call boulder.interactBy(Player), and assess what it returns
+        // LASTLY, iff theres another portal at the end, finds its next location, and go thru all these checks again. 
+
         // NOTE: If it's a Portal, then teleport IN A LOOP and do further checkings until
         //       the destination does not have a portal (RECURSION, w/ ender being if theres a wall, or )
         //       IFF theres a wall, return type "wall"
@@ -55,20 +62,20 @@ public class Portal extends Entity implements IStaticInteractable {
         // For e.g. if relative interaction Direction is from the LEFT, then must teleport RIGHT of the pair portal.
         Position portalPos = super.getMap().getEntityPos(this);
         if (portalPos.getX() + 1 == interactorPos.getX()) {
-            // Interacting from Right of portal, so teleport to Left
+            // Interacting from Right of portal, so teleport to Left of next portal
             return Direction.LEFT;
 
         }  else if (portalPos.getX() - 1 == interactorPos.getX()) {
-            // Interacting from Left of Portal, so teleport to Right
+            // Interacting from Left of Portal, so teleport to Right of next portal
             return Direction.RIGHT;
 
         } else if (portalPos.getY() - 1 == interactorPos.getY()) {
-            // Interacting from Above of Portal, so teleport to Above
-            return Direction.UP;
+            // Interacting from Above of Portal, so teleport to Below next portal
+            return Direction.DOWN;
             
         } else {
-            // Interacting from Below of Portal, so teleport Below
-            return Direction.DOWN;
+            // Interacting from Below of Portal, so teleport to Above next portal
+            return Direction.UP;
         }
     }
 
@@ -99,7 +106,7 @@ public class Portal extends Entity implements IStaticInteractable {
     //                              which is then returned and EITHER handled by this class or call entity.boulderInteraction() fnc in Player.java (then refactoring file is needed)
     // 3) player teleportation destination has a wall, which is then returned, and detected, and UnInteractable is thrown by interactedBy()
     // IF none of these, then returns null, which is caught, 
-    public Entity recursiveCheckingIfNewPosHasEntity(Entity destEntity, Direction dirToLandTo) {
+    public Entity recursiveCheckingIfNewPosHasEntity(Entity interactor, Entity destPosEntity, Direction dirToLandTo) {
         // FIRST get position to land to, via direction
         // SECOND get Entity at that position
         return null;
