@@ -7,6 +7,7 @@ import dungeonmania.util.DungeonFactory.EntityStruct;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.json.JSONObject;
 
@@ -17,10 +18,10 @@ import dungeonmania.DungeonObjects.Entities.Collectables.InvisibilityPotion;
 import dungeonmania.DungeonObjects.Entities.Collectables.Key;
 import dungeonmania.DungeonObjects.Entities.Statics.FloorSwitch;
 import dungeonmania.DungeonObjects.Entities.Statics.Boulder;
+import dungeonmania.DungeonObjects.Entities.Statics.Door;
 import dungeonmania.DungeonObjects.Entities.Statics.Wall;
 import dungeonmania.Interfaces.ICollectable;
 import dungeonmania.Interfaces.IEquipment;
-import dungeonmania.Interfaces.IMovingStrategy;
 import dungeonmania.Interfaces.IStaticInteractable;
 import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.response.models.ItemResponse;
@@ -28,24 +29,21 @@ import dungeonmania.response.models.ItemResponse;
 public class Player extends Entity {
 
     private int health;
-    private int attackDamage;
+    private final int attackDamage;
 
-    private int sword_attack;
-    private int shield_defence;
-    private int invincibility_potion_duration;
-    private int invisibility_potion_duration;
+    private final int sword_attack;
+    private final int shield_defence;
+    private final int invincibility_potion_duration;
+    private final int invisibility_potion_duration;
 
     private int allyNum;
-    private int allyAttackBonous;
-    private int allyDefenceBonous;
+    private final int allyAttackBonous;
+    private final int allyDefenceBonous;
 
     private double InvincibilityRemainingTime = 0;
     private double InvisibilityRemainingTime = 0;
 
-    private Backpack backpack;
-
-    // TODO dont know how this work yet
-    private IMovingStrategy moveStrat;
+    private final Backpack backpack;
 
     public Player(EntityStruct metaData, JSONObject config) {
         super(metaData);
@@ -150,7 +148,18 @@ public class Player extends Entity {
         backpack.addItem(item);
     }
 
-    public void make(String type) throws InvalidActionException {
+    private void updatePotions() {
+        // update potion state
+        if (isInvisible()) {
+            this.InvincibilityRemainingTime -= 1;
+        }
+
+        if (isInvisible()) {
+            this.InvisibilityRemainingTime -= 1;
+        }
+    }
+
+    private void make(String type) throws InvalidActionException, IllegalArgumentException {
         backpack.make(type);
     }
 
@@ -176,7 +185,7 @@ public class Player extends Entity {
     }
 
     // do not use this for bribe mercenaries
-    public void useItem(String itemUsedId) throws InvalidActionException {
+    private void useItem(String itemUsedId) throws InvalidActionException, IllegalArgumentException {
         IEquipment item = backpack.useItem(itemUsedId);
 
         if (item instanceof InvincibilityPotion) {
@@ -196,24 +205,37 @@ public class Player extends Entity {
     }
 
     private boolean ableToMove(Position destination) {
-        ArrayList<Entity> inCell = new ArrayList<Entity>();
-        inCell.addAll(getMap().getEntitiesAt(destination));
+        List<Entity> inCell = getMap().getEntitiesAt(destination);
 
-        for (Entity entity : inCell) {
-            if (entity instanceof Wall)
-                return false;
+        List<ICollectable> collections = inCell
+                                        .stream()
+                                        .filter(e -> (e instanceof ICollectable))
+                                        .map(e -> (ICollectable) e)
+                                        .collect(Collectors.toList());
 
-            if (entity instanceof ICollectable) {
-                try {
-                    ICollectable collection = (ICollectable) entity;
-                    collection.collectedBy(this);
-                } catch (InvalidActionException e) {
-                    System.out.println(e.getMessage());
-                    if (entity instanceof Bomb) {
-                        return false;
-                    }
+        List<IStaticInteractable> staticEntity = inCell
+                                                .stream()
+                                                .filter(e -> (e instanceof IStaticInteractable))
+                                                .map(e -> (IStaticInteractable) e)
+                                                .collect(Collectors.toList());
+
+        // interaction with collections
+        for (ICollectable collection : collections) {
+            try {
+                collection.collectedBy(this);
+            } catch (InvalidActionException e) {
+                System.out.println(e.getMessage());
+
+                // Inactive bombs will block players as a wall
+                if (collection instanceof Bomb) {
+                    return false;
                 }
-            } else if (entity instanceof IStaticInteractable) {
+            }
+        }
+
+        // do not <return true> inside of the for loop, it will terminate the interaction of the rest of entity in the cell
+        for (IStaticInteractable entity : staticEntity) {
+            try {
                 if (entity instanceof Boulder) {
                     Boulder boulder = (Boulder) entity;
                     Position boulderPos1 = this.getMap().getEntityPos(boulder);
@@ -224,20 +246,25 @@ public class Player extends Entity {
                     if (boulderPos1.equals(boulderPos2)) {
                         return false;
                     }
-
-                // do not <return true> inside of the for loop, it will stop the interaction of the rest of entity in the cell
                 } else if (entity instanceof Wall) {
                     return false;
+                } else if (entity instanceof Door) {
+                    Door door = (Door) entity;
+                    if (!door.isOpen()) {
+                        door.interactedBy(this);
+                    }
                 }
-
                 // TODO add more here
+            } catch (InvalidActionException e) {
+                System.out.println(e.getMessage());
+                return false;
             }
         }
 
         return true;
     }
 
-    public void move(Direction direction) throws InvalidActionException {
+    private void move(Direction direction) throws InvalidActionException {
         int x = getPos().getX();
         int y = getPos().getY();
 
@@ -260,8 +287,24 @@ public class Player extends Entity {
 
         if (ableToMove(destination)) {
             getMap().moveEntityTo(this, destination);
+            // TODO separation portal
         } else {
             throw new InvalidActionException("ERROR: Can not move " + direction);
+        }
+    }
+
+    public void tick(String action, Direction direction, String str) throws InvalidActionException, IllegalArgumentException {
+        if (action.equals(EntityTypes.PLAYERUSE.toString())) {
+            useItem(str);
+            updatePotions();
+        } else if (action.equals(EntityTypes.PLAYERMAKE.toString())) {
+            make(str);
+            updatePotions();
+        } else if (action.equals(EntityTypes.PLAYERMOVE.toString())) {
+            move(direction);
+            updatePotions();
+        } else {
+            throw new IllegalArgumentException("ERROR: Undefined player behavior");
         }
     }
 
@@ -295,13 +338,11 @@ public class Player extends Entity {
 
     /* TODO for each iterable entirety (door, portal...) there will be a unique method, deal with the effects on the player */
 
-    // This is a template that can be changed by whoever is responsible for static entity interactions
     public void openDoor(int key) throws InvalidActionException {
         if (!backpack.hasAKey() || backpack.hasKey(key)) {
             throw new InvalidActionException("Can not open the door");
         } else {
             backpack.useItem(EntityTypes.KEY.toString());
-            // go in the door
         }
     }
 

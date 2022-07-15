@@ -25,7 +25,12 @@ public enum EntityTypes {
     BOMB("bomb"),
     SWORD("sword"),
     BOW("bow"),
-    SHIELD("shield");
+    SHIELD("shield"),
+
+    // Player behavior definition
+    PLAYERMOVE("player_move"),
+    PLAYERMAKE("player_make"),
+    PLAYERUSE("player_use");
 
     // Map of value to enum
     private static final Map<String, EntityTypes> map = new HashMap<String, EntityTypes>();
