@@ -334,13 +334,13 @@ public class Player extends Entity {
     }
 
     public void tick(String action, Direction direction, String str) throws InvalidActionException, IllegalArgumentException {
-        if (action.equals(EntityTypes.PLAYERUSE.toString())) {
+        if (action.equals(Constant.PLAYERUSE)) {
             useItem(str);
             updatePotions();
-        } else if (action.equals(EntityTypes.PLAYERMAKE.toString())) {
+        } else if (action.equals(Constant.PLAYERMAKE)) {
             make(str);
             updatePotions();
-        } else if (action.equals(EntityTypes.PLAYERMOVE.toString())) {
+        } else if (action.equals(Constant.PLAYERMOVE)) {
             int x = getPos().getX();
             int y = getPos().getY();
 
