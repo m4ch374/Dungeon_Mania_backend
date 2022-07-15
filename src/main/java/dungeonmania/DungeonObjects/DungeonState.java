@@ -24,6 +24,8 @@ public class DungeonState {
 
     private JSONObject config;
 
+    private int currTick = 0;
+
     public DungeonState(DungeonBuilder builder) {
         dungeonId       = builder.getDungeonId();
         dungeonName     = builder.getDungeonName();
@@ -34,11 +36,19 @@ public class DungeonState {
     }
     
     // Would it move all the npc like tick(direction) does?
+    //
+    // Turns out it does lol
     public void tick(String itemUsedId) throws IllegalArgumentException, InvalidActionException {
+        currTick++;
         player.tick(Constant.PLAYERUSE, null, itemUsedId);
+
+        map.updateCharPos();
+        map.spawnEntites(config, currTick);
     }
 
     public void tick(Direction movementDirection) {
+        currTick++;
+
         try {
             player.tick(Constant.PLAYERMOVE, movementDirection, null);
         } catch (IllegalArgumentException e) {
@@ -48,6 +58,8 @@ public class DungeonState {
         }
 
         map.updateCharPos();
+
+        map.spawnEntites(config, currTick);
 
         // Structure would be something like this:
         //

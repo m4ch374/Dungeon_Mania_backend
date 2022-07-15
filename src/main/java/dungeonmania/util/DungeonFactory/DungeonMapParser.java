@@ -17,7 +17,8 @@ import dungeonmania.util.Position;
 
 public class DungeonMapParser {
     public static DungeonMap buildDungeonMap(JSONArray entities, JSONObject config) {
-        DungeonMap map = new DungeonMap();
+        ParserUtil util = ParserUtil.getUtil(entities);
+        DungeonMap map = new DungeonMap(util.getTopLeft(), util.getBottomRight());
         Map<String, Integer> idMap = new HashMap<String, Integer>();
 
         for (int i = 0; i < entities.length(); i++) {
@@ -90,5 +91,56 @@ public class DungeonMapParser {
         String entityId = currId == 0 ? type : type + String.valueOf(currId);
         idMap.put(type, ++currId);
         return entityId;
+    }
+}
+
+class ParserUtil {
+    private final Position topLeft;
+    private final Position bottomRight;
+
+    private ParserUtil(int leftMost, int rightMost, int topMost, int bottomMost) {
+        topLeft = new Position(leftMost, topMost);
+        bottomRight = new Position(rightMost, bottomMost);
+    }
+
+    public final Position getTopLeft() {
+        return topLeft;
+    }
+
+    public final Position getBottomRight() {
+        return bottomRight;
+    }
+
+    public static ParserUtil getUtil(JSONArray entityArray) {
+        if (entityArray.length() == 0)
+            return new ParserUtil(0, 0, 0, 0);
+
+        // Set the first entity as all of the attributes
+        JSONObject firstEntity = entityArray.getJSONObject(0);
+        int maxLeft = firstEntity.getInt("x");
+        int maxRight = firstEntity.getInt("x");
+        int maxTop = firstEntity.getInt("y");
+        int maxBottom = firstEntity.getInt("y");
+        
+        for (int i = 1; i < entityArray.length(); i++) {
+            JSONObject currEntity = entityArray.getJSONObject(i);
+
+            int currX = currEntity.getInt("x");
+            int currY = currEntity.getInt("y");
+
+            if (currX < maxLeft)
+                maxLeft = currX;
+            
+            if (currX > maxRight)
+                maxRight = currX;
+
+            if (currY < maxTop)
+                maxTop = currY;
+
+            if (currY > maxBottom)
+                maxBottom = currY;
+        }
+
+        return new ParserUtil(maxLeft, maxRight, maxTop, maxBottom);
     }
 }
