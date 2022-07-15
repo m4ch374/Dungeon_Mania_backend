@@ -68,5 +68,6 @@ public class Spider extends Entity implements IMovable {
         EntityStruct struct = new EntityStruct("spawned_spider" + spawnId, EntityTypes.SPIDER.toString(), map);
         Spider spiderSpawned = new Spider(struct, config);
         map.placeEntityAt(spiderSpawned, new Position(entityX, entityY));
+        spawnId++;
     }
 }
