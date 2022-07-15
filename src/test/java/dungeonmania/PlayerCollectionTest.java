@@ -163,6 +163,17 @@ public class PlayerCollectionTest {
     }
 
     @Test
+    @DisplayName("Crafted: Items that cannot be crafted")
+    public void testFailToMake() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        dmc.newGame("d_playerCollectionTest", "c_playerCollectionTest");
+
+        assertThrows(IllegalArgumentException.class, () -> dmc.build("sword"));
+
+        assertThrows(IllegalArgumentException.class, () -> dmc.build("bomb"));
+    }
+
+    @Test
     @DisplayName("Crafted: Fail to make bow & shield")
     public void testFailToCrafted() {
         DungeonManiaController dmc = new DungeonManiaController();
