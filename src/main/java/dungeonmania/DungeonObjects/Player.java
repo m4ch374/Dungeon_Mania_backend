@@ -253,17 +253,16 @@ public class Player extends Entity {
 
         // if nothing else block player, check if player can push the boulder
         for (IStaticInteractable entity : staticEntity) {
-            /* try {
+            try {
                 if (entity instanceof Boulder) {
-<<<<<<< HEAD
                     // LOGIC: if interactedBy() does NOT throw the Exception, then the boulder has moved
                     // thus its safe for player to also move. 
                     try {
                         Boulder boulder = (Boulder) entity;
                         boulder.interactedBy(this);
-                        move = true; // dont need this?
+                        // DO NOT "return;" here, since we want to interact with other overlapping entities
                     } catch (InvalidActionException e) {
-                        move = false;
+                        return false;
                     }
                     // // LEGACY:
                     // Position boulderPos1 = this.getMap().getEntityPos(boulder);
@@ -279,35 +278,21 @@ public class Player extends Entity {
                     try {
                         Portal portal = (Portal) entity;
                         portal.interactedBy(this);
-                        // FALSE, since Portal has already teleported player
-                        move = false;
-                        break; // include break here since Portal is the last Entity in the inCell<List>
+                        return false; // FALSE, since Portal has already teleported player
                     } catch (InvalidActionException e) {
                         // There is an obstruction at the Position to teleport to
-                        move = false;
-                        break; // include break here since Portal (should be) is the last Entity in the inCell<List>
+                        return false;
+                        break; // include break here since Portal (should be) is the last Entity in the inCell<List> ??
                     } // maybe throw another exception 
                     
                     // // Whether Player's been teleported or not, Player doesn't have to move himself, so set to False
                     // move = false;
                     // break
-=======
-                    Boulder boulder = (Boulder) entity;
-                    Position boulderPos1 = this.getMap().getEntityPos(boulder);
-                    boulder.interactedBy(this);
-                    // Need to let Player know whether boulder has moved or not
-                    // IFF positons have changed, boulder's moved, then Player can move!
-                    Position boulderPos2 = this.getMap().getEntityPos(boulder);
-                    // TODO change to use exception
-                    if (boulderPos1.equals(boulderPos2)) {
-                        return false;
-                    }
->>>>>>> master
                 }
             } catch (InvalidActionException e) {
                 System.out.println(e.getMessage());
                 return false;
-            } */
+            }
         }
 
         return true;

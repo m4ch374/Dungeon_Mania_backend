@@ -33,34 +33,73 @@ public class Portal extends Entity implements IStaticInteractable {
     public void interactedBy(Entity interactor) throws InvalidActionException {
         // NOTE: PLAY THE PORTALS_ADVANCED SETTING !!!!!!
 
-        // Run through the series of checks (can only teleport Player for now)
-        // then teleport them adjacent cardinal direction of pair portal
-        // i.e if interactor is of left, then teleport them to pairPortal's right
-
         // FIRST check if interactor is either Player or Merc, since only they can teleport (for now...)
         if (!(interactor instanceof Player || interactor instanceof Mercenary)) {throw new InvalidActionException("Only Player & Merc can teleport");}
         // SECOND determine where interactor is coming from (N,E,S or W)
         Position interactorPos = super.getMap().getEntityPos(interactor);
-        Direction relInteractionDir = determineRelativeInteractionDirection(interactorPos);
+        Direction destinationDir = determineDestinationDirection(interactorPos);
         // THIRD get pair portal
         Portal pairPortal = getPairPortal(this.colour);
-        
-        // FINAL CHECKINGS ###############
-        // FIRST check for a wall at the next location, if so, do not teleport.
-        // SECOND iff its a mercenary, and theres a boulder at next location, do not teleport
-        // THIRD iff its a player, and theres a boulder at next location, call boulder.interactBy(Player), and assess what it returns
-        // LASTLY, iff theres another portal at the end, finds its next location, and go thru all these checks again. 
+        Position pairPortalPos = super.getMap().getEntityPos(pairPortal);
+        Position destinationPos = pairPortalPos.translateBy(destinationDir);
+        // FINAL CHECKINGS # # # # # # # # # # # # #
+        List<Entity> entitiesAtPos = super.getMap().getEntitiesAt(destinationPos);
+        // FIRSTLY check for a wall at the next location, if so, do not teleport.
+        if ((entitiesAtPos.stream().filter(e -> e.getType().equals(EntityTypes.WALL.toString())).count() > 0)) {throw new InvalidActionException("Entity cannot teleport onto Wall");}
+        // SECONDLY if theres a boulder at next location...
+        if ((entitiesAtPos.stream().filter(e -> e.getType().equals(EntityTypes.BOULDER.toString())).count() > 0)) {
+            // ...and IF entity is a Merc, then do not teleport, merc's cant push boulders,
+            if (interactor instanceof Mercenary) {throw new InvalidActionException("Mercenary cannot push the boulder at teleport location");}
+            // ...and IF its a player, call boulder.interactBy(Player), and assess what it returns
+            try {
+                List<Boulder> boulders = super.getMap().getAllEntities().stream().filter(e -> e instanceof Boulder).map(e -> (Boulder) e).collect(Collectors. toList());
+                Boulder boulder = boulders.get(0);
+                // If boulder interaction fails here (obstructed via wall or another boulder etc.), then it will throw an exception
+                boulder.interactedBy(interactor);
+                // DO NOT call "return;" here, let the Portal If statement pass, in cases of when the Boulder is overlapping a Portal
+            } catch (InvalidActionException e) {
+                // Now we know boulder cannot be moved, therefore throw exception for Player.java to catch
+                throw new InvalidActionException("Player cannot push the boulder at teleport location");
+            }
+        }
+        // THIRDLY, if theres another portal at the end, finds its next location, and go thru all these checks again. 
+        if ((entitiesAtPos.stream().filter(e -> e.getType().equals(EntityTypes.PORTAL.toString())).count() > 0)) {
+            // NOTE: keep MERCs in mind (dont hardcode for player)
+            try {
+                List<Portal> portals = super.getMap().getAllEntities().stream().filter(e -> e instanceof Portal).map(e -> (Portal) e).collect(Collectors. toList());
+                Portal portalAtNewPos = portals.get(0);
+                portalAtNewPos.interactedBy(interactor);
+            } catch (InvalidActionException e) {
+                // NOTE: if at any point in the recursion such Exception is thrown, it'll be caught, and added to this new exception to be thrown
+                throw new InvalidActionException("The final portal's adjacent location is unteleportable; " + e.toString());
+            }
+        }
+        // FINALLY, Portal is good to teleport player
+        // note: even tho the last recorsion call, calls this fnc, every other previous iteration will also call this, so i need a way to detect if 
+        // interactor has been moved sometime inside the recursion inception (maybe catch another exception??). 
+        super.getMap().moveEntityTo(interactor, destinationPos);
+        // // IGNORE: Sorta need this to indicate to Player.java's 'ableToMove()', that it doesnt need to move.
+        // throw new InvalidActionException("Interactor already teleported");
+    }
+    
 
-        // NOTE: If it's a Portal, then teleport IN A LOOP and do further checkings until
-        //       the destination does not have a portal (RECURSION, w/ ender being if theres a wall, or )
-        //       IFF theres a wall, return type "wall"
-        //       IFF theres a boulder, return type "boulder", which the portal then does boulder.interactBy(interactor)
+    // For cases of 
+    // 1) multiple teleportation across many portal pairs, within one Player movement
+    // 2) player teleportation destination has a boulder on it, 
+    //                              which is then returned and EITHER handled by this class or call entity.boulderInteraction() fnc in Player.java (then refactoring file is needed)
+    // 3) player teleportation destination has a wall, which is then returned, and detected, and UnInteractable is thrown by interactedBy()
+    // IF none of these, then returns null, which is caught, 
+    public Entity recursiveCheckingIfNewPosHasEntity(Entity interactor, Entity destPosEntity, Direction dirToLandTo) {
+        // FIRST get position to land to, via direction
+        // SECOND get Entity at that position
+        return null;
     }
 
-    public Direction determineRelativeInteractionDirection(Position interactorPos) {
-        // Determine relative direction of interaction (left, right, above, below)
-        // and return which direction of the portal, the interactor must land.
-        // For e.g. if relative interaction Direction is from the LEFT, then must teleport RIGHT of the pair portal.
+
+    // Determine direction to destination, relative to interaction (left, right, above, below)
+    // which is the direction (from the pair portal) which the interactor must land onto.
+    // For e.g. if relative interaction Direction is from the LEFT, then destination direction is RIGHT of the pair portal.
+    public Direction determineDestinationDirection(Position interactorPos) {
         Position portalPos = super.getMap().getEntityPos(this);
         if (portalPos.getX() + 1 == interactorPos.getX()) {
             // Interacting from Right of portal, so teleport to Left of next portal
@@ -101,15 +140,4 @@ public class Portal extends Entity implements IStaticInteractable {
     }
 
 
-    // For cases of 
-    // 1) multiple teleportation across many portal pairs, within one Player movement
-    // 2) player teleportation destination has a boulder on it, 
-    //                              which is then returned and EITHER handled by this class or call entity.boulderInteraction() fnc in Player.java (then refactoring file is needed)
-    // 3) player teleportation destination has a wall, which is then returned, and detected, and UnInteractable is thrown by interactedBy()
-    // IF none of these, then returns null, which is caught, 
-    public Entity recursiveCheckingIfNewPosHasEntity(Entity interactor, Entity destPosEntity, Direction dirToLandTo) {
-        // FIRST get position to land to, via direction
-        // SECOND get Entity at that position
-        return null;
-    }
 }
