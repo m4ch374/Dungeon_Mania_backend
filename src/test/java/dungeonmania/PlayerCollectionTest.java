@@ -337,6 +337,8 @@ public class PlayerCollectionTest {
         dmc.tick(Direction.DOWN);
 
         DungonRes = dmc.getDungeonResponseModel();
+        assertEquals(20, DungonRes.getEntities().size());
+
         ArrayList<String> bomb_id = new ArrayList<String>();
         DungonRes.getInventory()
                 .stream()
@@ -347,8 +349,7 @@ public class PlayerCollectionTest {
 
         try {
             DungonRes = dmc.tick(bomb_id.get(0));
-            // will pass after boulder-switch interaction finished
-            assertEquals(8, DungonRes.getEntities().size());
+            assertEquals(9, DungonRes.getEntities().size());
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
             assertEquals(true, false);

@@ -29,6 +29,8 @@ import dungeonmania.response.models.ItemResponse;
 
 public class Player extends Entity {
 
+    private Position previousPosition = null;
+
     private int health;
     private final int attackDamage;
 
@@ -46,6 +48,9 @@ public class Player extends Entity {
 
     private final Backpack backpack;
 
+    // current moving direction, used for boulder
+    private Direction direction = null;
+
     public Player(EntityStruct metaData, JSONObject config) {
         super(metaData);
         this.health = config.getInt("player_health");
@@ -61,6 +66,10 @@ public class Player extends Entity {
         this.allyDefenceBonous = config.has("ally_defence") ? config.getInt("ally_defence") : 0;
 
         this.backpack = new Backpack(config.getInt("bow_durability"), config.getInt("shield_durability"));
+    }
+
+    public Direction getDirection() {
+        return this.direction;
     }
 
     public List<ItemResponse> getPlayerItems() {
@@ -101,13 +110,13 @@ public class Player extends Entity {
 
     public void collect(ICollectable item) throws InvalidActionException {
         if (item instanceof Key && backpack.hasAKey()) {
-            throw new InvalidActionException("Already has a key");
+            throw new InvalidActionException("ERROR: Already has a key");
         }
 
         if (item instanceof Bomb) {
             Bomb bomb = (Bomb) item;
             if (!bomb.isCollectible()) {
-                throw new InvalidActionException("Cannot collect a dropped bomb");
+                throw new InvalidActionException("ERROR: Cannot collect a dropped bomb");
             }
         }
 
@@ -146,7 +155,7 @@ public class Player extends Entity {
 
         boolean activeSwitch = entityList
                                 .stream()
-                                .filter(e -> e.getType().equals(EntityTypes.FLOOR_SWITCH.toString()))
+                                .filter(e -> (e instanceof FloorSwitch))
                                 .map(e -> (FloorSwitch) e)
                                 .anyMatch(e -> e.isActive());
 
@@ -175,18 +184,11 @@ public class Player extends Entity {
     private boolean ableToMove(Position destination) {
         List<Entity> inCell = getMap().getEntitiesAt(destination);
 
-        List<ICollectable> collections = inCell
-                                        .stream()
-                                        .filter(e -> (e instanceof ICollectable))
-                                        .map(e -> (ICollectable) e)
-                                        .collect(Collectors.toList());
-
-        // check if a fixed bomb exist, exclude interaction
-        Boolean hasFixedBomb = collections
-                        .stream()
-                        .filter(e -> (e instanceof Bomb))
-                        .map(e -> (Bomb) e)
-                        .anyMatch(e -> !e.isCollectible());
+        Boolean hasFixedBomb = inCell
+                            .stream()
+                            .filter(e -> (e instanceof Bomb))
+                            .map(e -> (Bomb) e)
+                            .anyMatch(e -> !e.isCollectible());
 
         if (hasFixedBomb) return false;
 
@@ -215,23 +217,15 @@ public class Player extends Entity {
 
         // if nothing else block player, check if player can push the boulder
         for (IStaticInteractable entity : staticEntity) {
-            /* try {
+            try {
                 if (entity instanceof Boulder) {
                     Boulder boulder = (Boulder) entity;
-                    Position boulderPos1 = this.getMap().getEntityPos(boulder);
                     boulder.interactedBy(this);
-                    // Need to let Player know whether boulder has moved or not
-                    // IFF positons have changed, boulder's moved, then Player can move!
-                    Position boulderPos2 = this.getMap().getEntityPos(boulder);
-                    // TODO change to use exception
-                    if (boulderPos1.equals(boulderPos2)) {
-                        return false;
-                    }
                 }
             } catch (InvalidActionException e) {
                 System.out.println(e.getMessage());
                 return false;
-            } */
+            }
         }
 
         return true;
@@ -264,6 +258,8 @@ public class Player extends Entity {
     private void move(Position destination) throws InvalidActionException {
         // Check if something is blocking the player
         if (ableToMove(destination)) {
+            this.previousPosition = getPos();
+
             // move the player
             getMap().moveEntityTo(this, destination);
 
@@ -274,7 +270,6 @@ public class Player extends Entity {
             Portal portal = getOverlapPortal();
             if (portal != null) {
                 try {
-                    // TODO get new destination
                     Position direction_new = portal.getDestination();
                     move(direction_new);
                 } catch (InvalidActionException e) {
@@ -287,8 +282,7 @@ public class Player extends Entity {
     }
 
     private Portal getOverlapPortal() {
-        Position pos = getMap().getEntityPos(this);
-        List<Entity> inCell = getMap().getEntitiesAt(pos);
+        List<Entity> inCell = getMap().getEntitiesAt(getPos());
         List<Portal> portal = inCell
                                 .stream()
                                 .filter(e -> (e instanceof Portal))
@@ -309,6 +303,8 @@ public class Player extends Entity {
             make(str);
             updatePotions();
         } else if (action.equals(Constant.PLAYERMOVE)) {
+            this.direction = direction;
+
             int x = getPos().getX();
             int y = getPos().getY();
 
@@ -331,6 +327,8 @@ public class Player extends Entity {
 
             move(position);
             updatePotions();
+
+            this.direction = null;
         } else {
             throw new IllegalArgumentException("ERROR: Undefined player behavior");
         }
@@ -359,6 +357,8 @@ public class Player extends Entity {
         state.put("attackDamage", getAttackDamage());           // double
         state.put("ally", this.allyNum);                        // int
         state.put("ItemResponse", getEquipmentUsedInRound());   // List<ItemResponse>
+        state.put("currentPosition", getPos());                 // Position
+        state.put("previousPosition", this.previousPosition);   // Position
 
         return state;
     }
@@ -416,8 +416,8 @@ public class Player extends Entity {
     public void initiateBattle() {}
 
     public void openDoor(int key) throws InvalidActionException {
-        if (!backpack.hasAKey() || backpack.hasKey(key)) {
-            throw new InvalidActionException("Can not open the door");
+        if (!backpack.hasAKey() || !backpack.hasTheKey(key)) {
+            throw new InvalidActionException("ERROR: Can not open the door");
         } else {
             backpack.useKey();
         }

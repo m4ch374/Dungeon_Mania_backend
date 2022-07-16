@@ -196,7 +196,7 @@ public final class Backpack {
         return (this.key != null);
     }
 
-    public boolean hasKey(int key) {
+    public boolean hasTheKey(int key) {
         return (this.key.getKey() == key);
     }
 

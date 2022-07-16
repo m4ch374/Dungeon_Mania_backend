@@ -59,8 +59,8 @@ public class Bomb extends Entity implements ICollectable, IEquipment {
         int x = pos.getX();
         int y = pos.getY();
 
-        for (int i = x - bombRadius; i < x + bombRadius; i++) {
-            for (int j = y - bombRadius; i < y + bombRadius; j++) {
+        for (int i = x - bombRadius; i <= x + bombRadius; i++) {
+            for (int j = y - bombRadius; j <= y + bombRadius; j++) {
                 Position p = new Position(i, j);
                 if (i == x && j == y) {
                     getMap().removeAtPosExceptPlayer(p);

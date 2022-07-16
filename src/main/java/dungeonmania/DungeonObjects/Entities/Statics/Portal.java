@@ -27,7 +27,7 @@ public class Portal extends Entity implements IStaticInteractable {
     }
 
     public Position getDestination() {
-        return null;// TODO
+        return getMap().getEntityPos(this.pairPortal);
     }
 
     @Override
