@@ -232,3 +232,66 @@ class RelativePosition {
         return new Position(-posY, posX);
     }
 }
+
+class RelativePosition {
+    Position originalPos;
+    Position relativePos;
+
+    public RelativePosition(Position originalPos, Direction direction) {
+        this.originalPos = originalPos;
+        relativePos = toRelativePos(originalPos, direction);
+    }
+
+    public Position getOriginalPos() {
+        return originalPos;
+    }
+
+    public Position getRelativePos() {
+        return relativePos;
+    }
+
+    public RelativePosition translateBy(Direction heading, Direction direction) {
+        Position originalPos = toOriginalPos(relativePos.translateBy(heading), direction);
+        return new RelativePosition(originalPos, direction);
+    }
+
+    private Position toRelativePos(Position pos, Direction direction) {
+        // Does not do anything
+        if (direction == Direction.UP)
+            return pos;
+
+        int posX = pos.getX();
+        int posY = pos.getY();
+
+        // Rotate 180 degree
+        if (direction == Direction.DOWN) 
+            return new Position(-posX, -posY);
+
+        // Rotate 90 degrees clockwise
+        if (direction == Direction.RIGHT) 
+            return new Position(posY, -posX);
+
+        // Rotate 90 degrees anticlockwise
+        return new Position(-posY, posX);
+    }
+
+    private Position toOriginalPos(Position relativePos, Direction direction) {
+        // Does not do anything
+        if (direction == Direction.UP)
+            return relativePos;
+
+        int posX = relativePos.getX();
+        int posY = relativePos.getY();
+
+        // Rotate 180 degree
+        if (direction == Direction.DOWN) 
+            return new Position(-posX, -posY);
+
+        // Rotate 90 degrees clockwise
+        if (direction == Direction.LEFT) 
+            return new Position(posY, -posX);
+
+        // Rotate 90 degrees anticlockwise
+        return new Position(-posY, posX);
+    }
+}
