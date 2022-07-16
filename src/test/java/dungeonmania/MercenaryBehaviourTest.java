@@ -231,7 +231,7 @@ public class MercenaryBehaviourTest {
         DungeonManiaController dmc = new DungeonManiaController();
         DungeonResponse res = dmc.newGame(DIR_NAME + "d_mercTest_bribeTest", C_DIR_NAME + "c_bribeTests_radius2");
 
-        res =dmc.tick(Direction.RIGHT);
+        res = dmc.tick(Direction.RIGHT);
 
         assertEquals(0, TestUtils.getEntities(res, "treasure").size());
 
@@ -250,5 +250,30 @@ public class MercenaryBehaviourTest {
         assertEquals(0, TestUtils.getEntities(res, "treasure").size());
 
         assertDoesNotThrow(() -> dmc.interact("mercenary"));
+    }
+
+    @Test
+    @DisplayName("Test bribed merc will teleport to player's previous pos")
+    public void testMercBribe_teleportsToPlayerPrevPos() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame(DIR_NAME + "d_mercTest_bribeTest", C_DIR_NAME + "c_bribeTests_radius2");
+
+        res = dmc.tick(Direction.RIGHT);
+
+        assertEquals(0, TestUtils.getEntities(res, "treasure").size());
+
+        assertDoesNotThrow(() -> dmc.interact("mercenary"));
+
+        // remains in the same position
+        assertEquals(new Position(2, 3), TestUtils.getEntityById(res, "mercenary").getPosition());
+
+        // Teleports in the next tick
+        res = dmc.tick(Direction.RIGHT);
+        assertEquals(new Position(1, 1), TestUtils.getEntityById(res, "mercenary").getPosition());
+
+        // Occupies the previous position from then on
+        res = dmc.tick(Direction.LEFT);
+        assertEquals(new Position(1, 1), TestUtils.getEntityById(res, "player").getPosition());
+        assertEquals(new Position(2, 1), TestUtils.getEntityById(res, "mercenary").getPosition());
     }
 }
