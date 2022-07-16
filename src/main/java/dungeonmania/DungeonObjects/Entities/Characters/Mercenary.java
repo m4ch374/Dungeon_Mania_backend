@@ -15,6 +15,7 @@ import org.json.JSONObject;
 import dungeonmania.DungeonObjects.Player;
 import dungeonmania.DungeonObjects.DungeonMap.DungeonMap;
 import dungeonmania.DungeonObjects.Entities.Entity;
+import dungeonmania.DungeonObjects.Entities.Characters.*;;
 
 public class Mercenary extends Entity implements IMovable, IPlayerInteractable {
 

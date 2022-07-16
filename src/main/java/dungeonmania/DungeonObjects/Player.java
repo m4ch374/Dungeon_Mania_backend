@@ -19,11 +19,7 @@ import dungeonmania.DungeonObjects.Entities.Collectables.Key;
 import dungeonmania.DungeonObjects.Entities.Statics.FloorSwitch;
 import dungeonmania.DungeonObjects.Entities.Statics.Portal;
 import dungeonmania.DungeonObjects.Entities.Statics.Boulder;
-<<<<<<< HEAD
-import dungeonmania.DungeonObjects.Entities.Statics.Portal;
-=======
 import dungeonmania.DungeonObjects.Entities.Statics.Door;
->>>>>>> master
 import dungeonmania.DungeonObjects.Entities.Statics.Wall;
 import dungeonmania.Interfaces.ICollectable;
 import dungeonmania.Interfaces.IEquipment;
@@ -224,44 +220,14 @@ public class Player extends Entity {
         for (IStaticInteractable entity : staticEntity) {
             try {
                 if (entity instanceof Boulder) {
-<<<<<<< HEAD
                     // LOGIC: if interactedBy() does NOT throw the Exception, then the boulder has moved
                     // thus its safe for player to also move. 
-                    try {
-                        Boulder boulder = (Boulder) entity;
-                        boulder.interactedBy(this);
-                        // DO NOT "return;" here, since we want to interact with other overlapping entities
-                    } catch (InvalidActionException e) {
-                        return false;
-                    }
-                    // // LEGACY:
-                    // Position boulderPos1 = this.getMap().getEntityPos(boulder);
-                    // boulder.interactedBy(this);
-                    // // Need to let Player know whether boulder has moved or not
-                    // // IFF positons have changed, boulder's moved, then Player can move!
-                    // Position boulderPos2 = this.getMap().getEntityPos(boulder);
-                    // if (!boulderPos1.equals(boulderPos2)) {
-                    //     move = true;
-                    //     break;
-                    // }
-                } else if (entity instanceof Portal) {
-                    try {
-                        Portal portal = (Portal) entity;
-                        portal.interactedBy(this);
-                        return false; // FALSE, since Portal has already teleported player
-                    } catch (InvalidActionException e) {
-                        // There is an obstruction at the Position to teleport to
-                        return false;
-                        break; // include break here since Portal (should be) is the last Entity in the inCell<List> ??
-                    } // maybe throw another exception 
-                    
-                    // // Whether Player's been teleported or not, Player doesn't have to move himself, so set to False
-                    // move = false;
-                    // break
-=======
                     Boulder boulder = (Boulder) entity;
                     boulder.interactedBy(this);
->>>>>>> master
+                    // DO NOT "return;" here, since we want to interact with other overlapping entities
+                } else if (entity instanceof Portal) {
+                    Portal portal = (Portal) entity;
+                    portal.interactedBy(this);
                 }
             } catch (InvalidActionException e) {
                 System.out.println(e.getMessage());

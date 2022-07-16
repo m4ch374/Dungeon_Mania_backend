@@ -23,10 +23,6 @@ public class FloorSwitch extends Entity implements IStaticInteractable {
     }
 
     @Override
-<<<<<<< HEAD
     public void interactedBy(Entity interactor) throws InvalidActionException {}
     
-=======
-    public void interactedBy(Entity interactor) {}
->>>>>>> master
 }
