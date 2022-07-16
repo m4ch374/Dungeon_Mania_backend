@@ -1,13 +1,7 @@
 package dungeonmania.DungeonObjects.Entities;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import dungeonmania.DungeonObjects.EntityTypes;
 import dungeonmania.DungeonObjects.DungeonMap.DungeonMap;
-import dungeonmania.DungeonObjects.Entities.Statics.FloorSwitch;
 import dungeonmania.response.models.EntityResponse;
-import dungeonmania.util.Position;
 import dungeonmania.util.DungeonFactory.EntityStruct;
 
 public class Entity {
