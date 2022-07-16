@@ -275,5 +275,8 @@ public class MercenaryBehaviourTest {
         res = dmc.tick(Direction.LEFT);
         assertEquals(new Position(1, 1), TestUtils.getEntityById(res, "player").getPosition());
         assertEquals(new Position(2, 1), TestUtils.getEntityById(res, "mercenary").getPosition());
+
+        // make sure hostile merc does not exist in the map
+        assertEquals(1, TestUtils.getEntities(res, "mercenary").size());
     }
 }
