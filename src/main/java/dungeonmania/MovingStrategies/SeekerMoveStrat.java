@@ -5,6 +5,7 @@ import java.util.List;
 import dungeonmania.DungeonObjects.EntityTypes;
 import dungeonmania.DungeonObjects.DungeonMap.DungeonMap;
 import dungeonmania.DungeonObjects.Entities.Entity;
+import dungeonmania.DungeonObjects.Entities.Statics.Door;
 import dungeonmania.Interfaces.IMovingStrategy;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
@@ -53,7 +54,14 @@ public class SeekerMoveStrat implements IMovingStrategy {
     private boolean containsBlockable(Position pos) {
         List<Entity> entities = map.getEntitiesAt(pos);
 
-        return entities.stream().filter(e -> e.getType().equals(EntityTypes.WALL.toString())).count() > 0;
+        boolean hasWall = entities.stream().filter(e -> e.getType().equals(EntityTypes.WALL.toString())).count() > 0;
+        boolean hasLockedDoors = entities.stream()
+                                    .filter(e -> e.getType().equals(EntityTypes.DOOR.toString()))
+                                    .map(e -> (Door) e)
+                                    .filter(d -> !d.isOpen())
+                                    .count() > 0;
+
+        return hasWall || hasLockedDoors;
     }
 
     @Override
@@ -64,6 +72,9 @@ public class SeekerMoveStrat implements IMovingStrategy {
 
         Position moverPos = map.getEntityPos(mover);
         Position seekingPos = map.getEntityPos(seekingEntity);
+
+        if (moverPos.equals(seekingPos))
+            return;
 
         Position relativeVect = Position.calculatePositionBetween(moverPos, seekingPos);
 
