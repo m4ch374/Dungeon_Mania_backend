@@ -253,8 +253,8 @@ public class MercenaryBehaviourTest {
     }
 
     @Test
-    @DisplayName("Test bribed merc will teleport to player's previous pos")
-    public void testMercBribe_teleportsToPlayerPrevPos() {
+    @DisplayName("Test bribed merc's movement")
+    public void testMercBribe_allyMovement() {
         DungeonManiaController dmc = new DungeonManiaController();
         DungeonResponse res = dmc.newGame(DIR_NAME + "d_mercTest_bribeTest", C_DIR_NAME + "c_bribeTests_radius2");
 
@@ -278,5 +278,18 @@ public class MercenaryBehaviourTest {
 
         // make sure hostile merc does not exist in the map
         assertEquals(1, TestUtils.getEntities(res, "mercenary").size());
+
+        dmc.tick(Direction.DOWN);
+
+        // Ally does not overlap with player
+        for (int i = 0; i < 100; i++) {
+            res = dmc.tick(Direction.DOWN);
+
+            Position playerPos = TestUtils.getEntityById(res, "player").getPosition();
+            Position allyPos = TestUtils.getEntityById(res, "mercenary").getPosition();
+
+            assertEquals(new Position(1, 2), playerPos);
+            assertEquals(new Position(1, 1), allyPos);
+        }
     }
 }
