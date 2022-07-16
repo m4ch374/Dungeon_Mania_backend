@@ -99,18 +99,16 @@ public class Player extends Entity {
         return backpack.hasShield();
     }
 
+    public void useEquipment(String type) {
+        backpack.useEquipment(type);
+    }
+
     private double getAttackDamage() {
         double ad = this.attackDamage;
 
-        if (holdingSword()) {
-            ad += this.sword_attack;
-            backpack.useEquipment(EntityTypes.SWORD.toString());
-        }
+        if (holdingSword()) { ad += this.sword_attack; }
 
-        if (holdingBow()) {
-            ad *= 2;
-            backpack.useEquipment(EntityTypes.BOW.toString());
-        }
+        if (holdingBow()) { ad *= 2; }
 
         ad += this.allyNum * this.allyAttackBonous;
 
@@ -122,10 +120,7 @@ public class Player extends Entity {
 
         defence += this.allyNum * this.allyDefenceBonous;
 
-        if (holdingShield()) {
-            defence = this.shield_defence;
-            backpack.useEquipment(EntityTypes.SHIELD.toString());
-        }
+        if (holdingShield()) { defence = this.shield_defence; }
 
         this.health -= ((ad - defence) / 5);
 
