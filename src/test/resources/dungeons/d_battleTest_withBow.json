@@ -51,29 +51,9 @@
             "y": 2
         },
         {
-            "type": "sword",
-            "x": 0,
-            "y": 2
-        },
-        {
             "type": "bow",
             "x": 0,
-            "y": 3
-        },
-        {
-            "type": "shield",
-            "x": 1,
-            "y": 3
-        },
-        {
-            "type": "wall",
-            "x": 2,
-            "y": 3
-        },
-        {
-            "type": "wall",
-            "x": 3,
-            "y": 3
+            "y": 2
         }
     ],
     "goal-condition": {"goal": "exit"}

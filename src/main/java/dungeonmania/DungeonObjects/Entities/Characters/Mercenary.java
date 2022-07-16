@@ -25,8 +25,8 @@ public class Mercenary extends Entity implements IMovable, IPlayerInteractable {
     private int bribeRadius;
     private int brinbeAmount;
 
-    private int attackDamage;
-    private int health;
+    private double attackDamage;
+    private double health;
 
     private Player observing = null;
     private DungeonMap map = super.getMap();
@@ -48,11 +48,11 @@ public class Mercenary extends Entity implements IMovable, IPlayerInteractable {
         return brinbeAmount;
     }
 
-    public int getAttackDamage() {
+    public double getAttackDamage() {
         return attackDamage;
     }
 
-    public int getHealth() {
+    public double getHealth() {
         return health;
     }
 

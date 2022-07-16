@@ -1,15 +1,14 @@
 package dungeonmania.Interactions;
 
-import java.io.ObjectInputFilter.Config;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 import dungeonmania.DungeonObjects.Player;
 import dungeonmania.Interfaces.IMovable;
 import dungeonmania.response.models.BattleResponse;
 import dungeonmania.response.models.ItemResponse;
 import dungeonmania.response.models.RoundResponse;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 
 
 public class Combat {
@@ -31,9 +30,9 @@ public class Combat {
         this.enemy = enemy;
         this.playerState = player.getState();
         this.items = (List<ItemResponse>) playerState.get("ItemResponse");
-
-        this.playerAttackDamage = (Double) playerState.get("attackDamage");
-        this.playerInitialHealth = (Double) playerState.get("health");
+        
+        this.playerAttackDamage = player.getAttackDamage();
+        this.playerInitialHealth = player.getHealth();
         this.playerHealth = playerInitialHealth;
         
         this.enemyAttackDamage = enemy.getAttackDamage();
@@ -50,9 +49,10 @@ public class Combat {
                 (boolean) playerState.get("invisible")){
                 return;
             }
+            
             player.attackedBy(enemyAttackDamage);
-            enemyHealth -= playerAttackDamage;
-            playerHealth = (Double) playerState.get("health");
+            enemyHealth -= (playerAttackDamage / 5);
+            playerHealth = player.getHealth();
 
             rounds.add(new RoundResponse(playerHealth, enemyHealth, items));
         }

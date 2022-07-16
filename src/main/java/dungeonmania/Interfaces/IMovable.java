@@ -8,9 +8,9 @@ public interface IMovable {
 
     public RoundResponse battleWith(Entity opponent);
 
-    public int getAttackDamage();
+    public double getAttackDamage();
 
-    public int getHealth();
+    public double getHealth();
 
     public void death();
 
