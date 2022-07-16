@@ -49,6 +49,21 @@ public class ZombieMovementTest {
     }
 
     @Test
+    @DisplayName("Zombie blocks by locked door")
+    public void testLockedDoorBlocksZombies() {
+        DungeonManiaController dmc = new DungeonManiaController();
+
+        // Just need a config which nothing spawns
+        DungeonResponse resp = dmc.newGame(DIR_NAME + "d_zombieTest_doorBlocksMovement", "c_movementTest_testMovementDown");
+        EntityResponse zombie = TestUtils.getEntityById(resp, "zombie_toast");
+
+        resp = dmc.tick(Direction.RIGHT);
+        EntityResponse movedZombie = TestUtils.getEntityById(resp, "zombie_toast");
+        
+        assertTrue(zombie.getPosition().equals(movedZombie.getPosition()));
+    }
+
+    @Test
     @DisplayName("Zombie overlaps with portal")
     public void testOverlapsWithPortal() {
         DungeonManiaController dmc = new DungeonManiaController();
