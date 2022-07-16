@@ -84,16 +84,8 @@ public class Portal extends Entity implements IStaticInteractable {
     }
     
 
-    // For cases of 
-    // 1) multiple teleportation across many portal pairs, within one Player movement
-    // 2) player teleportation destination has a boulder on it, 
-    //                              which is then returned and EITHER handled by this class or call entity.boulderInteraction() fnc in Player.java (then refactoring file is needed)
-    // 3) player teleportation destination has a wall, which is then returned, and detected, and UnInteractable is thrown by interactedBy()
-    // IF none of these, then returns null, which is caught, 
-    public Entity recursiveCheckingIfNewPosHasEntity(Entity interactor, Entity destPosEntity, Direction dirToLandTo) {
-        // FIRST get position to land to, via direction
-        // SECOND get Entity at that position
-        return null;
+    public Position getDestination() {
+        return getMap().getEntityPos(this.pairPortal);
     }
 
 

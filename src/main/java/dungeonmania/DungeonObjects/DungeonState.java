@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 import org.json.JSONObject;
 
 import dungeonmania.DungeonObjects.DungeonMap.DungeonMap;
+import dungeonmania.DungeonObjects.Entities.Entity;
+import dungeonmania.Interfaces.IPlayerInteractable;
 import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.response.models.DungeonResponse;
 import dungeonmania.response.models.EntityResponse;
@@ -24,6 +26,8 @@ public class DungeonState {
 
     private JSONObject config;
 
+    private int currTick = 0;
+
     public DungeonState(DungeonBuilder builder) {
         dungeonId       = builder.getDungeonId();
         dungeonName     = builder.getDungeonName();
@@ -34,11 +38,19 @@ public class DungeonState {
     }
     
     // Would it move all the npc like tick(direction) does?
+    //
+    // Turns out it does lol
     public void tick(String itemUsedId) throws IllegalArgumentException, InvalidActionException {
+        currTick++;
         player.tick(Constant.PLAYERUSE, null, itemUsedId);
+
+        map.updateCharPos();
+        map.spawnEntites(config, currTick);
     }
 
     public void tick(Direction movementDirection) {
+        currTick++;
+
         try {
             player.tick(Constant.PLAYERMOVE, movementDirection, null);
         } catch (IllegalArgumentException e) {
@@ -48,6 +60,8 @@ public class DungeonState {
         }
 
         map.updateCharPos();
+
+        map.spawnEntites(config, currTick);
 
         // Structure would be something like this:
         //
@@ -69,7 +83,15 @@ public class DungeonState {
         player.tick(Constant.PLAYERMAKE, null, buildable);
     }
 
-    public void interact(String entityId) throws IllegalArgumentException, InvalidActionException {}
+    public void interact(String entityId) throws IllegalArgumentException, InvalidActionException {
+        Entity entityToInteract = map.getAllEntities().stream().filter(e -> e.getId().equals(entityId)).findFirst().orElse(null);
+
+        if (entityToInteract == null)
+            throw new IllegalArgumentException("Error: " + entityId + " not found");
+
+        // Do the interaction
+        ((IPlayerInteractable) entityToInteract).interactedByPlayer(player);
+    }
 
     public DungeonResponse toDungeonResponse() {
         List<EntityResponse> entities = map.getAllEntities().stream().map(e -> e.toEntityResponse()).collect(Collectors.toList());

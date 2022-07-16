@@ -176,15 +176,6 @@ public final class Backpack {
     }
 
     public IEquipment useItem(String itemUsedId) throws InvalidActionException, IllegalArgumentException {
-        if (itemUsedId.equals(EntityTypes.KEY.toString())) {
-            if (this.key == null) {
-                throw new InvalidActionException("ERROR: Do not have a key");
-            }
-
-            Key key = this.key;
-            useKey();
-            return key;
-        }
 
         IEquipment item = getItemById(itemUsedId);
 
@@ -205,11 +196,11 @@ public final class Backpack {
         return (this.key != null);
     }
 
-    public boolean hasKey(int key) {
+    public boolean hasTheKey(int key) {
         return (this.key.getKey() == key);
     }
 
-    private void useKey() {
+    public void useKey() {
         this.key = null;
     }
 
@@ -270,4 +261,29 @@ public final class Backpack {
             this.Shields.remove(shield);
         }
     }
+
+    /**
+     * precondition: has a shield
+     * @return
+     */
+    public Shield getShiled() {
+        return this.Shields.get(0);
+    }
+
+    /**
+     * precondition: has a shield
+     * @return
+     */
+    public Bow getBow() {
+        return this.Bows.get(0);
+    }
+
+    /**
+     * precondition: has a shield
+     * @return
+     */
+    public Sword getSword() {
+        return this.Swords.get(0);
+    }
+
 }
