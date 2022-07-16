@@ -394,6 +394,8 @@ public class Player extends Entity {
     }
 
     public void attackedBy(double ad) {
+        if (isInvincible()) return;
+
         int defence = 0;
 
         defence += this.allyNum * this.allyDefenceBonous;
