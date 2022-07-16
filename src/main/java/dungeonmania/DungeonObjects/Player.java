@@ -120,7 +120,10 @@ public class Player extends Entity {
 
         defence += this.allyNum * this.allyDefenceBonous;
 
-        if (holdingShield()) { defence = this.shield_defence; }
+        if (holdingShield()) {
+            defence = this.shield_defence;
+            useEquipment(EntityTypes.SHIELD.toString());
+        }
 
         this.health -= ((ad - defence) / 5);
 
