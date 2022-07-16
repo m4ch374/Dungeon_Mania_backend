@@ -99,39 +99,6 @@ public class Player extends Entity {
         return backpack.hasShield();
     }
 
-    public void useEquipment(String type) {
-        backpack.useEquipment(type);
-    }
-
-    private double getAttackDamage() {
-        double ad = this.attackDamage;
-
-        if (holdingSword()) { ad += this.sword_attack; }
-
-        if (holdingBow()) { ad *= 2; }
-
-        ad += this.allyNum * this.allyAttackBonous;
-
-        return ad;
-    }
-
-    public void attackedBy(double ad) {
-        int defence = 0;
-
-        defence += this.allyNum * this.allyDefenceBonous;
-
-        if (holdingShield()) {
-            defence = this.shield_defence;
-            useEquipment(EntityTypes.SHIELD.toString());
-        }
-
-        this.health -= ((ad - defence) / 5);
-
-        if (isDead()) {
-            getMap().removeEntity(this);
-        }
-    }
-
     public void collect(ICollectable item) throws InvalidActionException {
         if (item instanceof Key && backpack.hasAKey()) {
             throw new InvalidActionException("Already has a key");
@@ -382,17 +349,67 @@ public class Player extends Entity {
     public HashMap<String, Object> getState() {
         HashMap<String, Object> state = new HashMap<String, Object>();
 
-        state.put("health", this.health);               // double
-        state.put("invincible", isInvincible());        // boolean
-        state.put("invisible", isInvisible());          // boolean
-        state.put("dead", isDead());                    // boolean
-        state.put("sword", holdingSword());             // boolean
-        state.put("bow", holdingBow());                 // boolean
-        state.put("shield", holdingShield());           // boolean
-        state.put("attackDamage", getAttackDamage());   // double
-        state.put("ally", this.allyNum);                // int
+        state.put("health", this.health);                       // double
+        state.put("invincible", isInvincible());                // boolean
+        state.put("invisible", isInvisible());                  // boolean
+        state.put("dead", isDead());                            // boolean
+        state.put("sword", holdingSword());                     // boolean
+        state.put("bow", holdingBow());                         // boolean
+        state.put("shield", holdingShield());                   // boolean
+        state.put("attackDamage", getAttackDamage());           // double
+        state.put("ally", this.allyNum);                        // int
+        state.put("ItemResponse", getEquipmentUsedInRound());   // List<ItemResponse>
 
         return state;
+    }
+
+    // items that can/will be used in the battle at the moment
+    private List<ItemResponse> getEquipmentUsedInRound () {
+        ArrayList<ItemResponse> items = new ArrayList<ItemResponse>();
+        ArrayList<IEquipment> battleEquipment = new ArrayList<IEquipment>();
+
+        if (holdingSword()) battleEquipment.add(backpack.getSword());
+        if (holdingBow()) battleEquipment.add(backpack.getBow());
+        if (holdingShield()) battleEquipment.add(backpack.getShiled());
+
+        battleEquipment
+            .stream()
+            .forEach(e -> items.add(e.toItemResponse()));
+
+        return items;
+    }
+
+    public void useEquipment(String type) {
+        backpack.useEquipment(type);
+    }
+
+    private double getAttackDamage() {
+        double ad = this.attackDamage;
+
+        if (holdingSword()) { ad += this.sword_attack; }
+
+        if (holdingBow()) { ad *= 2; }
+
+        ad += this.allyNum * this.allyAttackBonous;
+
+        return ad;
+    }
+
+    public void attackedBy(double ad) {
+        int defence = 0;
+
+        defence += this.allyNum * this.allyDefenceBonous;
+
+        if (holdingShield()) {
+            defence = this.shield_defence;
+            useEquipment(EntityTypes.SHIELD.toString());
+        }
+
+        this.health -= ((ad - defence) / 5);
+
+        if (isDead()) {
+            getMap().removeEntity(this);
+        }
     }
 
     // TODO for the man in charge of battle

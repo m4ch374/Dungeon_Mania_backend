@@ -261,4 +261,29 @@ public final class Backpack {
             this.Shields.remove(shield);
         }
     }
+
+    /**
+     * precondition: has a shield
+     * @return
+     */
+    public Shield getShiled() {
+        return this.Shields.get(0);
+    }
+
+    /**
+     * precondition: has a shield
+     * @return
+     */
+    public Bow getBow() {
+        return this.Bows.get(0);
+    }
+
+    /**
+     * precondition: has a shield
+     * @return
+     */
+    public Sword getSword() {
+        return this.Swords.get(0);
+    }
+
 }
