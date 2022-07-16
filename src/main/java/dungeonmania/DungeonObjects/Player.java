@@ -125,7 +125,7 @@ public class Player extends Entity {
 
     private void updatePotions() {
         // update potion state
-        if (isInvisible()) {
+        if (isInvincible()) {
             this.InvincibilityRemainingTime -= 1;
         }
 
@@ -298,10 +298,8 @@ public class Player extends Entity {
     public void tick(String action, Direction direction, String str) throws InvalidActionException, IllegalArgumentException {
         if (action.equals(Constant.PLAYERUSE)) {
             useItem(str);
-            updatePotions();
         } else if (action.equals(Constant.PLAYERMAKE)) {
             make(str);
-            updatePotions();
         } else if (action.equals(Constant.PLAYERMOVE)) {
             this.direction = direction;
 
