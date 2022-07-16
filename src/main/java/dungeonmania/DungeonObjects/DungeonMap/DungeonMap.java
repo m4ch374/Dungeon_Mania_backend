@@ -75,7 +75,8 @@ public class DungeonMap {
             return;
 
         DungeonCell currCell = map.get(pos);
-        List<Entity> celleEntities = currCell.getAllEntitiesInCell();
+        List<Entity> celleEntities = new ArrayList<Entity>();
+        celleEntities.addAll(currCell.getAllEntitiesInCell());
 
         celleEntities.stream()
                     .filter(e -> !(e instanceof Player))

@@ -2,30 +2,19 @@ package dungeonmania;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import static dungeonmania.TestUtils.getPlayer;
-import static dungeonmania.TestUtils.getEntities;
-import static dungeonmania.TestUtils.getInventory;
-import static dungeonmania.TestUtils.getGoals;
-import static dungeonmania.TestUtils.countEntityOfType;
-import static dungeonmania.TestUtils.getValueFromConfigFile;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import dungeonmania.DungeonObjects.EntityTypes;
 import dungeonmania.exceptions.InvalidActionException;
-import dungeonmania.response.models.BattleResponse;
 import dungeonmania.response.models.DungeonResponse;
 import dungeonmania.response.models.EntityResponse;
-import dungeonmania.response.models.RoundResponse;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
@@ -348,6 +337,8 @@ public class PlayerCollectionTest {
         dmc.tick(Direction.DOWN);
 
         DungonRes = dmc.getDungeonResponseModel();
+        assertEquals(20, DungonRes.getEntities().size());
+
         ArrayList<String> bomb_id = new ArrayList<String>();
         DungonRes.getInventory()
                 .stream()
@@ -358,8 +349,7 @@ public class PlayerCollectionTest {
 
         try {
             DungonRes = dmc.tick(bomb_id.get(0));
-            // will pass after boulder-switch interaction finished
-            assertEquals(8, DungonRes.getEntities().size());
+            assertEquals(9, DungonRes.getEntities().size());
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
             assertEquals(true, false);
