@@ -276,13 +276,18 @@ public class Player extends Entity {
             // deal with interaction of overlapped portal
             Portal portal = getOverlapPortal();
             if (portal != null) {
-                try {
-                    Position direction_new = portal.getDestination();
-                    move(direction_new);
-                } catch (InvalidActionException e) {
-                    // nothing here, just let the player overlap with portal without teleport
-                    // this structure will allow player go in portal as much as possible
-                    // and player will stop at the portal which he cannot goes in
+                // Get destinationS of the current Portal, player can jump into (0th index is the original intended destination)
+                List<Position> destinationList = portal.getDestinations(getDirection());
+                for (Position destinationPos : destinationList) {
+                    try {
+                        // Call recursively on each new destination, IFF theres another Portal there
+                        move(destinationPos);
+                        break;
+                    } catch (InvalidActionException e) {
+                        // nothing here, just let the player overlap with portal without teleport
+                        // this structure will allow player go in portal as much as possible
+                        // and player will stop at the portal which he cannot goes in
+                    }
                 }
             }
         }

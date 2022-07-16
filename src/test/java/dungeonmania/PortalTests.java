@@ -39,7 +39,7 @@ public class PortalTests {
     // then gets teleported to (2,3), which is east of pair red Portal at (1,3)
     public void testPortalTeleportsPlayerBasic() {
         DungeonManiaController dmc = new DungeonManiaController();
-        DungeonResponse dungeonRes = dmc.newGame(DIR_NAME + "d_portalTest_basic", "c_DoorsKeysTest_useKeyWalkThroughOpenDoor");
+        DungeonResponse dungeonRes = dmc.newGame(DIR_NAME + "d_portalTest_onePair", "c_DoorsKeysTest_useKeyWalkThroughOpenDoor");
         
         EntityResponse player = getPlayer(dungeonRes).get();
         // Get both portal info 
