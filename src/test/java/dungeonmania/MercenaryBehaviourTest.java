@@ -1,17 +1,21 @@
 package dungeonmania;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.response.models.DungeonResponse;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
 public class MercenaryBehaviourTest {
     private static final String DIR_NAME = "d_MercTests/";
+    private static final String C_DIR_NAME = "c_bribeTests/";
 
     @Test
     @DisplayName("Test basic movement for the merc moving up")
@@ -184,5 +188,67 @@ public class MercenaryBehaviourTest {
             System.out.println(mercPos);
             assertEquals(new Position(1, 5), mercPos);
         }
+    }
+
+    @Test
+    @DisplayName("Test not in radius")
+    public void testMercBribe_notInRadius() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame(DIR_NAME + "d_mercTest_bribeTest", C_DIR_NAME + "c_bribeTests_radius1");
+
+        assertThrows(InvalidActionException.class, () -> dmc.interact("mercenary"));
+    }
+
+    @Test
+    @DisplayName("Test not enough treasure")
+    public void testMercBribe_notEnoughTreasure() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame(DIR_NAME + "d_mercTest_bribeTest", C_DIR_NAME + "c_bribeTests_radius1");
+
+        dmc.tick(Direction.DOWN);
+        res = dmc.tick(Direction.RIGHT);
+
+        assertThrows(InvalidActionException.class, () -> dmc.interact("mercenary"));
+    }
+
+    @Test
+    @DisplayName("Test player able to bribe within radius of 1")
+    public void testMercBribe_withinRadius1() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame(DIR_NAME + "d_mercTest_bribeTest", C_DIR_NAME + "c_bribeTests_radius1");
+
+        dmc.tick(Direction.RIGHT);
+        res = dmc.tick(Direction.DOWN);
+
+        assertEquals(0, TestUtils.getEntities(res, "treasure").size());
+
+        assertDoesNotThrow(() -> dmc.interact("mercenary"));
+    }
+
+    @Test
+    @DisplayName("Test player able to bribe within radius of 2 diagonally")
+    public void testMercBribe_withinRadius2_diagonally() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame(DIR_NAME + "d_mercTest_bribeTest", C_DIR_NAME + "c_bribeTests_radius2");
+
+        res =dmc.tick(Direction.RIGHT);
+
+        assertEquals(0, TestUtils.getEntities(res, "treasure").size());
+
+        assertDoesNotThrow(() -> dmc.interact("mercenary"));
+    }
+
+    @Test
+    @DisplayName("Test player able to bribe within radius of 2 cardinally")
+    public void testMercBribe_withinRadius2_cardinally() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame(DIR_NAME + "d_mercTest_bribeTest", C_DIR_NAME + "c_bribeTests_radius2");
+
+        dmc.tick(Direction.RIGHT);
+        res = dmc.tick(Direction.RIGHT);
+
+        assertEquals(0, TestUtils.getEntities(res, "treasure").size());
+
+        assertDoesNotThrow(() -> dmc.interact("mercenary"));
     }
 }
