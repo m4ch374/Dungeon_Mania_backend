@@ -77,7 +77,11 @@ public class Mercenary extends Entity implements IMovable, IPlayerInteractable {
 
         player.bribe(brinbeAmount);
 
-        // TODO: convert to friendly behaviour
+        // Switch state to friendly merc
+        EntityStruct struct = new EntityStruct(super.getId(), super.getType(), super.getMap());
+        FriendlyCharacter friendlyMerc = new FriendlyCharacter(struct);
+        map.removeEntity(this);
+        map.placeEntityAt(friendlyMerc, currPos);
     }
     
 }
