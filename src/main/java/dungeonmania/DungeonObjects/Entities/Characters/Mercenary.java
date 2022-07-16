@@ -2,17 +2,21 @@ package dungeonmania.DungeonObjects.Entities.Characters;
 
 import dungeonmania.Interfaces.IMovable;
 import dungeonmania.Interfaces.IMovingStrategy;
+import dungeonmania.Interfaces.IPlayerInteractable;
 import dungeonmania.MovingStrategies.SeekerMoveStrat;
+import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.response.models.EntityResponse;
 import dungeonmania.response.models.RoundResponse;
+import dungeonmania.util.Position;
 import dungeonmania.util.DungeonFactory.EntityStruct;
 
 import org.json.JSONObject;
 
+import dungeonmania.DungeonObjects.Player;
 import dungeonmania.DungeonObjects.DungeonMap.DungeonMap;
 import dungeonmania.DungeonObjects.Entities.Entity;
 
-public class Mercenary extends Entity implements IMovable {
+public class Mercenary extends Entity implements IMovable, IPlayerInteractable {
 
     private int bribeRadius;
     private int brinbeAmount;
@@ -20,7 +24,8 @@ public class Mercenary extends Entity implements IMovable {
     private int attackDamage;
     private int health;
 
-    private IMovingStrategy moveStrat = new SeekerMoveStrat(this, super.getMap(), "player");
+    private DungeonMap map = super.getMap();
+    private IMovingStrategy moveStrat = new SeekerMoveStrat(this, this.map, "player");
 
     public Mercenary(EntityStruct metaData, JSONObject config) {
         super(metaData);
@@ -58,6 +63,21 @@ public class Mercenary extends Entity implements IMovable {
     public EntityResponse toEntityResponse() {
         DungeonMap map = super.getMap();
         return new EntityResponse(super.getId(), super.getType(), map.getEntityPos(this), true);
+    }
+
+    @Override
+    public void interactedByPlayer(Player player) throws InvalidActionException {
+        Position currPos = map.getEntityPos(this);
+        Position playerPos = map.getEntityPos(player);
+
+        Position distance = Position.calculatePositionBetween(currPos, playerPos);
+
+        if (distance.getX() > bribeRadius || distance.getY() > bribeRadius)
+            throw new InvalidActionException("Error: out of radius");
+
+        player.bribe(brinbeAmount);
+
+        // TODO: convert to friendly behaviour
     }
     
 }
