@@ -22,6 +22,11 @@ public class DungeonBuilder {
     private JSONObject dungeonGoals;
     private JSONObject configJson;
 
+    private DungeonBuilder(String dungeonName, String configName) throws IOException {
+        setJsonObj(dungeonName, configName);
+        this.dungeonName = dungeonName;
+    }
+
     public String getDungeonId() {
         return dungeonId;
     }
@@ -66,9 +71,7 @@ public class DungeonBuilder {
     }
 
     public static DungeonBuilder setConfig(String dungeonName, String configName) throws IOException {
-        DungeonBuilder builder = new DungeonBuilder();
-        builder.setJsonObj(dungeonName, configName);
-        builder.dungeonName = dungeonName;
+        DungeonBuilder builder = new DungeonBuilder(dungeonName, configName);
 
         return builder;
     }

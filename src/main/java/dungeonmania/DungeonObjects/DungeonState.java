@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 import org.json.JSONObject;
 
 import dungeonmania.DungeonObjects.DungeonMap.DungeonMap;
+import dungeonmania.DungeonObjects.Entities.Entity;
+import dungeonmania.Interfaces.IPlayerInteractable;
 import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.response.models.DungeonResponse;
 import dungeonmania.response.models.EntityResponse;
@@ -81,7 +83,15 @@ public class DungeonState {
         player.tick(Constant.PLAYERMAKE, null, buildable);
     }
 
-    public void interact(String entityId) throws IllegalArgumentException, InvalidActionException {}
+    public void interact(String entityId) throws IllegalArgumentException, InvalidActionException {
+        Entity entityToInteract = map.getAllEntities().stream().filter(e -> e.getId().equals(entityId)).findFirst().orElse(null);
+
+        if (entityToInteract == null)
+            throw new IllegalArgumentException("Error: " + entityId + " not found");
+
+        // Do the interaction
+        ((IPlayerInteractable) entityToInteract).interactedByPlayer(player);
+    }
 
     public DungeonResponse toDungeonResponse() {
         List<EntityResponse> entities = map.getAllEntities().stream().map(e -> e.toEntityResponse()).collect(Collectors.toList());

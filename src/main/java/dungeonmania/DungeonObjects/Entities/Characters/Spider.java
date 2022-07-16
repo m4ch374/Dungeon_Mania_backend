@@ -57,9 +57,9 @@ public class Spider extends Entity implements IMovable {
             return;
 
         int minX = map.getLeftBound();
-        int maxX = map.getRightBound();
+        int maxX = map.getRightBound() + 1;
         int minY = map.getTopBound();
-        int maxY = map.getBottomBound();
+        int maxY = map.getBottomBound() + 1;
 
         Random random = new Random();
         int entityX = random.nextInt(maxX - minX) + minX;
