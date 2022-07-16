@@ -390,6 +390,7 @@ public class Player extends Entity {
         state.put("bow", holdingBow());                 // boolean
         state.put("shield", holdingShield());           // boolean
         state.put("attackDamage", getAttackDamage());   // double
+        state.put("ally", this.allyNum);                // int
 
         return state;
     }
