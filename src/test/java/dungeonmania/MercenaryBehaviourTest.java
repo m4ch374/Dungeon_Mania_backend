@@ -10,7 +10,7 @@ import dungeonmania.response.models.DungeonResponse;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
-public class MercenaryMovementTest {
+public class MercenaryBehaviourTest {
     private static final String DIR_NAME = "d_MercTests/";
 
     @Test
