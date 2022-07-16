@@ -34,26 +34,8 @@ public class Boulder extends Entity implements IStaticInteractable {
 
     public Position determineNewPosition(Player player) {
         Direction direction = player.getDirection();
-        Position boulderPos = super.getMap().getEntityPos(this);
-        int x = boulderPos.getX();
-        int y = boulderPos.getY();
 
-        switch (direction) {
-            case UP:
-                y -= 1;
-                break;
-            case DOWN:
-                y += 1;
-                break;
-            case LEFT:
-                x -= 1;
-                break;
-            case RIGHT:
-                x += 1;
-                break;
-        }
-
-        Position position = new Position(x, y);
+        Position position = getMap().getEntityPos(this).translateBy(direction);
 
         return position;
     }
