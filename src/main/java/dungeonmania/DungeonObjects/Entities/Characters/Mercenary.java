@@ -3,6 +3,8 @@ package dungeonmania.DungeonObjects.Entities.Characters;
 import dungeonmania.Interfaces.IMovable;
 import dungeonmania.Interfaces.IMovingStrategy;
 import dungeonmania.Interfaces.IPlayerInteractable;
+import dungeonmania.MovingStrategies.ConfusedMoveStrat;
+import dungeonmania.MovingStrategies.CowerMoveStrat;
 import dungeonmania.MovingStrategies.SeekerMoveStrat;
 import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.response.models.EntityResponse;
@@ -12,11 +14,13 @@ import dungeonmania.util.DungeonFactory.EntityStruct;
 
 import org.json.JSONObject;
 
+import dungeonmania.DungeonObjects.EntityTypes;
 import dungeonmania.DungeonObjects.Player;
 import dungeonmania.DungeonObjects.DungeonMap.DungeonMap;
 import dungeonmania.DungeonObjects.Entities.Entity;
 
 public class Mercenary extends Entity implements IMovable, IPlayerInteractable {
+    private static final String OBSERVING_ID = "player";
 
     private int bribeRadius;
     private int brinbeAmount;
@@ -24,8 +28,9 @@ public class Mercenary extends Entity implements IMovable, IPlayerInteractable {
     private int attackDamage;
     private int health;
 
+    private Player observing = null;
     private DungeonMap map = super.getMap();
-    private IMovingStrategy moveStrat = new SeekerMoveStrat(this, this.map, "player");
+    private IMovingStrategy moveStrat = new SeekerMoveStrat(this, this.map, OBSERVING_ID);
 
     public Mercenary(EntityStruct metaData, JSONObject config) {
         super(metaData);
@@ -53,6 +58,14 @@ public class Mercenary extends Entity implements IMovable, IPlayerInteractable {
 
     @Override
     public void move() {
+        if (observing == null)
+            observing = map.getAllEntities().stream()
+                        .filter(e -> e.getType().equals(EntityTypes.PLAYER.toString()))
+                        .map(e -> (Player) e)
+                        .findFirst()
+                        .get();
+
+        switchMoveStrat();
         moveStrat.moveEntity();
     }
 
@@ -84,4 +97,23 @@ public class Mercenary extends Entity implements IMovable, IPlayerInteractable {
         map.placeEntityAt(friendlyMerc, currPos);
     }
     
+    private void switchMoveStrat() {
+        boolean invincible = (boolean) observing.getState().get("invincible");
+        boolean invisible = (boolean) observing.getState().get("invisible");
+
+        if (invincible && !(moveStrat instanceof CowerMoveStrat)) {
+            moveStrat = new CowerMoveStrat(this, map, OBSERVING_ID);
+            return;
+        }
+
+        if (invisible && !(moveStrat instanceof ConfusedMoveStrat)) {
+            moveStrat = new ConfusedMoveStrat(this, map);
+            return;
+        }
+
+        if (!invincible && !invisible && !(moveStrat instanceof SeekerMoveStrat)) {
+            moveStrat = new SeekerMoveStrat(this, map, OBSERVING_ID);
+            return;
+        }
+    }
 }
