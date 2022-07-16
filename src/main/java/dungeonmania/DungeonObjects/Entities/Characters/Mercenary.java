@@ -56,6 +56,15 @@ public class Mercenary extends Entity implements IMovable, IPlayerInteractable {
         return health;
     }
 
+    public void death() {
+        getMap().removeEntity(this);
+        return;
+    }
+
+    public String getClasString() {
+        return "Mercenary";
+    }
+
     @Override
     public void move() {
         if (observing == null)

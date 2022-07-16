@@ -37,6 +37,16 @@ public class ZombieToast extends Entity implements IMovable {
         return health;
     }
 
+    public void death() {
+        getMap().removeEntity(this);
+        return;
+    }
+
+    public String getClasString() {
+        return "Zombie Toast";
+    }
+
+
     @Override
     public void move() {
         if (observing == null)

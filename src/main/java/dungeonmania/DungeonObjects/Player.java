@@ -21,11 +21,15 @@ import dungeonmania.DungeonObjects.Entities.Statics.Portal;
 import dungeonmania.DungeonObjects.Entities.Statics.Boulder;
 import dungeonmania.DungeonObjects.Entities.Statics.Door;
 import dungeonmania.DungeonObjects.Entities.Statics.Wall;
+import dungeonmania.Interactions.Combat;
 import dungeonmania.Interfaces.ICollectable;
 import dungeonmania.Interfaces.IEquipment;
+import dungeonmania.Interfaces.IMovable;
 import dungeonmania.Interfaces.IStaticInteractable;
 import dungeonmania.exceptions.InvalidActionException;
+import dungeonmania.response.models.BattleResponse;
 import dungeonmania.response.models.ItemResponse;
+import dungeonmania.Interactions.Combat;
 
 public class Player extends Entity {
 
@@ -419,8 +423,18 @@ public class Player extends Entity {
         }
     }
 
-    // TODO for the man in charge of battle
-    public void initiateBattle() {}
+    public List<BattleResponse> initiateBattle() {
+        List<BattleResponse> battles = new ArrayList<BattleResponse>();
+        for (Entity enemy : getMap().getEntitiesOverlapped(this)){
+            Combat battle = new Combat(this, (IMovable)enemy);
+            battles.add(battle.returnBattleResponse());
+        }
+        if (battles.size() == 0){
+            return null;
+        }
+        
+        return battles;
+    }
 
     public void openDoor(int key) throws InvalidActionException {
         if (!backpack.hasAKey() || !backpack.hasTheKey(key)) {

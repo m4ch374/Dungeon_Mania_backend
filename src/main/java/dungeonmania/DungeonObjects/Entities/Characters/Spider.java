@@ -38,6 +38,15 @@ public class Spider extends Entity implements IMovable {
         return health;
     }
 
+    public void death() {
+        getMap().removeEntity(this);
+        return;
+    }
+
+    public String getClasString() {
+        return "Spider";
+    }
+
     @Override
     public void move() {
         moveStrat.moveEntity();

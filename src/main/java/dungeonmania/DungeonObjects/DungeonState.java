@@ -1,6 +1,7 @@
 package dungeonmania.DungeonObjects;
 
 import java.util.List;
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 import org.json.JSONObject;
@@ -9,6 +10,7 @@ import dungeonmania.DungeonObjects.DungeonMap.DungeonMap;
 import dungeonmania.DungeonObjects.Entities.Entity;
 import dungeonmania.Interfaces.IPlayerInteractable;
 import dungeonmania.exceptions.InvalidActionException;
+import dungeonmania.response.models.BattleResponse;
 import dungeonmania.response.models.DungeonResponse;
 import dungeonmania.response.models.EntityResponse;
 import dungeonmania.util.Direction;
@@ -23,6 +25,7 @@ public class DungeonState {
     private Player player;
     private DungeonMap map;
     private Tracker tracker;
+    private List<BattleResponse> battles = new ArrayList<BattleResponse>();
 
     private JSONObject config;
 
@@ -77,6 +80,10 @@ public class DungeonState {
         // spawner.spawnItems() ---> spawns zombies
 
         // player.initiateBattle() ---> initiates battle with all overlapped enemies
+        List<BattleResponse> battle = player.initiateBattle();
+        if ( battle != null) {
+            battle.stream().forEach(b -> battles.add(b));
+        }
     }
 
     public void build(String buildable) throws IllegalArgumentException, InvalidActionException {
@@ -95,6 +102,6 @@ public class DungeonState {
 
     public DungeonResponse toDungeonResponse() {
         List<EntityResponse> entities = map.getAllEntities().stream().map(e -> e.toEntityResponse()).collect(Collectors.toList());
-        return new DungeonResponse(dungeonId, dungeonName, entities, player.getPlayerItems(), null, player.getBuildables(), null);
+        return new DungeonResponse(dungeonId, dungeonName, entities, player.getPlayerItems(), battles, player.getBuildables(), null);
     }
 }
