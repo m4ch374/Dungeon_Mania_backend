@@ -75,8 +75,8 @@ public class SeekerMoveStrat implements IMovingStrategy {
         RelativePosition posToCheck = relativeCurrPos.translateBy(Direction.UP, originalDirection);
 
         // Go left and right to search for the nearest opening
-        int leftUntilOpen = getLeftOpenings(relativeCurrPos, posToCheck, originalDirection);
-        int rightUntilOpen = getRightOpenings(relativeCurrPos, posToCheck, originalDirection);
+        int leftUntilOpen = getOpenings(relativeCurrPos, posToCheck, originalDirection, Direction.LEFT);
+        int rightUntilOpen = getOpenings(relativeCurrPos, posToCheck, originalDirection, Direction.RIGHT);
 
         if (leftUntilOpen == -1 && rightUntilOpen == -1)
             return currPos;
@@ -114,7 +114,7 @@ public class SeekerMoveStrat implements IMovingStrategy {
         return !containsBlockable(originalPos) && !containsBlockable(otherOriginalPos);
     }
 
-    private int getLeftOpenings(RelativePosition relativePos, RelativePosition otherRelativePos, Direction direction) {
+    private int getOpenings(RelativePosition relativePos, RelativePosition otherRelativePos, Direction transposeDir, Direction heading) {
         int leftOpening = 0;
 
         while (true) {
@@ -124,28 +124,11 @@ public class SeekerMoveStrat implements IMovingStrategy {
             if (hasOpening(relativePos, otherRelativePos))
                 break;
 
-            relativePos = relativePos.translateBy(Direction.LEFT, direction);
-            otherRelativePos = otherRelativePos.translateBy(Direction.LEFT, direction);
+            relativePos = relativePos.translateBy(heading, transposeDir);
+            otherRelativePos = otherRelativePos.translateBy(heading, transposeDir);
             leftOpening++;
         }
         return leftOpening;
-    }
-
-    private int getRightOpenings(RelativePosition relativePos, RelativePosition otherRelativePos, Direction direction) {
-        int rightOpening = 0;
-
-        while (true) {
-            if (containsBlockable(relativePos.getOriginalPos()))
-                return -1;
-
-            if (hasOpening(relativePos, otherRelativePos))
-                break;
-
-            relativePos = relativePos.translateBy(Direction.RIGHT, direction);
-            otherRelativePos = otherRelativePos.translateBy(Direction.RIGHT, direction);
-            rightOpening++;
-        }
-        return rightOpening;
     }
 
     @Override
