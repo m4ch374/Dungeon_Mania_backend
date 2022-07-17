@@ -3,6 +3,7 @@ package dungeonmania.MovingStrategies;
 import java.util.List;
 
 import dungeonmania.DungeonObjects.EntityTypes;
+import dungeonmania.DungeonObjects.Player;
 import dungeonmania.DungeonObjects.DungeonMap.DungeonMap;
 import dungeonmania.DungeonObjects.Entities.Entity;
 import dungeonmania.DungeonObjects.Entities.Statics.Door;
@@ -71,18 +72,18 @@ public class SeekerMoveStrat implements IMovingStrategy {
     //
     // I better hope this algo is correct cuz "simple wall" is ambiguous asf
     private Position resolveBlocked(Position currPos, Direction originalDirection) {
-        Position parsedCurrPos = toRelativePos(currPos, originalDirection);
-        Position posToCheck = new Position(parsedCurrPos.getX(), parsedCurrPos.getY() - 1);
+        RelativePosition relativeCurrPos = new RelativePosition(currPos, originalDirection);
+        RelativePosition posToCheck = relativeCurrPos.translateBy(Direction.UP, originalDirection);
 
         // Go left and right to search for the nearest opening
-        int leftUntilOpen = getLeftOpenings(parsedCurrPos, posToCheck, originalDirection);
-        int rightUntilOpen = getRightOpenings(parsedCurrPos, posToCheck, originalDirection);
+        int leftUntilOpen = getOpenings(relativeCurrPos, posToCheck, originalDirection, Direction.LEFT);
+        int rightUntilOpen = getOpenings(relativeCurrPos, posToCheck, originalDirection, Direction.RIGHT);
 
         if (leftUntilOpen == -1 && rightUntilOpen == -1)
             return currPos;
         
-        Position leftPos = toOriginalPos(parsedCurrPos.translateBy(Direction.LEFT), originalDirection);
-        Position rightPos = toOriginalPos(parsedCurrPos.translateBy(Direction.RIGHT), originalDirection);
+        Position leftPos = relativeCurrPos.translateBy(Direction.LEFT, originalDirection).getOriginalPos();
+        Position rightPos = relativeCurrPos.translateBy(Direction.RIGHT, originalDirection).getOriginalPos();
 
         if (rightUntilOpen == -1)
             return leftPos;
@@ -107,7 +108,88 @@ public class SeekerMoveStrat implements IMovingStrategy {
         return rightPos;
     }
 
-    // Rotate the "map" such that player is always above 
+    private boolean hasOpening(RelativePosition relativePos, RelativePosition otherRelativePos) {
+        Position originalPos = relativePos.getOriginalPos();
+        Position otherOriginalPos = otherRelativePos.getOriginalPos();
+
+        return !containsBlockable(originalPos) && !containsBlockable(otherOriginalPos);
+    }
+
+    private int getOpenings(RelativePosition relativePos, RelativePosition otherRelativePos, Direction transposeDir, Direction heading) {
+        int leftOpening = 0;
+
+        while (true) {
+            if (containsBlockable(relativePos.getOriginalPos()))
+                return -1;
+
+            if (hasOpening(relativePos, otherRelativePos))
+                break;
+
+            relativePos = relativePos.translateBy(heading, transposeDir);
+            otherRelativePos = otherRelativePos.translateBy(heading, transposeDir);
+            leftOpening++;
+        }
+        return leftOpening;
+    }
+
+    // Very botched code
+    private boolean cannotMoveCloser(Position nextPos) {
+        Player p = (Player) seekingEntity;
+
+        Position playerPrevPos = (Position) p.getState().get("previousPosition");
+        Position playerCurrPos = (Position) p.getState().get("currentPosition");
+
+        return playerCurrPos.equals(playerPrevPos) && map.getEntitiesAt(nextPos).stream().filter(e -> e instanceof Player).count() > 0;
+    }
+
+    @Override
+    public void moveEntity() {
+        // Load the entity to seek
+        if (seekingEntity == null)
+            seekingEntity = getSeekingEntity();
+
+        Position moverPos = map.getEntityPos(mover);
+        Position seekingPos = map.getEntityPos(seekingEntity);
+
+        if (moverPos.equals(seekingPos))
+            return;
+
+        Position relativeVect = Position.calculatePositionBetween(moverPos, seekingPos);
+
+        double radian = Math.atan2(relativeVect.getY(), relativeVect.getX());
+        Direction directionToGo = radiansToDirection(radian);
+
+        Position newPos = moverPos.translateBy(directionToGo);
+        if (containsBlockable(newPos))
+            newPos = resolveBlocked(moverPos, directionToGo);
+        
+        if (!cannotMoveCloser(newPos))
+            map.moveEntityTo(mover, newPos);
+    }
+}
+
+class RelativePosition {
+    Position originalPos;
+    Position relativePos;
+
+    public RelativePosition(Position originalPos, Direction direction) {
+        this.originalPos = originalPos;
+        relativePos = toRelativePos(originalPos, direction);
+    }
+
+    public Position getOriginalPos() {
+        return originalPos;
+    }
+
+    public Position getRelativePos() {
+        return relativePos;
+    }
+
+    public RelativePosition translateBy(Direction heading, Direction direction) {
+        Position originalPos = toOriginalPos(relativePos.translateBy(heading), direction);
+        return new RelativePosition(originalPos, direction);
+    }
+
     private Position toRelativePos(Position pos, Direction direction) {
         // Does not do anything
         if (direction == Direction.UP)
@@ -146,74 +228,5 @@ public class SeekerMoveStrat implements IMovingStrategy {
 
         // Rotate 90 degrees anticlockwise
         return new Position(-posY, posX);
-    }
-
-    private boolean enclosed(Position relativePos, Direction direction) {
-        return containsBlockable(toOriginalPos(relativePos, direction));
-    }
-
-    private boolean hasOpening(Position relativePos, Position otherRelativePos, Direction direction) {
-        Position originalPos = toOriginalPos(relativePos, direction);
-        Position otherOriginalPos = toOriginalPos(otherRelativePos, direction);
-
-        return !containsBlockable(originalPos) && !containsBlockable(otherOriginalPos);
-    }
-
-    private int getLeftOpenings(Position relativePos, Position otherRelativePos, Direction direction) {
-        int leftOpening = 0;
-
-        while (true) {
-            if (enclosed(relativePos, direction))
-                return -1;
-
-            if (hasOpening(relativePos, otherRelativePos, direction))
-                break;
-
-            relativePos = relativePos.translateBy(Direction.LEFT);
-            otherRelativePos = otherRelativePos.translateBy(Direction.LEFT);
-            leftOpening++;
-        }
-        return leftOpening;
-    }
-
-    private int getRightOpenings(Position relativePos, Position otherRelativePos, Direction direction) {
-        int rightOpening = 0;
-
-        while (true) {
-            if (enclosed(relativePos, direction))
-                return -1;
-
-            if (hasOpening(relativePos, otherRelativePos, direction))
-                break;
-
-            relativePos = relativePos.translateBy(Direction.RIGHT);
-            otherRelativePos = otherRelativePos.translateBy(Direction.RIGHT);
-            rightOpening++;
-        }
-        return rightOpening;
-    }
-
-    @Override
-    public void moveEntity() {
-        // Load the entity to seek
-        if (seekingEntity == null)
-            seekingEntity = getSeekingEntity();
-
-        Position moverPos = map.getEntityPos(mover);
-        Position seekingPos = map.getEntityPos(seekingEntity);
-
-        if (moverPos.equals(seekingPos))
-            return;
-
-        Position relativeVect = Position.calculatePositionBetween(moverPos, seekingPos);
-
-        double radian = Math.atan2(relativeVect.getY(), relativeVect.getX());
-        Direction directionToGo = radiansToDirection(radian);
-
-        Position newPos = moverPos.translateBy(directionToGo);
-        if (containsBlockable(newPos))
-            newPos = resolveBlocked(moverPos, directionToGo);
-        
-        map.moveEntityTo(mover, newPos);
     }
 }

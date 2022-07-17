@@ -8,7 +8,6 @@ import dungeonmania.Interfaces.IEnemy;
 import dungeonmania.Interfaces.IMovingStrategy;
 import dungeonmania.MovingStrategies.ConfusedMoveStrat;
 import dungeonmania.MovingStrategies.CowerMoveStrat;
-import dungeonmania.response.models.RoundResponse;
 import dungeonmania.util.DungeonFactory.EntityStruct;
 import org.json.JSONObject;
 
@@ -43,7 +42,7 @@ public class ZombieToast extends Entity implements IEnemy {
     }
 
     public String getClasString() {
-        return "Zombie Toast";
+        return super.getType();
     }
 
 
@@ -59,9 +58,6 @@ public class ZombieToast extends Entity implements IEnemy {
         switchMoveStrat();
         moveStrat.moveEntity();
     }
-
-    @Override
-    public RoundResponse battleWith(Entity opponent) { return null; }
 
     private void switchMoveStrat() {
         boolean invincible = (boolean) observing.getState().get("invincible");
