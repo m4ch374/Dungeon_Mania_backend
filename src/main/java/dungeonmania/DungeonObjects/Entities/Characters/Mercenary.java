@@ -12,6 +12,7 @@ import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.response.models.EntityResponse;
 import dungeonmania.response.models.RoundResponse;
 import dungeonmania.util.Position;
+import dungeonmania.util.Tracker;
 import dungeonmania.util.DungeonFactory.EntityStruct;
 
 import org.json.JSONObject;
@@ -35,12 +36,15 @@ public class Mercenary extends Entity implements IPlayerInteractable, IEnemy {
     private DungeonMap map = super.getMap();
     private IMovingStrategy moveStrat = new SeekerMoveStrat(this, this.map, OBSERVING_ID);
 
-    public Mercenary(EntityStruct metaData, JSONObject config) {
+    private Tracker tracker;
+
+    public Mercenary(EntityStruct metaData, JSONObject config, Tracker tracker) {
         super(metaData);
         this.bribeRadius = config.getInt("bribe_radius");
         this.brinbeAmount = config.getInt("bribe_amount");
         this.attackDamage = config.getInt("mercenary_attack");
         this.health = config.getInt("mercenary_health");
+        this.tracker = tracker;
     }
 
     public int getBribeRadius() {
@@ -61,7 +65,7 @@ public class Mercenary extends Entity implements IPlayerInteractable, IEnemy {
 
     public void death() {
         getMap().removeEntity(this);
-        return;
+        tracker.notifyEnemy();
     }
 
     public String getClasString() {
@@ -78,7 +82,8 @@ public class Mercenary extends Entity implements IPlayerInteractable, IEnemy {
                         .get();
 
         switchMoveStrat();
-        moveStrat.moveEntity();
+        Position pos = moveStrat.moveEntity();
+        map.moveEntityTo(this, pos);
     }
 
     // @Override

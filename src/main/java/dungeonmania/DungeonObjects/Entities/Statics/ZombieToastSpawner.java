@@ -20,6 +20,7 @@ import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.response.models.EntityResponse;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
+import dungeonmania.util.Tracker;
 import dungeonmania.util.DungeonFactory.EntityStruct;
 import dungeonmania.exceptions.*;
 
@@ -29,7 +30,9 @@ public class ZombieToastSpawner extends Entity implements IPlayerInteractable, I
     private int zombieSpawnRate;
     private DungeonMap map;
 
-    public ZombieToastSpawner(EntityStruct metaData, JSONObject config) {
+    private Tracker tracker;
+
+    public ZombieToastSpawner(EntityStruct metaData, JSONObject config, Tracker tracker) {
         super(metaData);
         this.zombieSpawnRate = config.getInt("zombie_spawn_rate");
         map = super.getMap();
@@ -59,7 +62,7 @@ public class ZombieToastSpawner extends Entity implements IPlayerInteractable, I
         Position newPos = possiblePos.get(randIdx);
 
         EntityStruct struct = new EntityStruct("spawned_zombie" + spawnId, EntityTypes.ZOMBIE_TOAST.toString(), map);
-        ZombieToast zombieSpawned = new ZombieToast(struct, config);
+        ZombieToast zombieSpawned = new ZombieToast(struct, config, tracker);
         map.placeEntityAt(zombieSpawned, newPos);
 
         spawnId++;

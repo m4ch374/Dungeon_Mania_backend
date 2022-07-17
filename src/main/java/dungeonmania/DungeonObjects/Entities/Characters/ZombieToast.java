@@ -8,6 +8,8 @@ import dungeonmania.Interfaces.IEnemy;
 import dungeonmania.Interfaces.IMovingStrategy;
 import dungeonmania.MovingStrategies.ConfusedMoveStrat;
 import dungeonmania.MovingStrategies.CowerMoveStrat;
+import dungeonmania.util.Position;
+import dungeonmania.util.Tracker;
 import dungeonmania.util.DungeonFactory.EntityStruct;
 import org.json.JSONObject;
 
@@ -22,10 +24,13 @@ public class ZombieToast extends Entity implements IEnemy {
     private DungeonMap map = super.getMap();
     private IMovingStrategy moveStrat = new ConfusedMoveStrat(this, map);
 
-    public ZombieToast(EntityStruct metaData, JSONObject config) {
+    Tracker tracker;
+
+    public ZombieToast(EntityStruct metaData, JSONObject config, Tracker tracker) {
         super(metaData);
         this.attackDamage = config.getInt("zombie_attack");
         this.health = config.getInt("zombie_health");
+        this.tracker = tracker;
     }
 
     public double getAttackDamage() {
@@ -38,7 +43,7 @@ public class ZombieToast extends Entity implements IEnemy {
 
     public void death() {
         getMap().removeEntity(this);
-        return;
+        tracker.notifyEnemy();
     }
 
     public String getClasString() {
@@ -56,7 +61,8 @@ public class ZombieToast extends Entity implements IEnemy {
                         .get();
 
         switchMoveStrat();
-        moveStrat.moveEntity();
+        Position pos = moveStrat.moveEntity();
+        map.moveEntityTo(this, pos);
     }
 
     private void switchMoveStrat() {

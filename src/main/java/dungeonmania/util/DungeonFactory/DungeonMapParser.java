@@ -14,16 +14,17 @@ import dungeonmania.DungeonObjects.Entities.Characters.*;
 import dungeonmania.DungeonObjects.Entities.Collectables.*;
 import dungeonmania.DungeonObjects.Entities.Statics.*;
 import dungeonmania.util.Position;
+import dungeonmania.util.Tracker;
 
 public class DungeonMapParser {
-    public static DungeonMap buildDungeonMap(JSONArray entities, JSONObject config) {
+    public static DungeonMap buildDungeonMap(JSONArray entities, JSONObject config, Tracker tracker) {
         ParserUtil util = ParserUtil.getUtil(entities);
         DungeonMap map = new DungeonMap(util.getTopLeft(), util.getBottomRight());
         Map<String, Integer> idMap = new HashMap<String, Integer>();
 
         for (int i = 0; i < entities.length(); i++) {
             JSONObject entityJson = entities.getJSONObject(i);
-            Entity entity = buildEntity(entityJson, idMap, map, config);
+            Entity entity = buildEntity(entityJson, idMap, map, config, tracker);
             
             Position entityPos = new Position(entityJson.getInt("x"), entityJson.getInt("y"));
             map.placeEntityAt(entity, entityPos);
@@ -32,7 +33,7 @@ public class DungeonMapParser {
         return map;
     }
 
-    private static Entity buildEntity(JSONObject entityJson, Map<String, Integer> idMap, DungeonMap map, JSONObject config) {
+    private static Entity buildEntity(JSONObject entityJson, Map<String, Integer> idMap, DungeonMap map, JSONObject config, Tracker tracker) {
         String entityType = entityJson.getString("type");
         String entityId = getEntityId(idMap, entityType);
         EntityStruct metaData = new EntityStruct(entityId, entityType, map);
@@ -40,11 +41,11 @@ public class DungeonMapParser {
         // Switch case, better than if else at least
         switch(EntityTypes.lookupEnum(entityType)) {
             case PLAYER:
-                return new Player(metaData, config);
+                return new Player(metaData, config, tracker);
             case WALL:
                 return new Wall(metaData);
             case EXIT:
-                return new Exit(metaData);
+                return new Exit(metaData, tracker);
             case BOULDER:
                 return new Boulder(metaData);
             case FLOOR_SWITCH:
@@ -56,13 +57,13 @@ public class DungeonMapParser {
                 String portalColour = entityJson.getString("colour");
                 return new Portal(metaData, portalColour);
             case ZOMBIE_TOAST_SPAWNER:
-                return new ZombieToastSpawner(metaData, config);
+                return new ZombieToastSpawner(metaData, config, tracker);
             case SPIDER:
-                return new Spider(metaData, config);
+                return new Spider(metaData, config, tracker);
             case ZOMBIE_TOAST:
-                return new ZombieToast(metaData, config);
+                return new ZombieToast(metaData, config, tracker);
             case MERCENARY:
-                return new Mercenary(metaData, config);
+                return new Mercenary(metaData, config, tracker);
             case TREASURE:
                 return new Treasure(metaData);
             case KEY:

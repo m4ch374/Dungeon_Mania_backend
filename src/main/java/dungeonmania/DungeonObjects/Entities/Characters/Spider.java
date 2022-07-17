@@ -11,6 +11,7 @@ import dungeonmania.Interfaces.IEnemy;
 import dungeonmania.Interfaces.IMovingStrategy;
 import dungeonmania.MovingStrategies.CircularMoveStrat;
 import dungeonmania.util.Position;
+import dungeonmania.util.Tracker;
 import dungeonmania.util.DungeonFactory.EntityStruct;
 
 public class Spider extends Entity implements IEnemy {
@@ -21,12 +22,16 @@ public class Spider extends Entity implements IEnemy {
     
     IMovingStrategy moveStrat;
 
-    public Spider(EntityStruct metaData, JSONObject config) {
+    Tracker tracker;
+
+    public Spider(EntityStruct metaData, JSONObject config, Tracker tracker) {
         super(metaData);
         this.attackDamage = config.getInt("spider_attack");
         this.health = config.getInt("spider_health");
 
         moveStrat = new CircularMoveStrat(this, super.getMap());
+
+        this.tracker = tracker;
     }
 
     public double getAttackDamage() {
@@ -39,7 +44,7 @@ public class Spider extends Entity implements IEnemy {
 
     public void death() {
         getMap().removeEntity(this);
-        return;
+        tracker.notifyEnemy();
     }
 
     public String getClasString() {
@@ -48,10 +53,11 @@ public class Spider extends Entity implements IEnemy {
 
     @Override
     public void move() {
-        moveStrat.moveEntity();
+        Position posToMove = moveStrat.moveEntity();
+        super.getMap().moveEntityTo(this, posToMove);
     }
     
-    public static void spawnSpider(JSONObject config, int currTick, DungeonMap map) {
+    public static void spawnSpider(JSONObject config, int currTick, DungeonMap map, Tracker tracker) {
         int spawnRate = config.getInt("spider_spawn_rate");
 
         if (spawnRate == 0)
@@ -74,7 +80,7 @@ public class Spider extends Entity implements IEnemy {
         entityY = entityY < 5 ? 5 : entityY;
 
         EntityStruct struct = new EntityStruct("spawned_spider" + spawnId, EntityTypes.SPIDER.toString(), map);
-        Spider spiderSpawned = new Spider(struct, config);
+        Spider spiderSpawned = new Spider(struct, config, tracker);
         map.placeEntityAt(spiderSpawned, new Position(entityX, entityY));
         spawnId++;
     }
