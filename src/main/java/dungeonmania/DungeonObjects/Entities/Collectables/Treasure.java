@@ -44,6 +44,7 @@ public class Treasure extends Entity implements ICollectable, IEquipment {
         if (collector instanceof Player) {
             Player player = (Player) collector;
             player.collect(this);
+            player.notifyTrackerCollectedTreasure();
             getMap().removeEntity(this);
         }
     }

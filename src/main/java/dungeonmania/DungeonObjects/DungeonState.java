@@ -48,7 +48,7 @@ public class DungeonState {
         player.tick(Constant.PLAYERUSE, null, itemUsedId);
 
         map.updateCharPos();
-        map.spawnEntites(config, currTick);
+        map.spawnEntites(config, currTick, tracker);
     }
 
     public void tick(Direction movementDirection) {
@@ -64,7 +64,7 @@ public class DungeonState {
 
         map.updateCharPos();
 
-        map.spawnEntites(config, currTick);
+        map.spawnEntites(config, currTick, tracker);
 
         // Structure would be something like this:
         //
@@ -102,6 +102,6 @@ public class DungeonState {
 
     public DungeonResponse toDungeonResponse() {
         List<EntityResponse> entities = map.getAllEntities().stream().map(e -> e.toEntityResponse()).collect(Collectors.toList());
-        return new DungeonResponse(dungeonId, dungeonName, entities, player.getPlayerItems(), battles, player.getBuildables(), null);
+        return new DungeonResponse(dungeonId, dungeonName, entities, player.getPlayerItems(), battles, player.getBuildables(), tracker.getUnfinishedGoals(map));
     }
 }
