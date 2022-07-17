@@ -32,6 +32,18 @@ Drop item:
 - Drop a bomb will destroy other bombs on the map
 - cannot cross a dropped non-activated bomb
 
+Interaction with Interactables:
+- Player interacts with Boulder, unrestricted, all directions
+- Player interacts with Boulder, restricted (wall, boulder), all directions
+- Player interacts with Boulder, onto Floor Switch, all directions
+- Player interacts with Portal, unrestricted, all directions
+- Player interacts with Portal, restricted (wall), all directions
+- Player interacts with Door, without Key
+- Player interacts with Door, with Key
+- Player interacts with Zombie Toast Spawner, without sword
+- Player interacts with Zombie Toast Spawner, with sword
+- Player interacts with Exit
+
 Battle system:
  - Start combat
  - Combat with no modifiers
