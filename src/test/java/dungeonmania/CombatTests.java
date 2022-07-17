@@ -16,7 +16,6 @@ import static dungeonmania.TestUtils.getValueFromConfigFile;
 import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.response.models.BattleResponse;
 import dungeonmania.response.models.DungeonResponse;
-import dungeonmania.response.models.EntityResponse;
 import dungeonmania.response.models.RoundResponse;
 import dungeonmania.util.Direction;
 import java.util.ArrayList;
@@ -56,50 +55,6 @@ public class CombatTests {
         assertEquals(1, countEntityOfType(initialResponse, "player"));
         assertEquals(1, mercenaryCount);
         controller.tick(Direction.DOWN);
-        return controller.tick(Direction.UP);
-    }
-    
-    private static DungeonResponse bowCombatSequence(DungeonManiaController controller, String configFile) {
-        /*
-         *  exit   wall  wall  wall
-         * player  [  ]  merc  wall
-         *  wood   wall  wall  wall
-         *  arrow  [  ]  [  ]  [  ]
-         *  arrow  [  ]  [  ]  [  ]
-         *  arrow  [  ]  [  ]  [  ]
-         */
-        DungeonResponse initialResponse = controller.newGame("d_battleTest_withBow", configFile);
-        int mercenaryCount = countEntityOfType(initialResponse, "mercenary");
-        
-        assertEquals(1, countEntityOfType(initialResponse, "player"));
-        assertEquals(1, mercenaryCount);
-        controller.tick(Direction.DOWN);
-        controller.tick(Direction.DOWN);
-        controller.tick(Direction.DOWN);
-        controller.tick(Direction.DOWN);
-        controller.build("bow");
-        return controller.tick(Direction.UP);
-    }
-
-    private static DungeonResponse shieldCombatSequence(DungeonManiaController controller, String configFile) {
-        /*
-         *  exit   wall  wall  wall
-         * player  [  ]  merc  wall
-         *  trea   wall  wall  wall
-         *  wood   [  ]  [  ]  [  ]
-         *  wood   [  ]  [  ]  [  ]
-         */
-        DungeonResponse initialResponse = controller.newGame("d_battleTest_withShield", configFile);
-        System.out.println("Dungeon was created");
-        int mercenaryCount = countEntityOfType(initialResponse, "mercenary");
-        
-        assertEquals(1, countEntityOfType(initialResponse, "player"));
-        assertEquals(1, mercenaryCount);
-        controller.tick(Direction.DOWN);
-        controller.tick(Direction.DOWN);
-        controller.tick(Direction.DOWN);
-        System.out.println("Finished moving");
-        controller.build("shield");
         return controller.tick(Direction.UP);
     }
 
@@ -245,28 +200,6 @@ public class CombatTests {
         BattleResponse battle = postBattleResponse.getBattles().get(0);
         List<String> mods = new ArrayList<String>();
         mods.add("sword");
-        assertModdedBattleCalculations("mercenary", battle, true, "c_battleTests_basicMercenaryMercenaryDies", mods, false);
-    }
-
-    @Test
-    @DisplayName("Test Combat w/ 1 modifier (Bow)")
-    public void testCombatWithBow() {
-        DungeonManiaController controller = new DungeonManiaController();
-        DungeonResponse postBattleResponse = bowCombatSequence(controller, "c_battleTests_basicMercenaryMercenaryDies");
-        BattleResponse battle = postBattleResponse.getBattles().get(0);
-        List<String> mods = new ArrayList<String>();
-        mods.add("bow");
-        assertModdedBattleCalculations("mercenary", battle, true, "c_battleTests_basicMercenaryMercenaryDies", mods, true);
-    }
-
-    @Test
-    @DisplayName("Test Combat w/ 1 modifier (Shield)")
-    public void testCombatWithShield() {
-        DungeonManiaController controller = new DungeonManiaController();
-        DungeonResponse postBattleResponse = shieldCombatSequence(controller, "c_battleTests_basicMercenaryMercenaryDies");
-        BattleResponse battle = postBattleResponse.getBattles().get(0);
-        List<String> mods = new ArrayList<String>();
-        mods.add("shield");
         assertModdedBattleCalculations("mercenary", battle, true, "c_battleTests_basicMercenaryMercenaryDies", mods, false);
     }
 
