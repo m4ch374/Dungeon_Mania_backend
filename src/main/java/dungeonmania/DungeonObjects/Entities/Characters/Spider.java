@@ -7,14 +7,14 @@ import org.json.JSONObject;
 import dungeonmania.DungeonObjects.EntityTypes;
 import dungeonmania.DungeonObjects.DungeonMap.DungeonMap;
 import dungeonmania.DungeonObjects.Entities.Entity;
-import dungeonmania.Interfaces.IMovable;
+import dungeonmania.Interfaces.IEnemy;
 import dungeonmania.Interfaces.IMovingStrategy;
 import dungeonmania.MovingStrategies.CircularMoveStrat;
 import dungeonmania.response.models.RoundResponse;
 import dungeonmania.util.Position;
 import dungeonmania.util.DungeonFactory.EntityStruct;
 
-public class Spider extends Entity implements IMovable {
+public class Spider extends Entity implements IEnemy {
     private static int spawnId = 0;
 
     private double attackDamage;

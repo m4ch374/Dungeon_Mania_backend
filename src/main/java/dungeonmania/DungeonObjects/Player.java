@@ -12,8 +12,8 @@ import dungeonmania.DungeonObjects.Entities.Statics.Portal;
 import dungeonmania.DungeonObjects.Entities.Statics.Wall;
 import dungeonmania.Interactions.Combat;
 import dungeonmania.Interfaces.ICollectable;
+import dungeonmania.Interfaces.IEnemy;
 import dungeonmania.Interfaces.IEquipment;
-import dungeonmania.Interfaces.IMovable;
 import dungeonmania.Interfaces.IStaticInteractable;
 import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.response.models.BattleResponse;
@@ -419,9 +419,11 @@ public class Player extends Entity {
     public List<BattleResponse> initiateBattle() {
         List<BattleResponse> battles = new ArrayList<BattleResponse>();
         for (Entity enemy : getMap().getEntitiesOverlapped(this)){
-            Combat battle = new Combat(this, (IMovable)enemy);
-            battle.resolveCombat();
-            battles.add(battle.returnBattleResponse());
+            if (enemy instanceof IEnemy){
+                Combat battle = new Combat(this, (IEnemy) enemy);
+                battle.resolveCombat();
+                battles.add(battle.returnBattleResponse());
+            }
         }
         if (battles.size() == 0){
             return null;
