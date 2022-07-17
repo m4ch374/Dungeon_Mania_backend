@@ -17,8 +17,8 @@ import dungeonmania.util.DungeonFactory.EntityStruct;
 public class Spider extends Entity implements IMovable {
     private static int spawnId = 0;
 
-    private int attackDamage;
-    private int health;
+    private double attackDamage;
+    private double health;
     
     IMovingStrategy moveStrat;
 
@@ -30,12 +30,21 @@ public class Spider extends Entity implements IMovable {
         moveStrat = new CircularMoveStrat(this, super.getMap());
     }
 
-    public int getAttackDamage() {
+    public double getAttackDamage() {
         return attackDamage;
     }
 
-    public int getHealth() {
+    public double getHealth() {
         return health;
+    }
+
+    public void death() {
+        getMap().removeEntity(this);
+        return;
+    }
+
+    public String getClasString() {
+        return "Spider";
     }
 
     @Override

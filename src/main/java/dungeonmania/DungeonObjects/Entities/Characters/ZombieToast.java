@@ -16,8 +16,8 @@ import dungeonmania.util.DungeonFactory.EntityStruct;
 public class ZombieToast extends Entity implements IMovable {
     private static final String OBSERVING_ID = "player";
 
-    private int attackDamage;
-    private int health;
+    private double attackDamage;
+    private double health;
 
     private Player observing = null;
     private DungeonMap map = super.getMap();
@@ -29,13 +29,23 @@ public class ZombieToast extends Entity implements IMovable {
         this.health = config.getInt("zombie_health");
     }
 
-    public int getAttackDamage() {
+    public double getAttackDamage() {
         return attackDamage;
     }
 
-    public int getHealth() {
+    public double getHealth() {
         return health;
     }
+
+    public void death() {
+        getMap().removeEntity(this);
+        return;
+    }
+
+    public String getClasString() {
+        return "Zombie Toast";
+    }
+
 
     @Override
     public void move() {

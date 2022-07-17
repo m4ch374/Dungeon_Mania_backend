@@ -31,3 +31,12 @@ Drop item:
 - Cannot pick up a placed bomb
 - Drop a bomb will destroy other bombs on the map
 - cannot cross a dropped non-activated bomb
+
+Battle system:
+ - Start combat
+ - Combat with no modifiers
+ - Player death
+ - NPC death
+ - Combat with 1 modifier (Sword/Bow/Shield/Merc)
+ - Combat with multiple modifiers
+ - Early combat resolution (Potion)
