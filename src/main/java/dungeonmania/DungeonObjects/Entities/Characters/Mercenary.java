@@ -1,23 +1,31 @@
 package dungeonmania.DungeonObjects.Entities.Characters;
 
 import dungeonmania.Interfaces.IEnemy;
+import dungeonmania.Interfaces.IMovable;
 import dungeonmania.Interfaces.IMovingStrategy;
 import dungeonmania.Interfaces.IPlayerInteractable;
+import dungeonmania.Interfaces.IEnemy;
 import dungeonmania.MovingStrategies.ConfusedMoveStrat;
 import dungeonmania.MovingStrategies.CowerMoveStrat;
 import dungeonmania.MovingStrategies.SeekerMoveStrat;
 import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.response.models.EntityResponse;
+import dungeonmania.response.models.RoundResponse;
 import dungeonmania.util.Position;
+import dungeonmania.util.Direction;
 import dungeonmania.util.Tracker;
 import dungeonmania.util.DungeonFactory.EntityStruct;
 
 import org.json.JSONObject;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import dungeonmania.DungeonObjects.EntityTypes;
 import dungeonmania.DungeonObjects.Player;
 import dungeonmania.DungeonObjects.DungeonMap.DungeonMap;
 import dungeonmania.DungeonObjects.Entities.Entity;
+import dungeonmania.DungeonObjects.Entities.Characters.*;
+import dungeonmania.DungeonObjects.Entities.Statics.Portal;
 
 public class Mercenary extends Entity implements IPlayerInteractable, IEnemy {
     private static final String OBSERVING_ID = "player";
@@ -65,22 +73,52 @@ public class Mercenary extends Entity implements IPlayerInteractable, IEnemy {
     }
 
     public String getClasString() {
-        return super.getType();
+        return "Mercenary";
     }
 
     @Override
     public void move() {
         if (observing == null)
-            observing = map.getAllEntities().stream()
-                        .filter(e -> e.getType().equals(EntityTypes.PLAYER.toString()))
-                        .map(e -> (Player) e)
-                        .findFirst()
-                        .get();
-
+        observing = map.getAllEntities().stream()
+        .filter(e -> e.getType().equals(EntityTypes.PLAYER.toString()))
+        .map(e -> (Player) e)
+        .findFirst()
+        .get();
+        
         switchMoveStrat();
         Position pos = moveStrat.moveEntity();
-        map.moveEntityTo(this, pos);
+        // Check for portal cases (NOTE: multi-teleportation not included due to time constraints)
+        Portal portal = getNewPosPortal(pos);
+        if (portal != null) {
+            try {
+                portal.interactedBy(this);
+                List<Position> portalDests = portal.getDestinations(portal.determineDestinationDirection(map.getEntityPos(this)));
+                // if no error is thrown, good to move
+                map.moveEntityTo(this, portalDests.get(0));
+            } catch (InvalidActionException e) {
+            }
+        } else {
+            // if portal doesnt exist, dw
+            map.moveEntityTo(this, pos);
+        }
     }
+    
+
+    // Get portal at the given position
+    public Portal getNewPosPortal(Position newPos) {
+        List<Entity> inCell = map.getEntitiesAt(newPos);
+        List<Portal> portal = inCell
+                                .stream()
+                                .filter(e -> (e instanceof Portal))
+                                .map(e -> (Portal) e)
+                                .collect(Collectors.toList());
+
+        if (portal.size() == 0) return null;
+        return portal.get(0);
+    }
+
+    // @Override
+    public RoundResponse battleWith(Entity opponent) { return null; }
 
     @Override
     public EntityResponse toEntityResponse() {

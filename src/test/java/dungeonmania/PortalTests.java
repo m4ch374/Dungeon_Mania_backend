@@ -198,10 +198,9 @@ public class PortalTests {
     @Test
     @DisplayName("Portal 6: Test Merc does teleport")
     // SYNOPSIS:
-    // Player (2,1) moves west away from Portal(3,1) and Merc(4,1) follows Player's direction, east, into Portal
-    // and gets teleported to east (1,3) of Portal1(2,3). They're surrounded by walls at (1,2),(2,2),(3,2),(4,2),(5,2),(5,1)
-    public void testPortalOverlapsMerc() {
-        // Merc first movement is into Portal(4,2), which overlaps with .
+    // Player (2,1) moves west away from Portal(3,1) and Merc(4,1) follows Player's direction, west, into Portal
+    // and gets teleported to west (1,3) of Portal1(2,3). They're surrounded by walls at (1,2),(2,2),(3,2),(4,2),(5,2),(5,1)
+    public void testPortalTeleportsMerc() {
         DungeonManiaController dmc = new DungeonManiaController();
         DungeonResponse dungeonRes = dmc.newGame(DIR_NAME + "d_portalTest_mercTeleported", "c_DoorsKeysTest_useKeyWalkThroughOpenDoor");
         
@@ -218,6 +217,7 @@ public class PortalTests {
         // Player moves West, Merc follows onto Portal(3,1), and gets teleported to east of Portal1(2,3) 
         dungeonRes = dmc.tick(Direction.LEFT);
         // Assert Merc is east (1,3) of Portal1(2,3)
+        mercenary = TestUtils.getEntityById(dungeonRes, "mercenary");
         assertEquals(new Position(1, 3), mercenary.getPosition());
     }
     

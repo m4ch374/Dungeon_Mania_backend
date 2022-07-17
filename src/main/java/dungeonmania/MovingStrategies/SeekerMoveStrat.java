@@ -1,6 +1,7 @@
 package dungeonmania.MovingStrategies;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import dungeonmania.DungeonObjects.EntityTypes;
 import dungeonmania.DungeonObjects.Player;
@@ -169,6 +170,7 @@ public class SeekerMoveStrat implements IMovingStrategy {
         return moverPos;
     }
 }
+
 
 class RelativePosition {
     Position originalPos;

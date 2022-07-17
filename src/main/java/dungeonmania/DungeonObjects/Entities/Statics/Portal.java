@@ -49,8 +49,8 @@ public class Portal extends Entity implements IStaticInteractable {
         if ((entitiesAtPos.stream().filter(e -> e.getType().equals(EntityTypes.WALL.toString())).count() > 0)) {throw new InvalidActionException("Entity cannot teleport onto Wall");}
         // SECONDLY if theres a boulder at to-teleport location...
         if ((entitiesAtPos.stream().filter(e -> e.getType().equals(EntityTypes.BOULDER.toString())).count() > 0)) {
-            // 1) ...and IF entity is a Merc, then do not teleport, merc's cant push boulders,
-            if (interactor instanceof Mercenary) {throw new InvalidActionException("Mercenary cannot push the boulder at teleport location");}
+            // 1) ...and IF entity is a Merc, then teleport onto/overlap Boulder
+            if (interactor instanceof Mercenary) {return;}
             // 2) ...and IF its a player, call boulder.interactBy(Player), and assess what it returns
             try {
                 List<Boulder> boulders = entitiesAtPos.stream().filter(e -> e instanceof Boulder).map(e -> (Boulder) e).collect(Collectors. toList());
