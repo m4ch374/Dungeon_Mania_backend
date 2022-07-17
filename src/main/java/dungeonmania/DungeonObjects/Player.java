@@ -16,7 +16,6 @@ import dungeonmania.Interfaces.IEnemy;
 import dungeonmania.Interfaces.IEquipment;
 import dungeonmania.Interfaces.IStaticInteractable;
 import dungeonmania.exceptions.InvalidActionException;
-import dungeonmania.exceptions.UninteractableException;
 import dungeonmania.response.models.BattleResponse;
 import dungeonmania.response.models.ItemResponse;
 import dungeonmania.util.Direction;
@@ -272,6 +271,9 @@ public class Player extends Entity {
     public boolean haveFoundFinalDest = false;
 
     private void move(Position destination) throws InvalidActionException {
+        if (previousPosition == null)
+            previousPosition = getPos();
+
         // reset it to False for a new teleportation event.
         this.haveFoundFinalDest = false;
         // Check if something is blocking the player
