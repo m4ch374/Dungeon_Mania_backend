@@ -369,25 +369,7 @@ public class Player extends Entity {
         } else if (action.equals(Constant.PLAYERMOVE)) {
             this.direction = direction;
 
-            int x = getPos().getX();
-            int y = getPos().getY();
-
-            switch (direction) {
-                case UP:
-                    y -= 1;
-                    break;
-                case DOWN:
-                    y += 1;
-                    break;
-                case LEFT:
-                    x -= 1;
-                    break;
-                case RIGHT:
-                    x += 1;
-                    break;
-            }
-
-            Position position = new Position(x, y);
+            Position position = getPos().translateBy(direction);
 
             move(position);
             updatePotions();
