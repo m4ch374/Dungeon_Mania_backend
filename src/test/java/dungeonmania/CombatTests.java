@@ -82,14 +82,10 @@ public class CombatTests {
         double enemyAttack = Double.parseDouble(getValueFromConfigFile(enemyType + "_attack", configFilePath));
 
         for (RoundResponse round : rounds) {
-            enemyHealth -= (playerAttack / 5);
-            playerHealth -= (enemyAttack / 10);
-            System.out.println("Expected enemy health = " + enemyHealth);
-            System.out.println("Expected player health = " + playerHealth);
-            System.out.println("Actual enemy health = " + round.getDeltaEnemyHealth());
-            System.out.println("Actual player health = " + round.getDeltaCharacterHealth());
-            assertEquals(round.getDeltaCharacterHealth(), playerHealth);
-            assertEquals(round.getDeltaEnemyHealth(), enemyHealth);
+            assertEquals(-(enemyAttack / 10), round.getDeltaCharacterHealth(), 0.001);
+            assertEquals(-(playerAttack / 5), round.getDeltaEnemyHealth(), 0.001);
+            enemyHealth += round.getDeltaEnemyHealth();
+            playerHealth += round.getDeltaCharacterHealth();
         }
         
         if (enemyDies) {
@@ -125,14 +121,10 @@ public class CombatTests {
         }
 
         for (RoundResponse round : rounds) {
-            enemyHealth -= (playerAttack / 5);
-            playerHealth -= (enemyAttack / 10);
-            System.out.println("Expected enemy health = " + enemyHealth);
-            System.out.println("Expected player health = " + playerHealth);
-            System.out.println("Actual enemy health = " + round.getDeltaEnemyHealth());
-            System.out.println("Actual player health = " + round.getDeltaCharacterHealth());
-            assertEquals(round.getDeltaCharacterHealth(), playerHealth);
-            assertEquals(round.getDeltaEnemyHealth(), enemyHealth);
+            assertEquals(-(enemyAttack / 10), round.getDeltaCharacterHealth(), 0.001);
+            assertEquals(-(playerAttack / 5), round.getDeltaEnemyHealth(), 0.001);
+            enemyHealth += round.getDeltaEnemyHealth();
+            playerHealth += round.getDeltaCharacterHealth();
         }
 
         if (enemyDies) {
@@ -154,14 +146,10 @@ public class CombatTests {
         double enemyAttack = Double.parseDouble(getValueFromConfigFile(enemyType + "_attack", configFilePath)) - alliedDfnceBonus;
 
         for (RoundResponse round : rounds) {
-            enemyHealth -= (playerAttack / 5);
-            playerHealth -= (enemyAttack / 10);
-            System.out.println("Expected enemy health = " + enemyHealth);
-            System.out.println("Expected player health = " + playerHealth);
-            System.out.println("Actual enemy health = " + round.getDeltaEnemyHealth());
-            System.out.println("Actual player health = " + round.getDeltaCharacterHealth());
-            assertEquals(round.getDeltaCharacterHealth(), playerHealth);
-            assertEquals(round.getDeltaEnemyHealth(), enemyHealth);
+            assertEquals(-(enemyAttack / 10), round.getDeltaCharacterHealth(), 0.001);
+            assertEquals(-(playerAttack / 5), round.getDeltaEnemyHealth(), 0.001);
+            enemyHealth += round.getDeltaEnemyHealth();
+            playerHealth += round.getDeltaCharacterHealth();
         }
 
         if (enemyDies) {
