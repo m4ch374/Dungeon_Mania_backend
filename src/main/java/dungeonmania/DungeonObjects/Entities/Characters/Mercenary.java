@@ -3,6 +3,7 @@ package dungeonmania.DungeonObjects.Entities.Characters;
 import dungeonmania.Interfaces.IEnemy;
 import dungeonmania.Interfaces.IMovingStrategy;
 import dungeonmania.Interfaces.IPlayerInteractable;
+import dungeonmania.Interfaces.IEnemy;
 import dungeonmania.MovingStrategies.ConfusedMoveStrat;
 import dungeonmania.MovingStrategies.CowerMoveStrat;
 import dungeonmania.MovingStrategies.SeekerMoveStrat;
@@ -17,6 +18,7 @@ import dungeonmania.DungeonObjects.EntityTypes;
 import dungeonmania.DungeonObjects.Player;
 import dungeonmania.DungeonObjects.DungeonMap.DungeonMap;
 import dungeonmania.DungeonObjects.Entities.Entity;
+import dungeonmania.DungeonObjects.Entities.Characters.*;;
 
 public class Mercenary extends Entity implements IPlayerInteractable, IEnemy {
     private static final String OBSERVING_ID = "player";

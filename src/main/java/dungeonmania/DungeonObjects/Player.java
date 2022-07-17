@@ -16,6 +16,7 @@ import dungeonmania.Interfaces.IEnemy;
 import dungeonmania.Interfaces.IEquipment;
 import dungeonmania.Interfaces.IStaticInteractable;
 import dungeonmania.exceptions.InvalidActionException;
+import dungeonmania.exceptions.UninteractableException;
 import dungeonmania.response.models.BattleResponse;
 import dungeonmania.response.models.ItemResponse;
 import dungeonmania.util.Direction;
@@ -222,8 +223,15 @@ public class Player extends Entity {
         for (IStaticInteractable entity : staticEntity) {
             try {
                 if (entity instanceof Boulder) {
+                    // LOGIC: if interactedBy() does NOT throw the Exception, then the boulder has moved
+                    // thus its safe for player to also move. 
                     Boulder boulder = (Boulder) entity;
                     boulder.interactedBy(this);
+                    System.out.println("Found a boulder & interacted it in ableToMove()");
+                    // DO NOT "return;" here, since we want to interact with other overlapping entities
+                // } else if (entity instanceof Portal) {
+                //     Portal portal = (Portal) entity;
+                //     portal.interactedBy(this);
                 }
             } catch (InvalidActionException e) {
                 System.out.println(e.getMessage());
@@ -259,11 +267,13 @@ public class Player extends Entity {
         }
     }
 
-    private void move(Position destination) throws InvalidActionException {
-        // Would always be null if user keeps hitting a wall
-        if (previousPosition == null)
-            previousPosition = getPos();
+    // Variable used to help prevent recursive backtracking in multi-teleportaion cases (also works with multiple seperate teleportations)
+    // MUST be declared outside scope of the fnc for obvious reasons
+    public boolean haveFoundFinalDest = false;
 
+    private void move(Position destination) throws InvalidActionException {
+        // reset it to False for a new teleportation event.
+        this.haveFoundFinalDest = false;
         // Check if something is blocking the player
         if (ableToMove(destination)) {
             this.previousPosition = getPos();
@@ -277,15 +287,26 @@ public class Player extends Entity {
             // deal with interaction of overlapped portal
             Portal portal = getOverlapPortal();
             if (portal != null) {
-                try {
-                    Position direction_new = portal.getDestination();
-                    move(direction_new);
-                } catch (InvalidActionException e) {
-                    // nothing here, just let the player overlap with portal without teleport
-                    // this structure will allow player go in portal as much as possible
-                    // and player will stop at the portal which he cannot goes in
+                // Get destinationS of the current Portal, player can jump into (0th index is the original intended destination)
+                List<Position> destinationList = portal.getDestinations(getDirection());
+                for (Position destinationPos : destinationList) {
+                    try {
+                        // Call recursively on each new destination, IFF theres another Portal there
+                        if (this.haveFoundFinalDest == true) {return;}
+                        move(destinationPos);
+                        // If exception not thrown, it is Safe to move into current Position in loop 
+                        if (this.haveFoundFinalDest == true) {return;}
+                        getMap().moveEntityTo(this, destinationPos); System.out.println("GOTCHA"); this.haveFoundFinalDest = true;//throw new InvalidActionException("Success multi-teleportaion");
+                        // // throw exception here? so the final portal's destination down the line doesnt get overriden via backtracing in recursion
+                        // System.out.println("Player new pos" + getPos() + ", in move()");
+                        // break;
+                    } catch (InvalidActionException e) {
+                        // nothing here, just let the player overlap with portal without teleport
+                        // this structure will allow player go in portal as much as possible
+                        // and player will stop at the portal which he cannot goes in
+                    }
                 }
-            }
+            } 
         }
     }
 

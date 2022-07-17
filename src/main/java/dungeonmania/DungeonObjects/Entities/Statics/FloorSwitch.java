@@ -4,6 +4,7 @@ import dungeonmania.DungeonObjects.Entities.Entity;
 import dungeonmania.Interfaces.IStaticInteractable;
 import dungeonmania.util.Position;
 import dungeonmania.util.DungeonFactory.EntityStruct;
+import dungeonmania.exceptions.*;
 
 public class FloorSwitch extends Entity implements IStaticInteractable {
 
@@ -22,5 +23,6 @@ public class FloorSwitch extends Entity implements IStaticInteractable {
     }
 
     @Override
-    public void interactedBy(Entity interactor) {}
+    public void interactedBy(Entity interactor) throws InvalidActionException {}
+    
 }
