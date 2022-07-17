@@ -8,7 +8,6 @@ import dungeonmania.MovingStrategies.CowerMoveStrat;
 import dungeonmania.MovingStrategies.SeekerMoveStrat;
 import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.response.models.EntityResponse;
-import dungeonmania.response.models.RoundResponse;
 import dungeonmania.util.Position;
 import dungeonmania.util.DungeonFactory.EntityStruct;
 
@@ -77,9 +76,6 @@ public class Mercenary extends Entity implements IPlayerInteractable, IEnemy {
         switchMoveStrat();
         moveStrat.moveEntity();
     }
-
-    @Override
-    public RoundResponse battleWith(Entity opponent) { return null; }
 
     @Override
     public EntityResponse toEntityResponse() {

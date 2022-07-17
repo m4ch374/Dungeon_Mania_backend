@@ -10,7 +10,6 @@ import dungeonmania.DungeonObjects.Entities.Entity;
 import dungeonmania.Interfaces.IEnemy;
 import dungeonmania.Interfaces.IMovingStrategy;
 import dungeonmania.MovingStrategies.CircularMoveStrat;
-import dungeonmania.response.models.RoundResponse;
 import dungeonmania.util.Position;
 import dungeonmania.util.DungeonFactory.EntityStruct;
 
@@ -51,10 +50,6 @@ public class Spider extends Entity implements IEnemy {
     public void move() {
         moveStrat.moveEntity();
     }
-
-    @Override
-    public RoundResponse battleWith(Entity opponent) { return null; }
-    
     
     public static void spawnSpider(JSONObject config, int currTick, DungeonMap map) {
         int spawnRate = config.getInt("spider_spawn_rate");
