@@ -84,4 +84,21 @@ public class TrackerTests {
         res = dmc.tick(Direction.DOWN);
         assertEquals("", res.getGoals());
     }
+
+    @Test
+    @DisplayName("Test composite treasure goal - treasure or enemy")
+    public void testComposite_treasureOr() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame(D_DIR + "d_trackerTest_treasureOr", C_DIR + "c_trackerTest_treasureTest");
+
+        assertTrue(res.getGoals().contains(":treasure"));
+        assertTrue(res.getGoals().contains(":enemy"));
+
+        res = dmc.tick(Direction.DOWN);
+        assertTrue(res.getGoals().contains(":treasure"));
+        assertTrue(res.getGoals().contains(":enemy"));
+
+        res = dmc.tick(Direction.DOWN);
+        assertEquals("", res.getGoals());
+    }
 }
