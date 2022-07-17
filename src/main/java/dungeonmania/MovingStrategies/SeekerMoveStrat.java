@@ -3,6 +3,7 @@ package dungeonmania.MovingStrategies;
 import java.util.List;
 
 import dungeonmania.DungeonObjects.EntityTypes;
+import dungeonmania.DungeonObjects.Player;
 import dungeonmania.DungeonObjects.DungeonMap.DungeonMap;
 import dungeonmania.DungeonObjects.Entities.Entity;
 import dungeonmania.DungeonObjects.Entities.Statics.Door;
@@ -131,6 +132,16 @@ public class SeekerMoveStrat implements IMovingStrategy {
         return leftOpening;
     }
 
+    // Very botched code
+    private boolean cannotMoveCloser(Position nextPos) {
+        Player p = (Player) seekingEntity;
+
+        Position playerPrevPos = (Position) p.getState().get("previousPosition");
+        Position playerCurrPos = (Position) p.getState().get("currentPosition");
+
+        return playerCurrPos.equals(playerPrevPos) && map.getEntitiesAt(nextPos).stream().filter(e -> e instanceof Player).count() > 0;
+    }
+
     @Override
     public void moveEntity() {
         // Load the entity to seek
@@ -152,7 +163,8 @@ public class SeekerMoveStrat implements IMovingStrategy {
         if (containsBlockable(newPos))
             newPos = resolveBlocked(moverPos, directionToGo);
         
-        map.moveEntityTo(mover, newPos);
+        if (!cannotMoveCloser(newPos))
+            map.moveEntityTo(mover, newPos);
     }
 }
 
