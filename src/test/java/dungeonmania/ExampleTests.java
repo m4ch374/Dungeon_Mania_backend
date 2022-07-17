@@ -13,18 +13,18 @@ import static dungeonmania.TestUtils.getGoals;
 import static dungeonmania.TestUtils.countEntityOfType;
 import static dungeonmania.TestUtils.getValueFromConfigFile;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
 import dungeonmania.response.models.BattleResponse;
 import dungeonmania.response.models.DungeonResponse;
 import dungeonmania.response.models.EntityResponse;
 import dungeonmania.response.models.RoundResponse;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
+import java.util.ArrayList;
+import java.util.List;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+
 
 
 public class ExampleTests {
@@ -203,24 +203,24 @@ public class ExampleTests {
         }
     }
 
-    // We are quite sure the testing methedology is wrong
-    // @Test
-    // @DisplayName("Test basic battle calculations - mercenary - player loses")
-    // public void testHealthBelowZeroMercenary() {
-    //    DungeonManiaController controller = new DungeonManiaController();
-    //    DungeonResponse postBattleResponse = genericMercenarySequence(controller, "c_battleTests_basicMercenaryPlayerDies");
-    //    BattleResponse battle = postBattleResponse.getBattles().get(0);
-    //    assertBattleCalculations("mercenary", battle, false, "c_battleTests_basicMercenaryPlayerDies");
-    // }
+
+    @Test
+    @DisplayName("Test basic battle calculations - mercenary - player loses")
+    public void testHealthBelowZeroMercenary() {
+       DungeonManiaController controller = new DungeonManiaController();
+       DungeonResponse postBattleResponse = genericMercenarySequence(controller, "c_battleTests_basicMercenaryPlayerDies");
+       BattleResponse battle = postBattleResponse.getBattles().get(0);
+       assertBattleCalculations("mercenary", battle, false, "c_battleTests_basicMercenaryPlayerDies");
+    }
 
 
-    // @Test
-    // @DisplayName("Test basic battle calculations - mercenary - player wins")
-    // public void testRoundCalculationsMercenary() {
-    //    DungeonManiaController controller = new DungeonManiaController();
-    //    DungeonResponse postBattleResponse = genericMercenarySequence(controller, "c_battleTests_basicMercenaryMercenaryDies");
-    //    BattleResponse battle = postBattleResponse.getBattles().get(0);
-    //    assertBattleCalculations("mercenary", battle, true, "c_battleTests_basicMercenaryMercenaryDies");
-    // }
+    @Test
+    @DisplayName("Test basic battle calculations - mercenary - player wins")
+    public void testRoundCalculationsMercenary() {
+       DungeonManiaController controller = new DungeonManiaController();
+       DungeonResponse postBattleResponse = genericMercenarySequence(controller, "c_battleTests_basicMercenaryMercenaryDies");
+       BattleResponse battle = postBattleResponse.getBattles().get(0);
+       assertBattleCalculations("mercenary", battle, true, "c_battleTests_basicMercenaryMercenaryDies");
+    }
 
 }
