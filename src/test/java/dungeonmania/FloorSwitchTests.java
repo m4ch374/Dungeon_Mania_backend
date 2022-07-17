@@ -29,18 +29,18 @@ import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
 public class FloorSwitchTests {
-    private static final String DIR_NAME = "d_FloorSwitchTests/";
-    // Add helper fncs here!
+    // private static final String DIR_NAME = "d_FloorSwitchTests/";
+    // // Add helper fncs here!
 
-    @Test
-    @DisplayName("FloorSwitch 1: Test a boulder moving onto switch activates it")
-    public void testPortalTeleportsPlayerBasic() {
-        DungeonManiaController dmc = new DungeonManiaController();
-        DungeonResponse dungeonRes = dmc.newGame(DIR_NAME + "d_FloorSwitch_simpleIsActive", "c_DoorsKeysTest_useKeyWalkThroughOpenDoor");
+    // @Test
+    // @DisplayName("FloorSwitch 1: Test a boulder moving onto switch activates it")
+    // public void testPortalTeleportsPlayerBasic() {
+    //     DungeonManiaController dmc = new DungeonManiaController();
+    //     DungeonResponse dungeonRes = dmc.newGame(DIR_NAME + "d_FloorSwitch_simpleIsActive", "c_DoorsKeysTest_useKeyWalkThroughOpenDoor");
         
-        EntityResponse player = getPlayer(dungeonRes).get();
-        // Get switch info
-        // assert its existence
+    //     EntityResponse player = getPlayer(dungeonRes).get();
+    //     // Get switch info
+    //     // assert its existence
         
-    }
+    // }
 }
