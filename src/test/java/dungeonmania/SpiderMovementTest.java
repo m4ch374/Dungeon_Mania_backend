@@ -243,4 +243,26 @@ public class SpiderMovementTest {
             }
         }
     }
+
+    @Test
+    @DisplayName("Test spawn stuck between 2 boulders")
+    public void testStuckBetween() {
+        DungeonManiaController dmc;
+        dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame(DIR_NAME + "d_spiderTest_stuckBetween2Boulders", "c_spiderTest_basicMovement");
+
+        for (int i = 0; i < 6; i++) {
+            res = dmc.tick(Direction.DOWN);
+        }
+
+        assertEquals(new Position(2, 3), TestUtils.getEntities(res, "spider").get(0).getPosition());
+
+        res = dmc.tick(Direction.UP);
+        assertEquals(new Position(2, 3), TestUtils.getEntities(res, "spider").get(0).getPosition());
+
+        for (int i = 0; i < 100; i++) {
+            res = dmc.tick(Direction.DOWN);
+            assertEquals(new Position(2, 3), TestUtils.getEntities(res, "spider").get(0).getPosition());
+        }
+    }
 }
