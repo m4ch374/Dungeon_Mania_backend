@@ -56,6 +56,11 @@ public class CircularMoveStrat implements IMovingStrategy {
         return nextMovePos < 0 ? nextMovePos + positionMap.size() : nextMovePos;
     }
 
+    private int getPrevMovePos() {
+        int nextMovePos = (movePosIdx - direction) % positionMap.size();
+        return nextMovePos < 0 ? nextMovePos + positionMap.size() : nextMovePos;
+    }
+
     @Override
     public void moveEntity() {
         if (positionMap.isEmpty())
@@ -68,6 +73,10 @@ public class CircularMoveStrat implements IMovingStrategy {
             startCirculate = true;
             return;
         }
+
+        // If its stuck in between, does nothing
+        if (hasBlockable(positionMap.get(getNextMovePos())) && hasBlockable(positionMap.get(getPrevMovePos())))
+            return;
 
         int nextMovePos = getNextMovePos();
         if (hasBlockable(positionMap.get(nextMovePos))) {
