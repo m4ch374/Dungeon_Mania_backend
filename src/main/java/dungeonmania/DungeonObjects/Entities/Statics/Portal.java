@@ -73,7 +73,7 @@ public class Portal extends Entity implements IStaticInteractable {
     }
     
     // Get List of Destinations entity can teleport to (which are cardinally adjacent to the Pair Portal),
-    // AND the first index is the intended destination, the others are used if the intended is impossible
+    // AND the first index is the intended destination, the others are used only if the intended is impossible
     public List<Position> getDestinations(Direction interactorDir) {
         Portal pairPortal = getPairPortal(this.colour);
         Position pairPortalPos = super.getMap().getEntityPos(pairPortal);

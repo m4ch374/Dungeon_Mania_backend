@@ -1,15 +1,15 @@
 {
     "entities": [
         {
-            "type" : "player",
-            "x" : 1,
-            "y" : 1
-        },
-        {
             "type": "exit",
             "x": 5,
             "y": 5
         }, 
+        {
+            "type": "player",
+            "x": 1,
+            "y": 1
+        },
         {
             "type": "portal",
             "x": 2,

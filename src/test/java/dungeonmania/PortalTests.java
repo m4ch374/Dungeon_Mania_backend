@@ -89,8 +89,12 @@ public class PortalTests {
         
         // Player moves East into Portal, thus teleports east of Portal1 (2,3)
         // ASSUMING Test 1 passes, we skip checks for this movement
+        System.out.println("Test 1 first movement");
         dungeonRes = dmc.tick(Direction.RIGHT);
+        player = getPlayer(dungeonRes).get();
+        assertEquals(new Position(2, 3), player.getPosition());
         // Player moves South into Portal2 (2,4), thus teleports south of Portal2 (3,2), so placed at (3,3)
+        System.out.println("Test 2 second movement");
         dungeonRes = dmc.tick(Direction.DOWN);
         // Assert Portals 2 & 3 are still in same location
         expectedPortal2 = TestUtils.getEntityById(dungeonRes, "portal2");
@@ -191,7 +195,7 @@ public class PortalTests {
         // Assert player has teleported
         player = getPlayer(dungeonRes).get();
 
-        System.out.println("Test 1 " + player.getPosition());
+        System.out.println("Test 2 " + player.getPosition());
 
         assertEquals(new Position(4, 2), player.getPosition());
     }
@@ -206,7 +210,7 @@ public class PortalTests {
     public void testPortalOverlapsMerc() {
         // Merc first movement is into Portal(4,2), which overlaps with .
         DungeonManiaController dmc = new DungeonManiaController();
-        DungeonResponse dungeonRes = dmc.newGame(DIR_NAME + "d_portalTest_teleportsMerc", "c_DoorsKeysTest_useKeyWalkThroughOpenDoor");
+        DungeonResponse dungeonRes = dmc.newGame(DIR_NAME + "d_portalTest_mercTeleported", "c_DoorsKeysTest_useKeyWalkThroughOpenDoor");
         
         // Get all portal info
         EntityResponse portal = TestUtils.getEntityById(dungeonRes, "portal");
