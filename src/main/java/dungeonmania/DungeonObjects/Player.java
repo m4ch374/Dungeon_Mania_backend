@@ -260,6 +260,10 @@ public class Player extends Entity {
     }
 
     private void move(Position destination) throws InvalidActionException {
+        // Would always be null if user keeps hitting a wall
+        if (previousPosition == null)
+            previousPosition = getPos();
+
         // Check if something is blocking the player
         if (ableToMove(destination)) {
             this.previousPosition = getPos();
