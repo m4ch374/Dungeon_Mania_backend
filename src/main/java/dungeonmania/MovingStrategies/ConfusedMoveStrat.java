@@ -35,7 +35,7 @@ public class ConfusedMoveStrat implements IMovingStrategy {
     }
 
     @Override
-    public void moveEntity() {
+    public Position moveEntity() {
         Position currPos = map.getEntityPos(mover);
 
         Random random = new Random();
@@ -44,7 +44,9 @@ public class ConfusedMoveStrat implements IMovingStrategy {
 
         Position newPos = currPos.translateBy(newDir);
         if (!containsBlockable(newPos))
-            map.moveEntityTo(mover, newPos);
+            return newPos;
+
+        return map.getEntityPos(mover);
     }
     
 }

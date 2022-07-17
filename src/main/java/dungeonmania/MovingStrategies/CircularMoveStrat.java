@@ -62,21 +62,20 @@ public class CircularMoveStrat implements IMovingStrategy {
     }
 
     @Override
-    public void moveEntity() {
+    public Position moveEntity() {
         if (positionMap.isEmpty())
             populatePosMap(map.getEntityPos(mover));
 
         // Ignores boulder in the first move
         // i.e. heading to the "circle"
         if (!startCirculate) {
-            map.moveEntityTo(mover, positionMap.get(0));
             startCirculate = true;
-            return;
+            return positionMap.get(0);
         }
 
         // If its stuck in between, does nothing
         if (hasBlockable(positionMap.get(getNextMovePos())) && hasBlockable(positionMap.get(getPrevMovePos())))
-            return;
+            return map.getEntityPos(mover);
 
         int nextMovePos = getNextMovePos();
         if (hasBlockable(positionMap.get(nextMovePos))) {
@@ -87,7 +86,7 @@ public class CircularMoveStrat implements IMovingStrategy {
         movePosIdx = nextMovePos;
         Position newPos = positionMap.get(movePosIdx);
 
-        map.moveEntityTo(mover, newPos);
+        return newPos;
     }
     
 }
