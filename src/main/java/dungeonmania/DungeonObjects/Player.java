@@ -7,6 +7,7 @@ import dungeonmania.DungeonObjects.Entities.Collectables.Key;
 import dungeonmania.DungeonObjects.Entities.Entity;
 import dungeonmania.DungeonObjects.Entities.Statics.Boulder;
 import dungeonmania.DungeonObjects.Entities.Statics.Door;
+import dungeonmania.DungeonObjects.Entities.Statics.Exit;
 import dungeonmania.DungeonObjects.Entities.Statics.FloorSwitch;
 import dungeonmania.DungeonObjects.Entities.Statics.Portal;
 import dungeonmania.DungeonObjects.Entities.Statics.Wall;
@@ -294,6 +295,9 @@ public class Player extends Entity {
             // deal with interaction of collections
             interactWithOverlapCollections(destination);
 
+            // deal with Exit if its at new Pos
+            interactWithExit(destination);
+
             // deal with interaction of overlapped portal
             Portal portal = getOverlapPortal();
             if (portal != null) {
@@ -332,6 +336,26 @@ public class Player extends Entity {
 
         // If multiple portals overlap, always take the first one, it may be random, but it doesn't matter
         return portal.get(0);
+    }
+
+    public void interactWithExit(Position currPos) {
+        List<Entity> inCell = getMap().getEntitiesAt(currPos);
+
+        List<IStaticInteractable> interactables = inCell
+                                        .stream()
+                                        .filter(e -> (e instanceof IStaticInteractable))
+                                        .map(e -> (IStaticInteractable) e)
+                                        .collect(Collectors.toList());
+        for (IStaticInteractable inter : interactables) {
+            if (inter instanceof Exit) {
+                Exit exit = (Exit) inter;
+                try {
+                    exit.interactedBy(this);
+                } catch (InvalidActionException e) {
+                    // do nothing
+                }
+            }
+        }
     }
 
     public void tick(String action, Direction direction, String str) throws InvalidActionException, IllegalArgumentException {

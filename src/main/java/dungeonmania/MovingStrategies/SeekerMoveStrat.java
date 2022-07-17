@@ -11,7 +11,6 @@ import dungeonmania.DungeonObjects.Entities.Statics.Door;
 import dungeonmania.Interfaces.IMovingStrategy;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
-import dungeonmania.DungeonObjects.Entities.Statics.Portal;;
 
 public class SeekerMoveStrat implements IMovingStrategy {
 

@@ -15,6 +15,7 @@ public class Exit extends Entity implements IStaticInteractable {
         this.tracker = tracker;
     }
 
+    // Refer to Player.java on how this is utilised
     @Override
     public void interactedBy(Entity interactor) throws InvalidActionException {
         tracker.notifyExits();
