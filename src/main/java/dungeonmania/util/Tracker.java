@@ -81,7 +81,7 @@ public class Tracker {
             boolean rightComplete = rightChild.goalFinished(map);
 
             if (currGoal.equals(AND)) {
-                if (leftComplete && rightComplete)
+                if ((leftComplete && rightComplete) || (leftChild.getUnfinishedGoals(map).equals("") && rightChild.getUnfinishedGoals(map).equals("")))
                     return "";
 
                 if (leftComplete)

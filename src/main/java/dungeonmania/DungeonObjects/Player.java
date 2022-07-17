@@ -283,6 +283,9 @@ public class Player extends Entity {
     public boolean haveFoundFinalDest = false;
 
     private void move(Position destination) throws InvalidActionException {
+        if (previousPosition == null)
+            previousPosition = getPos();
+
         // reset it to False for a new teleportation event.
         this.haveFoundFinalDest = false;
         // Check if something is blocking the player
