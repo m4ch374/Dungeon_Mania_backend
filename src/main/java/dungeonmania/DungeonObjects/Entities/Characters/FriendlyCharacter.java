@@ -7,6 +7,7 @@ import dungeonmania.Interfaces.IMovingStrategy;
 import dungeonmania.MovingStrategies.AllyMoveStrat;
 import dungeonmania.response.models.EntityResponse;
 import dungeonmania.util.DungeonFactory.EntityStruct;
+import dungeonmania.response.models.RoundResponse;
 
 public class FriendlyCharacter extends Entity implements IMovable {
 
@@ -22,35 +23,35 @@ public class FriendlyCharacter extends Entity implements IMovable {
         return new EntityResponse(super.getId(), super.getType(), map.getEntityPos(this), true);
     }
 
-    @Override
+    // @Override
     public void move() {
         moveStrat.moveEntity();
     }
 
-    @Override
+    // @Override
     public RoundResponse battleWith(Entity opponent) {
         // Porbably would need this in milestone 3 so imma keep it
         return null;
     }
 
-    @Override
+    // @Override
     public void death() {
         // Porbably would need this in milestone 3 so imma keep it
     }
 
-    @Override
+    // @Override
     public String getClasString() {
         // Porbably would need this in milestone 3 so imma keep it
         return "deez";
     }
     
-    @Override
+    // @Override
     public double getAttackDamage() {
         // Porbably would need this in milestone 3 so imma keep it
         return 0.0;
     }
     
-    @Override
+    // @Override
     public double getHealth() {
         // Porbably would need this in milestone 3 so imma keep it
         return 0.0;

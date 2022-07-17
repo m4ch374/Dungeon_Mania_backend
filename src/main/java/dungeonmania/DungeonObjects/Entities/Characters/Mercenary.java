@@ -1,6 +1,7 @@
 package dungeonmania.DungeonObjects.Entities.Characters;
 
 import dungeonmania.Interfaces.IEnemy;
+import dungeonmania.Interfaces.IMovable;
 import dungeonmania.Interfaces.IMovingStrategy;
 import dungeonmania.Interfaces.IPlayerInteractable;
 import dungeonmania.Interfaces.IEnemy;
@@ -9,6 +10,7 @@ import dungeonmania.MovingStrategies.CowerMoveStrat;
 import dungeonmania.MovingStrategies.SeekerMoveStrat;
 import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.response.models.EntityResponse;
+import dungeonmania.response.models.RoundResponse;
 import dungeonmania.util.Position;
 import dungeonmania.util.DungeonFactory.EntityStruct;
 
@@ -63,7 +65,7 @@ public class Mercenary extends Entity implements IPlayerInteractable, IEnemy {
     }
 
     public String getClasString() {
-        return super.getType();
+        return "Mercenary";
     }
 
     @Override
@@ -78,6 +80,9 @@ public class Mercenary extends Entity implements IPlayerInteractable, IEnemy {
         switchMoveStrat();
         moveStrat.moveEntity();
     }
+
+    // @Override
+    public RoundResponse battleWith(Entity opponent) { return null; }
 
     @Override
     public EntityResponse toEntityResponse() {

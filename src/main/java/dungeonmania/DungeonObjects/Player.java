@@ -296,7 +296,7 @@ public class Player extends Entity {
                         move(destinationPos);
                         // If exception not thrown, it is Safe to move into current Position in loop 
                         if (this.haveFoundFinalDest == true) {return;}
-                        getMap().moveEntityTo(this, destinationPos); System.out.println("GOTCHA"); this.haveFoundFinalDest = true;//throw new InvalidActionException("Success multi-teleportaion");
+                        getMap().moveEntityTo(this, destinationPos); this.haveFoundFinalDest = true;//throw new InvalidActionException("Success multi-teleportaion");
                         // // throw exception here? so the final portal's destination down the line doesnt get overriden via backtracing in recursion
                         // System.out.println("Player new pos" + getPos() + ", in move()");
                         // break;

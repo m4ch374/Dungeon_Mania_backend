@@ -1,6 +1,7 @@
 package dungeonmania.MovingStrategies;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import dungeonmania.DungeonObjects.EntityTypes;
 import dungeonmania.DungeonObjects.Player;
@@ -10,6 +11,7 @@ import dungeonmania.DungeonObjects.Entities.Statics.Door;
 import dungeonmania.Interfaces.IMovingStrategy;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
+import dungeonmania.DungeonObjects.Entities.Statics.Portal;;
 
 public class SeekerMoveStrat implements IMovingStrategy {
 
@@ -163,10 +165,12 @@ public class SeekerMoveStrat implements IMovingStrategy {
         if (containsBlockable(newPos))
             newPos = resolveBlocked(moverPos, directionToGo);
         
-        if (!cannotMoveCloser(newPos))
+        if (!cannotMoveCloser(newPos)) {
             map.moveEntityTo(mover, newPos);
+        }
     }
 }
+
 
 class RelativePosition {
     Position originalPos;
