@@ -1,8 +1,11 @@
 package dungeonmania.DungeonObjects.Entities.Characters;
 
+import dungeonmania.Interfaces.IEnemy;
 import dungeonmania.Interfaces.IMovable;
 import dungeonmania.Interfaces.IMovingStrategy;
 import dungeonmania.Interfaces.IPlayerInteractable;
+import dungeonmania.MovingStrategies.ConfusedMoveStrat;
+import dungeonmania.MovingStrategies.CowerMoveStrat;
 import dungeonmania.MovingStrategies.SeekerMoveStrat;
 import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.response.models.EntityResponse;
@@ -12,21 +15,24 @@ import dungeonmania.util.DungeonFactory.EntityStruct;
 
 import org.json.JSONObject;
 
+import dungeonmania.DungeonObjects.EntityTypes;
 import dungeonmania.DungeonObjects.Player;
 import dungeonmania.DungeonObjects.DungeonMap.DungeonMap;
 import dungeonmania.DungeonObjects.Entities.Entity;
 import dungeonmania.DungeonObjects.Entities.Characters.*;;
 
-public class Mercenary extends Entity implements IMovable, IPlayerInteractable {
+public class Mercenary extends Entity implements IPlayerInteractable, IEnemy {
+    private static final String OBSERVING_ID = "player";
 
     private int bribeRadius;
     private int brinbeAmount;
 
-    private int attackDamage;
-    private int health;
+    private double attackDamage;
+    private double health;
 
+    private Player observing = null;
     private DungeonMap map = super.getMap();
-    private IMovingStrategy moveStrat = new SeekerMoveStrat(this, this.map, "player");
+    private IMovingStrategy moveStrat = new SeekerMoveStrat(this, this.map, OBSERVING_ID);
 
     public Mercenary(EntityStruct metaData, JSONObject config) {
         super(metaData);
@@ -44,16 +50,33 @@ public class Mercenary extends Entity implements IMovable, IPlayerInteractable {
         return brinbeAmount;
     }
 
-    public int getAttackDamage() {
+    public double getAttackDamage() {
         return attackDamage;
     }
 
-    public int getHealth() {
+    public double getHealth() {
         return health;
+    }
+
+    public void death() {
+        getMap().removeEntity(this);
+        return;
+    }
+
+    public String getClasString() {
+        return "Mercenary";
     }
 
     @Override
     public void move() {
+        if (observing == null)
+            observing = map.getAllEntities().stream()
+                        .filter(e -> e.getType().equals(EntityTypes.PLAYER.toString()))
+                        .map(e -> (Player) e)
+                        .findFirst()
+                        .get();
+
+        switchMoveStrat();
         moveStrat.moveEntity();
     }
 
@@ -85,4 +108,23 @@ public class Mercenary extends Entity implements IMovable, IPlayerInteractable {
         map.placeEntityAt(friendlyMerc, currPos);
     }
     
+    private void switchMoveStrat() {
+        boolean invincible = (boolean) observing.getState().get("invincible");
+        boolean invisible = (boolean) observing.getState().get("invisible");
+
+        if (invincible && !(moveStrat instanceof CowerMoveStrat)) {
+            moveStrat = new CowerMoveStrat(this, map, OBSERVING_ID);
+            return;
+        }
+
+        if (invisible && !(moveStrat instanceof ConfusedMoveStrat)) {
+            moveStrat = new ConfusedMoveStrat(this, map);
+            return;
+        }
+
+        if (!invincible && !invisible && !(moveStrat instanceof SeekerMoveStrat)) {
+            moveStrat = new SeekerMoveStrat(this, map, OBSERVING_ID);
+            return;
+        }
+    }
 }

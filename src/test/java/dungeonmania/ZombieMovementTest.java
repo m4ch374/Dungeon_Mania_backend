@@ -1,5 +1,7 @@
 package dungeonmania;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -127,5 +129,27 @@ public class ZombieMovementTest {
         
         assertFalse(zombie.getPosition().equals(movedZombie.getPosition()));
         assertTrue(tresureNums == newTresureNums);
+    }
+
+    @Test
+    @DisplayName("Test zombie flees from player leftwards")
+    public void testZombieFlee_LEFT() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame(DIR_NAME + "d_zombieTest_zombieFleesLeft", "c_msic_longPotionDuration_noDamage");
+
+        res = dmc.tick(Direction.RIGHT);
+        assertEquals(new Position(4, 1), TestUtils.getEntityById(res, "player").getPosition());
+        assertTrue(TestUtils.getEntities(res, "invincibility_potion").size() == 0);
+
+        assertDoesNotThrow(() -> dmc.tick("invincibility_potion"));
+
+        res = dmc.tick(Direction.RIGHT);
+        Position originalZombiePos = TestUtils.getEntityById(res, "zombie_toast").getPosition();
+
+        for (int i = 1; i < 99; i++) {
+            res = dmc.tick(Direction.RIGHT);
+            assertTrue(originalZombiePos.translateBy(new Position(-i, 0)).equals(TestUtils.getEntityById(res, "zombie_toast").getPosition()) 
+                || originalZombiePos.translateBy(new Position(-i - 1, 0)).equals(TestUtils.getEntityById(res, "zombie_toast").getPosition()));
+        }
     }
 }

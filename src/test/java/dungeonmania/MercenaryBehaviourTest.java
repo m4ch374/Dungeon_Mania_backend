@@ -170,7 +170,6 @@ public class MercenaryBehaviourTest {
             res = dmc.tick(Direction.UP);
             
             Position mercPos = TestUtils.getEntityById(res, "mercenary").getPosition();
-            System.out.println(mercPos);
             assertEquals(new Position(1, 5), mercPos);
         }
     }
@@ -185,7 +184,6 @@ public class MercenaryBehaviourTest {
             res = dmc.tick(Direction.UP);
             
             Position mercPos = TestUtils.getEntityById(res, "mercenary").getPosition();
-            System.out.println(mercPos);
             assertEquals(new Position(1, 5), mercPos);
         }
     }
@@ -194,7 +192,7 @@ public class MercenaryBehaviourTest {
     @DisplayName("Test not in radius")
     public void testMercBribe_notInRadius() {
         DungeonManiaController dmc = new DungeonManiaController();
-        DungeonResponse res = dmc.newGame(DIR_NAME + "d_mercTest_bribeTest", C_DIR_NAME + "c_bribeTests_radius1");
+        dmc.newGame(DIR_NAME + "d_mercTest_bribeTest", C_DIR_NAME + "c_bribeTests_radius1");
 
         assertThrows(InvalidActionException.class, () -> dmc.interact("mercenary"));
     }
@@ -203,10 +201,10 @@ public class MercenaryBehaviourTest {
     @DisplayName("Test not enough treasure")
     public void testMercBribe_notEnoughTreasure() {
         DungeonManiaController dmc = new DungeonManiaController();
-        DungeonResponse res = dmc.newGame(DIR_NAME + "d_mercTest_bribeTest", C_DIR_NAME + "c_bribeTests_radius1");
+        dmc.newGame(DIR_NAME + "d_mercTest_bribeTest", C_DIR_NAME + "c_bribeTests_radius1");
 
         dmc.tick(Direction.DOWN);
-        res = dmc.tick(Direction.RIGHT);
+        dmc.tick(Direction.RIGHT);
 
         assertThrows(InvalidActionException.class, () -> dmc.interact("mercenary"));
     }
@@ -291,5 +289,230 @@ public class MercenaryBehaviourTest {
             assertEquals(new Position(1, 2), playerPos);
             assertEquals(new Position(1, 1), allyPos);
         }
+    }
+
+    @Test
+    @DisplayName("Test merc flees from player upwards")
+    public void testMercFlee_UP() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame(DIR_NAME + "d_mercTest_fleeUpSimple", "c_msic_longPotionDuration_noDamage");
+
+        res = dmc.tick(Direction.DOWN);
+        Position originalMercPos = TestUtils.getEntityById(res, "mercenary").getPosition();
+        assertEquals(new Position(1, 4), TestUtils.getEntityById(res, "player").getPosition());
+        assertEquals(new Position(1, 1), originalMercPos);
+        assertTrue(TestUtils.getEntities(res, "invincibility_potion").size() == 0);
+
+        assertDoesNotThrow(() -> dmc.tick("invincibility_potion"));
+
+        for (int i = 1; i <= 99; i++) {
+            res = dmc.tick(Direction.DOWN);
+            assertEquals(originalMercPos.translateBy(new Position(0, -i - 1)), TestUtils.getEntityById(res, "mercenary").getPosition());
+        }
+
+        originalMercPos = TestUtils.getEntityById(res, "mercenary").getPosition();
+
+        // goes back to normal move strat
+        for (int i = 0; i < 100; i++) {
+            res = dmc.tick(Direction.DOWN);
+            assertEquals(originalMercPos.translateBy(new Position(0, i + 1)), TestUtils.getEntityById(res, "mercenary").getPosition());
+        }
+    }
+
+    @Test
+    @DisplayName("Test merc flees from player downwards")
+    public void testMercFlee_DOWN() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame(DIR_NAME + "d_mercTest_fleeDownSimple", "c_msic_longPotionDuration_noDamage");
+
+        res = dmc.tick(Direction.UP);
+        Position originalMercPos = TestUtils.getEntityById(res, "mercenary").getPosition();
+        assertEquals(new Position(1, 1), TestUtils.getEntityById(res, "player").getPosition());
+        assertEquals(new Position(1, 4), originalMercPos);
+        assertTrue(TestUtils.getEntities(res, "invincibility_potion").size() == 0);
+
+        assertDoesNotThrow(() -> dmc.tick("invincibility_potion"));
+
+        for (int i = 1; i <= 99; i++) {
+            res = dmc.tick(Direction.UP);
+            assertEquals(originalMercPos.translateBy(new Position(0, i + 1)), TestUtils.getEntityById(res, "mercenary").getPosition());
+        }
+
+        originalMercPos = TestUtils.getEntityById(res, "mercenary").getPosition();
+
+        // goes back to normal move strat
+        for (int i = 0; i < 100; i++) {
+            res = dmc.tick(Direction.UP);
+            assertEquals(originalMercPos.translateBy(new Position(0, -i - 1)), TestUtils.getEntityById(res, "mercenary").getPosition());
+        }
+    }
+
+    @Test
+    @DisplayName("Test merc flees from player rightwards")
+    public void testMercFlee_RIGHT() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame(DIR_NAME + "d_mercTest_fleeRightSimple", "c_msic_longPotionDuration_noDamage");
+
+        res = dmc.tick(Direction.LEFT);
+        Position originalMercPos = TestUtils.getEntityById(res, "mercenary").getPosition();
+        assertEquals(new Position(1, 1), TestUtils.getEntityById(res, "player").getPosition());
+        assertEquals(new Position(4, 1), originalMercPos);
+        assertTrue(TestUtils.getEntities(res, "invincibility_potion").size() == 0);
+
+        assertDoesNotThrow(() -> dmc.tick("invincibility_potion"));
+
+        for (int i = 1; i <= 99; i++) {
+            res = dmc.tick(Direction.LEFT);
+            assertEquals(originalMercPos.translateBy(new Position(i + 1,0)), TestUtils.getEntityById(res, "mercenary").getPosition());
+        }
+
+        originalMercPos = TestUtils.getEntityById(res, "mercenary").getPosition();
+
+        // goes back to normal move strat
+        for (int i = 0; i < 100; i++) {
+            res = dmc.tick(Direction.LEFT);
+            assertEquals(originalMercPos.translateBy(new Position(-i - 1, 0)), TestUtils.getEntityById(res, "mercenary").getPosition());
+        }
+    }
+
+    @Test
+    @DisplayName("Test merc flees from player leftwards")
+    public void testMercFlee_LEFT() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame(DIR_NAME + "d_mercTest_fleeLeftSimple", "c_msic_longPotionDuration_noDamage");
+
+        res = dmc.tick(Direction.RIGHT);
+        Position originalMercPos = TestUtils.getEntityById(res, "mercenary").getPosition();
+        assertEquals(new Position(4, 1), TestUtils.getEntityById(res, "player").getPosition());
+        assertEquals(new Position(1, 1), originalMercPos);
+        assertTrue(TestUtils.getEntities(res, "invincibility_potion").size() == 0);
+
+        assertDoesNotThrow(() -> dmc.tick("invincibility_potion"));
+
+        for (int i = 1; i <= 99; i++) {
+            res = dmc.tick(Direction.RIGHT);
+            assertEquals(originalMercPos.translateBy(new Position(-i - 1,0)), TestUtils.getEntityById(res, "mercenary").getPosition());
+        }
+
+        originalMercPos = TestUtils.getEntityById(res, "mercenary").getPosition();
+
+        // goes back to normal move strat
+        for (int i = 0; i < 100; i++) {
+            res = dmc.tick(Direction.RIGHT);
+            assertEquals(originalMercPos.translateBy(new Position(i + 1, 0)), TestUtils.getEntityById(res, "mercenary").getPosition());
+        }
+    }
+
+    @Test
+    @DisplayName("Test merc move around 1 block of wall towards the top")
+    public void testMercMoveAround_1Wall_UP() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame(DIR_NAME + "d_mercTest_aroundWallsSimple_Up", "c_msic_zeroDamage");
+
+        assertEquals(new Position(2, 4), TestUtils.getEntityById(res, "mercenary").getPosition());
+
+        res = dmc.tick(Direction.UP);
+        assertEquals(new Position(1, 4), TestUtils.getEntityById(res, "mercenary").getPosition());
+
+        dmc.tick(Direction.UP);
+        dmc.tick(Direction.UP);
+        dmc.tick(Direction.UP);
+        res = dmc.tick(Direction.UP);
+
+        assertEquals(TestUtils.getEntityById(res, "player").getPosition(), TestUtils.getEntityById(res, "mercenary").getPosition());
+    }
+
+    @Test
+    @DisplayName("Test merc move around 1 block of wall towards the bottom")
+    public void testMercMoveAround_1Wall_DOWN() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame(DIR_NAME + "d_mercTest_aroundWallsSimple_Down", "c_msic_zeroDamage");
+
+        assertEquals(new Position(2, 1), TestUtils.getEntityById(res, "mercenary").getPosition());
+
+        res = dmc.tick(Direction.UP);
+        assertEquals(new Position(3, 1), TestUtils.getEntityById(res, "mercenary").getPosition());
+
+        dmc.tick(Direction.UP);
+        dmc.tick(Direction.UP);
+        dmc.tick(Direction.UP);
+        dmc.tick(Direction.UP);
+        res = dmc.tick(Direction.UP);
+
+        assertEquals(TestUtils.getEntityById(res, "player").getPosition(), TestUtils.getEntityById(res, "mercenary").getPosition());
+    }
+
+    @Test
+    @DisplayName("Test merc move around 1 block of wall towards the left")
+    public void testMercMoveAround_1Wall_LEFT() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame(DIR_NAME + "d_mercTest_aroundWallsSimple_Left", "c_msic_zeroDamage");
+
+        assertEquals(new Position(4, 2), TestUtils.getEntityById(res, "mercenary").getPosition());
+
+        res = dmc.tick(Direction.LEFT);
+        assertEquals(new Position(4, 3), TestUtils.getEntityById(res, "mercenary").getPosition());
+
+        dmc.tick(Direction.LEFT);
+        dmc.tick(Direction.LEFT);
+        dmc.tick(Direction.LEFT);
+        res = dmc.tick(Direction.LEFT);
+
+        assertEquals(TestUtils.getEntityById(res, "player").getPosition(), TestUtils.getEntityById(res, "mercenary").getPosition());
+    }
+
+    @Test
+    @DisplayName("Test merc move around 1 block of wall towards the right")
+    public void testMercMoveAround_1Wall_RIGHT() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame(DIR_NAME + "d_mercTest_aroundWallsSimple_Right", "c_msic_zeroDamage");
+
+        assertEquals(new Position(0, 2), TestUtils.getEntityById(res, "mercenary").getPosition());
+
+        res = dmc.tick(Direction.RIGHT);
+        assertEquals(new Position(0, 1), TestUtils.getEntityById(res, "mercenary").getPosition());
+
+        dmc.tick(Direction.RIGHT);
+        dmc.tick(Direction.RIGHT);
+        dmc.tick(Direction.RIGHT);
+        res = dmc.tick(Direction.RIGHT);
+
+        assertEquals(TestUtils.getEntityById(res, "player").getPosition(), TestUtils.getEntityById(res, "mercenary").getPosition());
+    }
+
+    @Test
+    @DisplayName("Test merc move around walls towards the shorter path")
+    public void testMercMoveAroundAdvanced_shorterPath() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame(DIR_NAME + "d_mercTest_shorterPath", "c_msic_zeroDamage");
+
+        assertEquals(new Position(0, 2), TestUtils.getEntityById(res, "mercenary").getPosition());
+
+        res = dmc.tick(Direction.RIGHT);
+        assertEquals(new Position(0, 3), TestUtils.getEntityById(res, "mercenary").getPosition());
+
+        for (int i = 0; i < 6; i++) {
+            res = dmc.tick(Direction.RIGHT);
+        }
+
+        assertEquals(TestUtils.getEntityById(res, "player").getPosition(), TestUtils.getEntityById(res, "mercenary").getPosition());
+    }
+
+    @Test
+    @DisplayName("Test merc move around walls with only one opening")
+    public void testMercMoveAroundAdvanced_oneOpening() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame(DIR_NAME + "d_mercTest_oneWallEnclosed", "c_msic_zeroDamage");
+
+        assertEquals(new Position(0, 2), TestUtils.getEntityById(res, "mercenary").getPosition());
+
+        res = dmc.tick(Direction.RIGHT);
+        assertEquals(new Position(0, 1), TestUtils.getEntityById(res, "mercenary").getPosition());
+
+        for (int i = 0; i < 8; i++) {
+            res = dmc.tick(Direction.RIGHT);
+        }
+
+        assertEquals(TestUtils.getEntityById(res, "player").getPosition(), TestUtils.getEntityById(res, "mercenary").getPosition());
     }
 }

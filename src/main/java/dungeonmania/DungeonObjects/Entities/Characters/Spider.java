@@ -7,18 +7,18 @@ import org.json.JSONObject;
 import dungeonmania.DungeonObjects.EntityTypes;
 import dungeonmania.DungeonObjects.DungeonMap.DungeonMap;
 import dungeonmania.DungeonObjects.Entities.Entity;
-import dungeonmania.Interfaces.IMovable;
+import dungeonmania.Interfaces.IEnemy;
 import dungeonmania.Interfaces.IMovingStrategy;
 import dungeonmania.MovingStrategies.CircularMoveStrat;
 import dungeonmania.response.models.RoundResponse;
 import dungeonmania.util.Position;
 import dungeonmania.util.DungeonFactory.EntityStruct;
 
-public class Spider extends Entity implements IMovable {
+public class Spider extends Entity implements IEnemy {
     private static int spawnId = 0;
 
-    private int attackDamage;
-    private int health;
+    private double attackDamage;
+    private double health;
     
     IMovingStrategy moveStrat;
 
@@ -30,12 +30,21 @@ public class Spider extends Entity implements IMovable {
         moveStrat = new CircularMoveStrat(this, super.getMap());
     }
 
-    public int getAttackDamage() {
+    public double getAttackDamage() {
         return attackDamage;
     }
 
-    public int getHealth() {
+    public double getHealth() {
         return health;
+    }
+
+    public void death() {
+        getMap().removeEntity(this);
+        return;
+    }
+
+    public String getClasString() {
+        return "Spider";
     }
 
     @Override

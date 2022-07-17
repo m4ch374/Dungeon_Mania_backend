@@ -43,3 +43,12 @@ Interaction with Interactables:
 - Player interacts with Zombie Toast Spawner, without sword
 - Player interacts with Zombie Toast Spawner, with sword
 - Player interacts with Exit
+
+Battle system:
+ - Start combat
+ - Combat with no modifiers
+ - Player death
+ - NPC death
+ - Combat with 1 modifier (Sword/Bow/Shield/Merc)
+ - Combat with multiple modifiers
+ - Early combat resolution (Potion)

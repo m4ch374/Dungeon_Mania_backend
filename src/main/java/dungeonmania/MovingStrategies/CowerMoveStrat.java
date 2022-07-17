@@ -1,0 +1,88 @@
+package dungeonmania.MovingStrategies;
+
+import java.util.List;
+
+import dungeonmania.DungeonObjects.EntityTypes;
+import dungeonmania.DungeonObjects.DungeonMap.DungeonMap;
+import dungeonmania.DungeonObjects.Entities.Entity;
+import dungeonmania.DungeonObjects.Entities.Statics.Door;
+import dungeonmania.Interfaces.IMovingStrategy;
+import dungeonmania.util.Direction;
+import dungeonmania.util.Position;
+
+public class CowerMoveStrat implements IMovingStrategy {
+
+    private String fleeFromEntityId;
+
+    private Entity mover;
+    private Entity seekingEntity;
+
+    private DungeonMap map;
+
+    public CowerMoveStrat(Entity mover, DungeonMap map, String fleeFromId) {
+        this.mover = mover;
+        this.map = map;
+        this.fleeFromEntityId = fleeFromId;
+    }
+
+    private Entity getSeekingEntity() {
+        return map.getAllEntities().stream().filter(e -> e.getId().equals(fleeFromEntityId)).findFirst().get();
+    }
+
+    private double rotateRadianBy45Degrees(double radian) {
+        double newRad = radian - Math.PI / 4;
+        if (newRad <= -Math.PI)
+            newRad = 2 * Math.PI + newRad;
+
+        return newRad;
+    }
+
+    private Direction radiansToDirection(double radian) {
+        double convertedRad = rotateRadianBy45Degrees(radian);
+
+        if (convertedRad > 0 && convertedRad <= Math.PI / 2) {
+            return Direction.UP;
+        } else if (convertedRad > Math.PI / 2 && convertedRad <= Math.PI) {
+            return Direction.RIGHT;
+        } else if (convertedRad > -Math.PI / 2 && convertedRad <= 0) {
+            return Direction.LEFT;
+        } else {
+            return Direction.DOWN;
+        }
+    }
+
+    private boolean containsBlockable(Position pos) {
+        List<Entity> entities = map.getEntitiesAt(pos);
+
+        boolean hasWall = entities.stream().filter(e -> e.getType().equals(EntityTypes.WALL.toString())).count() > 0;
+        boolean hasLockedDoors = entities.stream()
+                                    .filter(e -> e.getType().equals(EntityTypes.DOOR.toString()))
+                                    .map(e -> (Door) e)
+                                    .filter(d -> !d.isOpen())
+                                    .count() > 0;
+
+        return hasWall || hasLockedDoors;
+    }
+
+    @Override
+    public void moveEntity() {
+        // Load the entity to seek
+        if (seekingEntity == null)
+            seekingEntity = getSeekingEntity();
+
+        Position moverPos = map.getEntityPos(mover);
+        Position seekingPos = map.getEntityPos(seekingEntity);
+
+        if (moverPos.equals(seekingPos))
+            return;
+
+        Position relativeVect = Position.calculatePositionBetween(moverPos, seekingPos);
+
+        double radian = Math.atan2(relativeVect.getY(), relativeVect.getX());
+        Direction directionToGo = radiansToDirection(radian);
+
+        Position newPos = moverPos.translateBy(directionToGo);
+        if (!containsBlockable(newPos))
+            map.moveEntityTo(mover, newPos);
+    }
+}
