@@ -65,7 +65,7 @@ public class CowerMoveStrat implements IMovingStrategy {
     }
 
     @Override
-    public void moveEntity() {
+    public Position moveEntity() {
         // Load the entity to seek
         if (seekingEntity == null)
             seekingEntity = getSeekingEntity();
@@ -74,7 +74,7 @@ public class CowerMoveStrat implements IMovingStrategy {
         Position seekingPos = map.getEntityPos(seekingEntity);
 
         if (moverPos.equals(seekingPos))
-            return;
+            return moverPos;
 
         Position relativeVect = Position.calculatePositionBetween(moverPos, seekingPos);
 
@@ -83,6 +83,8 @@ public class CowerMoveStrat implements IMovingStrategy {
 
         Position newPos = moverPos.translateBy(directionToGo);
         if (!containsBlockable(newPos))
-            map.moveEntityTo(mover, newPos);
+            return newPos;
+
+        return moverPos;
     }
 }

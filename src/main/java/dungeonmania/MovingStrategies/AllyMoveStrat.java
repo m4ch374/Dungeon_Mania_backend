@@ -31,14 +31,16 @@ public class AllyMoveStrat implements IMovingStrategy {
     }
 
     @Override
-    public void moveEntity() {
+    public Position moveEntity() {
         Position followingCurrPos = map.getEntityPos(following);
-
+        
         // Move only if ally does not overlap with player
         if (!followingCurrPos.equals(followingPrevPos)) {
-            map.moveEntityTo(mover, followingPrevPos);
+            Position posToReturn = followingPrevPos;
             followingPrevPos = followingCurrPos;
+            return posToReturn;
         }
+        return map.getEntityPos(mover);
     }
     
 }

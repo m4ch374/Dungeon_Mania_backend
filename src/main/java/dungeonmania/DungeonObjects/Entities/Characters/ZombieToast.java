@@ -8,6 +8,7 @@ import dungeonmania.Interfaces.IEnemy;
 import dungeonmania.Interfaces.IMovingStrategy;
 import dungeonmania.MovingStrategies.ConfusedMoveStrat;
 import dungeonmania.MovingStrategies.CowerMoveStrat;
+import dungeonmania.util.Position;
 import dungeonmania.util.Tracker;
 import dungeonmania.util.DungeonFactory.EntityStruct;
 import org.json.JSONObject;
@@ -60,7 +61,8 @@ public class ZombieToast extends Entity implements IEnemy {
                         .get();
 
         switchMoveStrat();
-        moveStrat.moveEntity();
+        Position pos = moveStrat.moveEntity();
+        map.moveEntityTo(this, pos);
     }
 
     private void switchMoveStrat() {
