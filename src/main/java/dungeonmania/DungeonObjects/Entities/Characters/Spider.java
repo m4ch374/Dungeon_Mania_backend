@@ -43,7 +43,7 @@ public class Spider extends Entity implements IEnemy {
     }
 
     public String getClasString() {
-        return "Spider";
+        return super.getType();
     }
 
     @Override

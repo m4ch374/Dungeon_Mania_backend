@@ -61,7 +61,7 @@ public class Mercenary extends Entity implements IPlayerInteractable, IEnemy {
     }
 
     public String getClasString() {
-        return "Mercenary";
+        return super.getType();
     }
 
     @Override

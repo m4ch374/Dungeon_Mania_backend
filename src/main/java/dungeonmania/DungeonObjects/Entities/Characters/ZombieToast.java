@@ -42,7 +42,7 @@ public class ZombieToast extends Entity implements IEnemy {
     }
 
     public String getClasString() {
-        return "Zombie Toast";
+        return super.getType();
     }
 
 
