@@ -6,6 +6,7 @@ import dungeonmania.Interfaces.IMovable;
 import dungeonmania.Interfaces.IMovingStrategy;
 import dungeonmania.MovingStrategies.AllyMoveStrat;
 import dungeonmania.response.models.EntityResponse;
+import dungeonmania.util.Position;
 import dungeonmania.util.DungeonFactory.EntityStruct;
 
 public class FriendlyCharacter extends Entity implements IMovable {
@@ -24,6 +25,7 @@ public class FriendlyCharacter extends Entity implements IMovable {
 
     @Override
     public void move() {
-        moveStrat.moveEntity();
+        Position posToMove = moveStrat.moveEntity();
+        map.moveEntityTo(this, posToMove);
     }
 }

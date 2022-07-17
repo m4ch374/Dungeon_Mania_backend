@@ -78,7 +78,8 @@ public class Mercenary extends Entity implements IPlayerInteractable, IEnemy {
                         .get();
 
         switchMoveStrat();
-        moveStrat.moveEntity();
+        Position pos = moveStrat.moveEntity();
+        map.moveEntityTo(this, pos);
     }
 
     @Override
