@@ -5,10 +5,10 @@ import dungeonmania.DungeonObjects.Entities.Collectables.InvincibilityPotion;
 import dungeonmania.DungeonObjects.Entities.Collectables.InvisibilityPotion;
 import dungeonmania.DungeonObjects.Entities.Collectables.Key;
 import dungeonmania.DungeonObjects.Entities.Entity;
+import dungeonmania.DungeonObjects.Entities.Statics.Boulder;
 import dungeonmania.DungeonObjects.Entities.Statics.Door;
 import dungeonmania.DungeonObjects.Entities.Statics.FloorSwitch;
 import dungeonmania.DungeonObjects.Entities.Statics.Portal;
-import dungeonmania.DungeonObjects.Entities.Statics.Boulder;
 import dungeonmania.DungeonObjects.Entities.Statics.Wall;
 import dungeonmania.Interactions.Combat;
 import dungeonmania.Interfaces.ICollectable;
@@ -402,9 +402,6 @@ public class Player extends Entity {
 
     public void attackedBy(double ad) {
         int defence = 0;
-        System.out.println("atk bonus" + this.allyAttackBonous);
-        System.out.println("Def bonus" + this.allyDefenceBonous);
-        System.out.println("ally num" + this.allyNum);
         defence += this.allyNum * this.allyDefenceBonous;
 
         if (holdingShield()) {

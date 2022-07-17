@@ -51,9 +51,24 @@
             "y": 2
         },
         {
-            "type": "bow",
+            "type": "wood",
             "x": 0,
             "y": 2
+        },
+        {
+            "type": "arrow",
+            "x": 0,
+            "y": 3
+        },
+        {
+            "type": "arrow",
+            "x": 0,
+            "y": 4
+        },
+        {
+            "type": "arrow",
+            "x": 0,
+            "y": 5
         }
     ],
     "goal-condition": {"goal": "exit"}

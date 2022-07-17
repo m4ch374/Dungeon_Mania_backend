@@ -51,9 +51,19 @@
             "y": 2
         },
         {
-            "type": "shield",
+            "type": "treasure",
             "x": 0,
             "y": 2
+        },
+        {
+            "type": "wood",
+            "x": 0,
+            "y": 3
+        },
+        {
+            "type": "wood",
+            "x": 0,
+            "y": 4
         }
     ],
     "goal-condition": {"goal": "exit"}
