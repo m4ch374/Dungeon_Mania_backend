@@ -72,4 +72,16 @@ public class TrackerTests {
         res = dmc.tick(Direction.DOWN);
         assertTrue(res.getGoals().contains(":boulders"));
     }
+
+    @Test
+    @DisplayName("Test simple exit goal")
+    public void testExit_Simple() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame(D_DIR + "d_trackerTests_boulderUnfufilled", C_DIR + "c_trackerTest_enemyTest_playerOP");
+
+        assertTrue(res.getGoals().contains(":exit"));
+
+        res = dmc.tick(Direction.DOWN);
+        assertEquals("", res.getGoals());
+    }
 }
