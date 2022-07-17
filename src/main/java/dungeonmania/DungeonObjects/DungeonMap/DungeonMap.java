@@ -14,6 +14,7 @@ import dungeonmania.DungeonObjects.Entities.Characters.Spider;
 import dungeonmania.Interfaces.IMovable;
 import dungeonmania.Interfaces.ISpawnable;
 import dungeonmania.util.Position;
+import dungeonmania.util.Tracker;
 
 public class DungeonMap {
     // Assumes the map is not unlimited and surrounded by walls
@@ -147,9 +148,9 @@ public class DungeonMap {
     }
 
     // Spawns all spawnable objects
-    public void spawnEntites(JSONObject config, int currTick) {
+    public void spawnEntites(JSONObject config, int currTick, Tracker tracker) {
         // Spawn spiders, unfortunately it has to be a bit more white box than usual
-        Spider.spawnSpider(config, currTick, this);
+        Spider.spawnSpider(config, currTick, this, tracker);
 
         List<ISpawnable> spawnerEntities = getAllEntities().stream()
                                             .filter(e -> e instanceof ISpawnable)

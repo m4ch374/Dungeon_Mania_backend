@@ -21,6 +21,8 @@ import dungeonmania.response.models.ItemResponse;
 import dungeonmania.util.Direction;
 import dungeonmania.util.DungeonFactory.EntityStruct;
 import dungeonmania.util.Position;
+import dungeonmania.util.Tracker;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -54,7 +56,9 @@ public class Player extends Entity {
     // current moving direction, used for boulder
     private Direction direction = null;
 
-    public Player(EntityStruct metaData, JSONObject config) {
+    Tracker tracker = null;
+
+    public Player(EntityStruct metaData, JSONObject config, Tracker tracker) {
         super(metaData);
         this.health = config.getInt("player_health");
         this.attackDamage = config.getInt("player_attack");
@@ -69,6 +73,8 @@ public class Player extends Entity {
         this.allyDefenceBonous = config.has("ally_defence") ? config.getInt("ally_defence") : 0;
 
         this.backpack = new Backpack(config.getInt("bow_durability"), config.getInt("shield_durability"));
+
+        this.tracker = tracker;
     }
 
     public Direction getDirection() {
@@ -124,6 +130,10 @@ public class Player extends Entity {
         }
 
         backpack.addItem(item);
+    }
+
+    public void notifyTrackerCollectedTreasure() {
+        tracker.notifyTreasure();
     }
 
     private void updatePotions() {
