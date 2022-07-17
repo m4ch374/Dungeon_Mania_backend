@@ -45,16 +45,17 @@ public class Combat {
     public void resolveCombat(){
         while (playerHealth > 0 && enemyHealth > 0) {
             /*If a potion is used then combat is ended prematurely*/
-            if ((boolean) playerState.get("invincible") || 
-                (boolean) playerState.get("invisible")){
+            if ((boolean) playerState.get("invincible")){
+                enemy.death();
                 return;
             }
             
-            player.attackedBy(enemyAttackDamage);
-            enemyHealth -= (playerAttackDamage / 5);
+            double playerHealthDelta = player.attackedBy(enemyAttackDamage);
+            double enemyHealthDelta = (playerAttackDamage / 5);
+            enemyHealth -= enemyHealthDelta;
             playerHealth = player.getHealth();
 
-            rounds.add(new RoundResponse(playerHealth, enemyHealth, items));
+            rounds.add(new RoundResponse( -playerHealthDelta,  -enemyHealthDelta, items));
         }
         if (enemyHealth <= 0) {
             enemy.death();

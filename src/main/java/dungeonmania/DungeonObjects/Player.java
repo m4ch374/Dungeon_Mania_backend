@@ -22,12 +22,12 @@ import dungeonmania.util.Direction;
 import dungeonmania.util.DungeonFactory.EntityStruct;
 import dungeonmania.util.Position;
 import dungeonmania.util.Tracker;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.json.JSONObject;
+
 
 
 
@@ -437,7 +437,7 @@ public class Player extends Entity {
         return this.health;
     }
 
-    public void attackedBy(double ad) {
+    public double attackedBy(double ad) {
         int defence = 0;
         defence += this.allyNum * this.allyDefenceBonous;
 
@@ -446,27 +446,33 @@ public class Player extends Entity {
             useEquipment(EntityTypes.SHIELD.toString());
         }
 
-        this.health -= ((ad - defence) / 10);
+        double playerHealthDelta = ((ad - defence) / 10);
+
+        this.health -= playerHealthDelta;
 
         if (isDead()) {
             getMap().removeEntity(this);
         }
+        return playerHealthDelta;
     }
 
     public List<BattleResponse> initiateBattle() {
-        List<BattleResponse> battles = new ArrayList<BattleResponse>();
-        for (Entity enemy : getMap().getEntitiesOverlapped(this)){
-            if (enemy instanceof IEnemy){
-                Combat battle = new Combat(this, (IEnemy) enemy);
-                battle.resolveCombat();
-                battles.add(battle.returnBattleResponse());
+        if (! this.isInvincible() || ! this.isInvisible()){
+            List<BattleResponse> battles = new ArrayList<BattleResponse>();
+            for (Entity enemy : getMap().getEntitiesOverlapped(this)){
+                if (enemy instanceof IEnemy){
+                    Combat battle = new Combat(this, (IEnemy) enemy);
+                    battle.resolveCombat();
+                    battles.add(battle.returnBattleResponse());
+                }
             }
+            if (battles.size() == 0){
+                return null;
+            }
+            
+            return battles;
         }
-        if (battles.size() == 0){
-            return null;
-        }
-        
-        return battles;
+        return null;
     }
 
     public void openDoor(int key) throws InvalidActionException {
