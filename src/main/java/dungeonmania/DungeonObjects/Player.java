@@ -266,11 +266,14 @@ public class Player extends Entity {
             }
         }
     }
+
+    // Variable used to help prevent recursive backtracking in multi-teleportaion cases (also works with multiple seperate teleportations)
+    // MUST be declared outside scope of the fnc for obvious reasons
     public boolean haveFoundFinalDest = false;
 
     private void move(Position destination) throws InvalidActionException {
+        // reset it to False for a new teleportation event.
         this.haveFoundFinalDest = false;
-        System.out.println("First Iteration ctr in move(), " + destination);
         // Check if something is blocking the player
         if (ableToMove(destination)) {
             this.previousPosition = getPos();
@@ -284,39 +287,25 @@ public class Player extends Entity {
             // deal with interaction of overlapped portal
             Portal portal = getOverlapPortal();
             if (portal != null) {
-                System.out.println("Portal found in move()");
-                System.out.println("0.5 Found final dest? " + this.haveFoundFinalDest);
                 // Get destinationS of the current Portal, player can jump into (0th index is the original intended destination)
                 List<Position> destinationList = portal.getDestinations(getDirection());
                 for (Position destinationPos : destinationList) {
                     try {
                         // Call recursively on each new destination, IFF theres another Portal there
                         if (this.haveFoundFinalDest == true) {return;}
-                        System.out.println("Second Iteration ctr in move(), " + destinationPos);
                         move(destinationPos);
                         // If exception not thrown, it is Safe to move into current Position in loop 
-                        System.out.println("Player og pos" + getPos() + ", in move()");
-                        System.out.println("Player new pos" + destinationPos + ", in move()");
-                        System.out.println("1 Found final dest? " + this.haveFoundFinalDest);
                         if (this.haveFoundFinalDest == true) {return;}
-                        System.out.println("Moving Player");
                         getMap().moveEntityTo(this, destinationPos); System.out.println("GOTCHA"); this.haveFoundFinalDest = true;//throw new InvalidActionException("Success multi-teleportaion");
-                        System.out.println("Moved Player's pos: " + getPos());
                         // // throw exception here? so the final portal's destination down the line doesnt get overriden via backtracing in recursion
                         // System.out.println("Player new pos" + getPos() + ", in move()");
                         // break;
                     } catch (InvalidActionException e) {
-                        System.out.println("Player! new pos" + getPos() + ", in move()");
-                        System.out.println("Caught exception in move(), " + e.toString());
                         // nothing here, just let the player overlap with portal without teleport
                         // this structure will allow player go in portal as much as possible
                         // and player will stop at the portal which he cannot goes in
                     }
                 }
-                
-                System.out.println("Player new pos" + getPos() + ", in move()");
-                System.out.println("2 Found final dest? " + this.haveFoundFinalDest);
-                // reset the var, for future teleportaions
             } 
         }
     }

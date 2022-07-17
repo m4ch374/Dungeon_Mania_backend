@@ -89,12 +89,10 @@ public class PortalTests {
         
         // Player moves East into Portal, thus teleports east of Portal1 (2,3)
         // ASSUMING Test 1 passes, we skip checks for this movement
-        System.out.println("Test 1 first movement");
         dungeonRes = dmc.tick(Direction.RIGHT);
         player = getPlayer(dungeonRes).get();
         assertEquals(new Position(2, 3), player.getPosition());
         // Player moves South into Portal2 (2,4), thus teleports south of Portal2 (3,2), so placed at (3,3)
-        System.out.println("Test 2 second movement");
         dungeonRes = dmc.tick(Direction.DOWN);
         // Assert Portals 2 & 3 are still in same location
         expectedPortal2 = TestUtils.getEntityById(dungeonRes, "portal2");
@@ -187,16 +185,11 @@ public class PortalTests {
         assertEquals(new Position(2, 3), portal2.getPosition());
         assertEquals(new Position(3, 2), portal3.getPosition());
 
-        System.out.println("Test 1 " + player.getPosition());
-
         // Player moves east into Portal, ends up east of Portal3(3,2) into (4,2)
         dungeonRes = dmc.tick(Direction.RIGHT);
         
         // Assert player has teleported
         player = getPlayer(dungeonRes).get();
-
-        System.out.println("Test 2 " + player.getPosition());
-
         assertEquals(new Position(4, 2), player.getPosition());
     }
 
