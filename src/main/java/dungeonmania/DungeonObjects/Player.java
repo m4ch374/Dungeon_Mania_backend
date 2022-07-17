@@ -224,10 +224,11 @@ public class Player extends Entity {
                     // thus its safe for player to also move. 
                     Boulder boulder = (Boulder) entity;
                     boulder.interactedBy(this);
+                    System.out.println("Found a boulder & interacted it in ableToMove()");
                     // DO NOT "return;" here, since we want to interact with other overlapping entities
-                } else if (entity instanceof Portal) {
-                    Portal portal = (Portal) entity;
-                    portal.interactedBy(this);
+                // } else if (entity instanceof Portal) {
+                //     Portal portal = (Portal) entity;
+                //     portal.interactedBy(this);
                 }
             } catch (InvalidActionException e) {
                 System.out.println(e.getMessage());
@@ -263,6 +264,7 @@ public class Player extends Entity {
     }
 
     private void move(Position destination) throws InvalidActionException {
+        System.out.println("First Iteration ctr in move()");
         // Check if something is blocking the player
         if (ableToMove(destination)) {
             this.previousPosition = getPos();
@@ -276,14 +278,21 @@ public class Player extends Entity {
             // deal with interaction of overlapped portal
             Portal portal = getOverlapPortal();
             if (portal != null) {
+                System.out.println("Portal found in move()");
                 // Get destinationS of the current Portal, player can jump into (0th index is the original intended destination)
                 List<Position> destinationList = portal.getDestinations(getDirection());
                 for (Position destinationPos : destinationList) {
                     try {
                         // Call recursively on each new destination, IFF theres another Portal there
+                        System.out.println("Second Iteration ctr in move()");
                         move(destinationPos);
+                        // If exception not thrown, it is Safe to move into current Position in loop 
+                        System.out.println("Player og pos" + getPos() + ", in move()");
+                        getMap().moveEntityTo(this, destinationPos);
+                        System.out.println("Player new pos" + getPos() + ", in move()");
                         break;
                     } catch (InvalidActionException e) {
+                        System.out.println("Caught exception in move()");
                         // nothing here, just let the player overlap with portal without teleport
                         // this structure will allow player go in portal as much as possible
                         // and player will stop at the portal which he cannot goes in

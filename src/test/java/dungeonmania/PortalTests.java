@@ -151,10 +151,13 @@ public class PortalTests {
         // assert the boulder is there
         assertEquals(new Position(2, 4), TestUtils.getEntityById(dungeonRes, "boulder").getPosition());
         dungeonRes = dmc.tick(Direction.LEFT);
-        // Assert player has teleported
-        assertEquals(new Position(2, 4), player.getPosition());
-        // Assert boulder has moved
+        
+        // Assert boulder has been moved
         assertEquals(new Position(1, 4), TestUtils.getEntityById(dungeonRes, "boulder").getPosition());
+        
+        // Assert player has teleported
+        player = getPlayer(dungeonRes).get();
+        assertEquals(new Position(2, 4), player.getPosition());
     }
 
 
@@ -180,9 +183,16 @@ public class PortalTests {
         assertEquals(new Position(2, 3), portal2.getPosition());
         assertEquals(new Position(3, 2), portal3.getPosition());
 
-        // Player moves east into Portal, ends up east of Portal3 ()
+        System.out.println("Test 1 " + player.getPosition());
+
+        // Player moves east into Portal, ends up east of Portal3(3,2) into (4,2)
         dungeonRes = dmc.tick(Direction.RIGHT);
+        
         // Assert player has teleported
+        player = getPlayer(dungeonRes).get();
+
+        System.out.println("Test 1 " + player.getPosition());
+
         assertEquals(new Position(4, 2), player.getPosition());
     }
 
@@ -192,7 +202,7 @@ public class PortalTests {
     @DisplayName("Portal 6: Test Merc does teleport")
     // SYNOPSIS:
     // Player (2,1) moves west away from Portal(3,1) and Merc(4,1) follows Player's direction, east, into Portal
-    // but simply overlaps it. They're surrounded by walls at (1,2),(2,2),(3,2),(4,2),(5,2),(5,1)
+    // and gets teleported to east (1,3) of Portal1(2,3). They're surrounded by walls at (1,2),(2,2),(3,2),(4,2),(5,2),(5,1)
     public void testPortalOverlapsMerc() {
         // Merc first movement is into Portal(4,2), which overlaps with .
         DungeonManiaController dmc = new DungeonManiaController();

@@ -13,12 +13,14 @@
         {
             "type": "portal",
             "x": 3,
-            "y": 1
+            "y": 1,
+            "colour": "Red"
         },
         {
             "type": "portal",
             "x": 2,
-            "y": 3
+            "y": 3,
+            "colour": "Red"
         },
         {
             "type": "mercenary",
