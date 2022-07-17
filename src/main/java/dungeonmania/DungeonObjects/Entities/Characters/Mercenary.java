@@ -1,7 +1,6 @@
 package dungeonmania.DungeonObjects.Entities.Characters;
 
 import dungeonmania.Interfaces.IEnemy;
-import dungeonmania.Interfaces.IMovable;
 import dungeonmania.Interfaces.IMovingStrategy;
 import dungeonmania.Interfaces.IPlayerInteractable;
 import dungeonmania.MovingStrategies.ConfusedMoveStrat;
