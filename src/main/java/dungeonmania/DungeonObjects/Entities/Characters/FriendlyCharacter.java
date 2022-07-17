@@ -26,34 +26,4 @@ public class FriendlyCharacter extends Entity implements IMovable {
     public void move() {
         moveStrat.moveEntity();
     }
-
-    @Override
-    public RoundResponse battleWith(Entity opponent) {
-        // Porbably would need this in milestone 3 so imma keep it
-        return null;
-    }
-
-    @Override
-    public void death() {
-        // Porbably would need this in milestone 3 so imma keep it
-    }
-
-    @Override
-    public String getClasString() {
-        // Porbably would need this in milestone 3 so imma keep it
-        return "deez";
-    }
-    
-    @Override
-    public double getAttackDamage() {
-        // Porbably would need this in milestone 3 so imma keep it
-        return 0.0;
-    }
-    
-    @Override
-    public double getHealth() {
-        // Porbably would need this in milestone 3 so imma keep it
-        return 0.0;
-    }
-    
 }
