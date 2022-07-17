@@ -53,7 +53,8 @@ public class Spider extends Entity implements IEnemy {
 
     @Override
     public void move() {
-        moveStrat.moveEntity();
+        Position posToMove = moveStrat.moveEntity();
+        super.getMap().moveEntityTo(this, posToMove);
     }
     
     public static void spawnSpider(JSONObject config, int currTick, DungeonMap map, Tracker tracker) {

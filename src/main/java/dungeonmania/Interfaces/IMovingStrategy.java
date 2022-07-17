@@ -1,5 +1,7 @@
 package dungeonmania.Interfaces;
 
+import dungeonmania.util.Position;
+
 public interface IMovingStrategy {
-    public void moveEntity();
+    public Position moveEntity();
 }
