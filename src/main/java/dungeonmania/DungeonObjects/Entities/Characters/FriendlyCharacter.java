@@ -33,5 +33,29 @@ public class FriendlyCharacter extends Entity implements IMovable {
         // Porbably would need this in milestone 3 so imma keep it
         return null;
     }
+
+    @Override
+    public double getAttackDamage() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public double getHealth() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public void death() {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public String getClasString() {
+        // TODO Auto-generated method stub
+        return null;
+    }
     
 }

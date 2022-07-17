@@ -74,6 +74,10 @@ public class Spider extends Entity implements IEnemy {
         int entityX = random.nextInt(maxX - minX) + minX;
         int entityY = random.nextInt(maxY - minY) + minY;
 
+        // minimum 5 x 5 grid
+        entityX = entityX < 5 ? 5 : entityX;
+        entityY = entityY < 5 ? 5 : entityY;
+
         EntityStruct struct = new EntityStruct("spawned_spider" + spawnId, EntityTypes.SPIDER.toString(), map);
         Spider spiderSpawned = new Spider(struct, config);
         map.placeEntityAt(spiderSpawned, new Position(entityX, entityY));
