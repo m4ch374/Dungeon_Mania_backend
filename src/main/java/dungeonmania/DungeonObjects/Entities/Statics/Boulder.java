@@ -1,6 +1,7 @@
 package dungeonmania.DungeonObjects.Entities.Statics;
 
 import dungeonmania.DungeonObjects.Player;
+import dungeonmania.DungeonObjects.DungeonMap.DungeonMap;
 import dungeonmania.DungeonObjects.Entities.Entity;
 import dungeonmania.DungeonObjects.Entities.Collectables.Bomb;
 import dungeonmania.Interfaces.IStaticInteractable;
@@ -94,5 +95,13 @@ public class Boulder extends Entity implements IStaticInteractable {
 
     public void move(Position newPos) {
        super.getMap().moveEntityTo(this, newPos);
+    }
+
+    public boolean overlappedWithSwitch() {
+        DungeonMap map = super.getMap();
+
+        List<Entity> entitiesOverlapped = map.getEntitiesOverlapped(this);
+
+        return entitiesOverlapped.stream().filter(e -> e.getType().equals(EntityTypes.FLOOR_SWITCH.toString())).count() > 0;
     }
 }

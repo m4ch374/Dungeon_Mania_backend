@@ -53,7 +53,7 @@ public class DungeonBuilder {
 
     public DungeonState build() {
         tracker = new Tracker(dungeonGoals, configJson);
-        map = DungeonMapParser.buildDungeonMap(dungeonEntities, configJson);
+        map = DungeonMapParser.buildDungeonMap(dungeonEntities, configJson, tracker);
         player = (Player) map.getAllEntities().stream().filter(e -> e instanceof Player).findFirst().get();
 
         return new DungeonState(this);
