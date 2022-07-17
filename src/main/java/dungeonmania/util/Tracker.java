@@ -92,7 +92,7 @@ public class Tracker {
 
                 return "(" + leftChild.getUnfinishedGoals(map) + " " + AND + " " + rightChild.getUnfinishedGoals(map) + ")";
             } else {
-                if (leftComplete || rightComplete)
+                if (leftComplete || rightComplete || leftChild.getUnfinishedGoals(map).equals("") || rightChild.getUnfinishedGoals(map).equals(""))
                     return "";
 
                     return "(" + leftChild.getUnfinishedGoals(map) + " " + OR + " " + rightChild.getUnfinishedGoals(map) + ")";
