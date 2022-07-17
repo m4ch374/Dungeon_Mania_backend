@@ -7,6 +7,7 @@ import dungeonmania.DungeonObjects.Entities.Collectables.Key;
 import dungeonmania.DungeonObjects.Entities.Entity;
 import dungeonmania.DungeonObjects.Entities.Statics.Boulder;
 import dungeonmania.DungeonObjects.Entities.Statics.Door;
+import dungeonmania.DungeonObjects.Entities.Statics.Exit;
 import dungeonmania.DungeonObjects.Entities.Statics.FloorSwitch;
 import dungeonmania.DungeonObjects.Entities.Statics.Portal;
 import dungeonmania.DungeonObjects.Entities.Statics.Wall;
@@ -16,6 +17,7 @@ import dungeonmania.Interfaces.IEnemy;
 import dungeonmania.Interfaces.IEquipment;
 import dungeonmania.Interfaces.IStaticInteractable;
 import dungeonmania.exceptions.InvalidActionException;
+import dungeonmania.exceptions.UninteractableException;
 import dungeonmania.response.models.BattleResponse;
 import dungeonmania.response.models.ItemResponse;
 import dungeonmania.util.Direction;
@@ -281,9 +283,6 @@ public class Player extends Entity {
     public boolean haveFoundFinalDest = false;
 
     private void move(Position destination) throws InvalidActionException {
-        if (previousPosition == null)
-            previousPosition = getPos();
-
         // reset it to False for a new teleportation event.
         this.haveFoundFinalDest = false;
         // Check if something is blocking the player
@@ -295,6 +294,9 @@ public class Player extends Entity {
 
             // deal with interaction of collections
             interactWithOverlapCollections(destination);
+
+            // deal with Exit if its at new Pos
+            interactWithExit(destination);
 
             // deal with interaction of overlapped portal
             Portal portal = getOverlapPortal();
@@ -308,7 +310,7 @@ public class Player extends Entity {
                         move(destinationPos);
                         // If exception not thrown, it is Safe to move into current Position in loop 
                         if (this.haveFoundFinalDest == true) {return;}
-                        getMap().moveEntityTo(this, destinationPos); System.out.println("GOTCHA"); this.haveFoundFinalDest = true;//throw new InvalidActionException("Success multi-teleportaion");
+                        getMap().moveEntityTo(this, destinationPos); this.haveFoundFinalDest = true;//throw new InvalidActionException("Success multi-teleportaion");
                         // // throw exception here? so the final portal's destination down the line doesnt get overriden via backtracing in recursion
                         // System.out.println("Player new pos" + getPos() + ", in move()");
                         // break;
@@ -334,6 +336,26 @@ public class Player extends Entity {
 
         // If multiple portals overlap, always take the first one, it may be random, but it doesn't matter
         return portal.get(0);
+    }
+
+    public void interactWithExit(Position currPos) {
+        List<Entity> inCell = getMap().getEntitiesAt(currPos);
+
+        List<IStaticInteractable> interactables = inCell
+                                        .stream()
+                                        .filter(e -> (e instanceof IStaticInteractable))
+                                        .map(e -> (IStaticInteractable) e)
+                                        .collect(Collectors.toList());
+        for (IStaticInteractable inter : interactables) {
+            if (inter instanceof Exit) {
+                Exit exit = (Exit) inter;
+                try {
+                    exit.interactedBy(this);
+                } catch (InvalidActionException e) {
+                    // do nothing
+                }
+            }
+        }
     }
 
     public void tick(String action, Direction direction, String str) throws InvalidActionException, IllegalArgumentException {
