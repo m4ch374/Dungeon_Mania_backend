@@ -144,6 +144,7 @@ public class ExampleTests {
 
         // kill spider
         res = dmc.tick(Direction.RIGHT);
+        System.out.println(getGoals(res));
         assertTrue(getGoals(res).contains(":exit"));
         assertTrue(getGoals(res).contains(":treasure"));
         assertTrue(getGoals(res).contains(":boulders"));

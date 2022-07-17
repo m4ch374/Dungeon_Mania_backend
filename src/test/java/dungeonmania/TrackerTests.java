@@ -43,7 +43,7 @@ public class TrackerTests {
         DungeonManiaController dmc = new DungeonManiaController();
         DungeonResponse res = dmc.newGame(D_DIR + "d_trackerTests_enemy", C_DIR + "c_trackerTest_enemyTest_playerOP");
 
-        assertTrue(res.getGoals().contains(":enemy"));
+        assertTrue(res.getGoals().contains(":enemies"));
 
         res = dmc.tick(Direction.DOWN);
         assertEquals("", res.getGoals());
@@ -77,7 +77,7 @@ public class TrackerTests {
     @DisplayName("Test simple exit goal")
     public void testExit_Simple() {
         DungeonManiaController dmc = new DungeonManiaController();
-        DungeonResponse res = dmc.newGame(D_DIR + "d_trackerTests_boulderUnfufilled", C_DIR + "c_trackerTest_enemyTest_playerOP");
+        DungeonResponse res = dmc.newGame(D_DIR + "d_trackerTest_exit", C_DIR + "c_trackerTest_enemyTest_playerOP");
 
         assertTrue(res.getGoals().contains(":exit"));
 

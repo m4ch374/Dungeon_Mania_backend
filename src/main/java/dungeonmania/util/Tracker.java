@@ -110,7 +110,7 @@ public class Tracker {
             case ":treasure":
                 return treasureAchieved();
 
-            case ":enemy":
+            case ":enemies":
                 return enemyAchieved();
 
             case ":boulders":
