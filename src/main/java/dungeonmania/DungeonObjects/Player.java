@@ -1,37 +1,40 @@
 package dungeonmania.DungeonObjects;
 
-import dungeonmania.util.Direction;
-import dungeonmania.util.Position;
-import dungeonmania.util.DungeonFactory.EntityStruct;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.json.JSONObject;
-
-import dungeonmania.DungeonObjects.Entities.Entity;
 import dungeonmania.DungeonObjects.Entities.Collectables.Bomb;
 import dungeonmania.DungeonObjects.Entities.Collectables.InvincibilityPotion;
 import dungeonmania.DungeonObjects.Entities.Collectables.InvisibilityPotion;
 import dungeonmania.DungeonObjects.Entities.Collectables.Key;
-import dungeonmania.DungeonObjects.Entities.Statics.FloorSwitch;
-import dungeonmania.DungeonObjects.Entities.Statics.Portal;
+import dungeonmania.DungeonObjects.Entities.Entity;
 import dungeonmania.DungeonObjects.Entities.Statics.Boulder;
 import dungeonmania.DungeonObjects.Entities.Statics.Door;
+import dungeonmania.DungeonObjects.Entities.Statics.FloorSwitch;
+import dungeonmania.DungeonObjects.Entities.Statics.Portal;
 import dungeonmania.DungeonObjects.Entities.Statics.Wall;
+import dungeonmania.Interactions.Combat;
 import dungeonmania.Interfaces.ICollectable;
 import dungeonmania.Interfaces.IEquipment;
+import dungeonmania.Interfaces.IMovable;
 import dungeonmania.Interfaces.IStaticInteractable;
 import dungeonmania.exceptions.InvalidActionException;
+import dungeonmania.response.models.BattleResponse;
 import dungeonmania.response.models.ItemResponse;
+import dungeonmania.util.Direction;
+import dungeonmania.util.DungeonFactory.EntityStruct;
+import dungeonmania.util.Position;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.json.JSONObject;
+
+
+
 
 public class Player extends Entity {
 
     private Position previousPosition = null;
 
-    private int health;
+    private double health;
     private final int attackDamage;
 
     private final int sword_attack;
@@ -39,7 +42,7 @@ public class Player extends Entity {
     private final int invincibility_potion_duration;
     private final int invisibility_potion_duration;
 
-    private int allyNum;
+    private int allyNum = 0;
     private final int allyAttackBonous;
     private final int allyDefenceBonous;
 
@@ -231,6 +234,7 @@ public class Player extends Entity {
         return true;
     }
 
+
     private void interactWithOverlapCollections(Position destination) throws InvalidActionException {
         List<Entity> inCell = getMap().getEntitiesAt(destination);
 
@@ -381,7 +385,7 @@ public class Player extends Entity {
         backpack.useEquipment(type);
     }
 
-    private double getAttackDamage() {
+    public double getAttackDamage() {
         double ad = this.attackDamage;
 
         if (holdingSword()) { ad += this.sword_attack; }
@@ -389,13 +393,15 @@ public class Player extends Entity {
         if (holdingBow()) { ad *= 2; }
 
         ad += this.allyNum * this.allyAttackBonous;
-
         return ad;
+    }
+
+    public double getHealth(){
+        return this.health;
     }
 
     public void attackedBy(double ad) {
         int defence = 0;
-
         defence += this.allyNum * this.allyDefenceBonous;
 
         if (holdingShield()) {
@@ -403,15 +409,26 @@ public class Player extends Entity {
             useEquipment(EntityTypes.SHIELD.toString());
         }
 
-        this.health -= ((ad - defence) / 5);
+        this.health -= ((ad - defence) / 10);
 
         if (isDead()) {
             getMap().removeEntity(this);
         }
     }
 
-    // TODO for the man in charge of battle
-    public void initiateBattle() {}
+    public List<BattleResponse> initiateBattle() {
+        List<BattleResponse> battles = new ArrayList<BattleResponse>();
+        for (Entity enemy : getMap().getEntitiesOverlapped(this)){
+            Combat battle = new Combat(this, (IMovable)enemy);
+            battle.resolveCombat();
+            battles.add(battle.returnBattleResponse());
+        }
+        if (battles.size() == 0){
+            return null;
+        }
+        
+        return battles;
+    }
 
     public void openDoor(int key) throws InvalidActionException {
         if (!backpack.hasAKey() || !backpack.hasTheKey(key)) {
