@@ -45,8 +45,8 @@ public class Combat {
     public void resolveCombat(){
         while (playerHealth > 0 && enemyHealth > 0) {
             /*If a potion is used then combat is ended prematurely*/
-            if ((boolean) playerState.get("invincible") || 
-                (boolean) playerState.get("invisible")){
+            if ((boolean) playerState.get("invincible")){
+                enemy.death();
                 return;
             }
             
