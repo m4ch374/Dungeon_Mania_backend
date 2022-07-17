@@ -1,5 +1,6 @@
 package dungeonmania.DungeonObjects.Entities.Characters;
 
+import dungeonmania.Interfaces.IEnemy;
 import dungeonmania.Interfaces.IMovable;
 import dungeonmania.Interfaces.IMovingStrategy;
 import dungeonmania.Interfaces.IPlayerInteractable;
@@ -19,7 +20,7 @@ import dungeonmania.DungeonObjects.Player;
 import dungeonmania.DungeonObjects.DungeonMap.DungeonMap;
 import dungeonmania.DungeonObjects.Entities.Entity;
 
-public class Mercenary extends Entity implements IMovable, IPlayerInteractable {
+public class Mercenary extends Entity implements IPlayerInteractable, IEnemy {
     private static final String OBSERVING_ID = "player";
 
     private int bribeRadius;
