@@ -26,29 +26,4 @@ public class FriendlyCharacter extends Entity implements IMovable {
     public void move() {
         moveStrat.moveEntity();
     }
-
-    @Override
-    public double getAttackDamage() {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
-    public double getHealth() {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
-    public void death() {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public String getClasString() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    
 }
