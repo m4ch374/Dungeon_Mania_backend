@@ -6,44 +6,64 @@
             "y" : 1
         },
         {
-            "type": "wall",
+            "type": "mercenary",
+            "x": 2,
+            "y": 1
+        },
+        {
+            "type": "exit",
             "x": 0,
             "y": 0
         },
         {
             "type": "wall",
             "x": 1,
+            "y": 0
+        },
+        {
+            "type": "wall",
+            "x": 2,
+            "y": 0
+        },
+        {
+            "type": "wall",
+            "x": 3,
+            "y": 0
+        },
+        {
+            "type": "wall",
+            "x": 3,
             "y": 1
         },
         {
             "type": "wall",
-            "x": 0,
-            "y": 2
-        },
-        {
-            "type": "wall",
-            "x": -1,
-            "y": 1
-        },
-        {
-            "type": "zombie_toast_spawner",
-            "x": 2,
-            "y": 3
-        },
-        {
-            "type": "wall",
-            "x": 2,
+            "x": 3,
             "y": 2
         },
         {
             "type": "wall",
             "x": 2,
-            "y": 4
+            "y": 2
         },
         {
             "type": "wall",
             "x": 1,
+            "y": 2
+        },
+        {
+            "type": "shield",
+            "x": 0,
+            "y": 2
+        },
+        {
+            "type": "bow",
+            "x": 0,
             "y": 3
+        },
+        {
+            "type": "sword",
+            "x": 0,
+            "y": 4
         }
     ],
     "goal-condition": {"goal": "exit"}

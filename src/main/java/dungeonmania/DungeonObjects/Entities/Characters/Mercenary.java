@@ -1,6 +1,6 @@
 package dungeonmania.DungeonObjects.Entities.Characters;
 
-import dungeonmania.Interfaces.IMovable;
+import dungeonmania.Interfaces.IEnemy;
 import dungeonmania.Interfaces.IMovingStrategy;
 import dungeonmania.Interfaces.IPlayerInteractable;
 import dungeonmania.MovingStrategies.ConfusedMoveStrat;
@@ -8,7 +8,6 @@ import dungeonmania.MovingStrategies.CowerMoveStrat;
 import dungeonmania.MovingStrategies.SeekerMoveStrat;
 import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.response.models.EntityResponse;
-import dungeonmania.response.models.RoundResponse;
 import dungeonmania.util.Position;
 import dungeonmania.util.DungeonFactory.EntityStruct;
 
@@ -19,14 +18,14 @@ import dungeonmania.DungeonObjects.Player;
 import dungeonmania.DungeonObjects.DungeonMap.DungeonMap;
 import dungeonmania.DungeonObjects.Entities.Entity;
 
-public class Mercenary extends Entity implements IMovable, IPlayerInteractable {
+public class Mercenary extends Entity implements IPlayerInteractable, IEnemy {
     private static final String OBSERVING_ID = "player";
 
     private int bribeRadius;
     private int brinbeAmount;
 
-    private int attackDamage;
-    private int health;
+    private double attackDamage;
+    private double health;
 
     private Player observing = null;
     private DungeonMap map = super.getMap();
@@ -48,12 +47,21 @@ public class Mercenary extends Entity implements IMovable, IPlayerInteractable {
         return brinbeAmount;
     }
 
-    public int getAttackDamage() {
+    public double getAttackDamage() {
         return attackDamage;
     }
 
-    public int getHealth() {
+    public double getHealth() {
         return health;
+    }
+
+    public void death() {
+        getMap().removeEntity(this);
+        return;
+    }
+
+    public String getClasString() {
+        return super.getType();
     }
 
     @Override
@@ -68,9 +76,6 @@ public class Mercenary extends Entity implements IMovable, IPlayerInteractable {
         switchMoveStrat();
         moveStrat.moveEntity();
     }
-
-    @Override
-    public RoundResponse battleWith(Entity opponent) { return null; }
 
     @Override
     public EntityResponse toEntityResponse() {

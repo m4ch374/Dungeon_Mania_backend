@@ -1,23 +1,22 @@
 package dungeonmania.DungeonObjects.Entities.Characters;
 
-import org.json.JSONObject;
-
-import dungeonmania.DungeonObjects.EntityTypes;
-import dungeonmania.DungeonObjects.Player;
 import dungeonmania.DungeonObjects.DungeonMap.DungeonMap;
 import dungeonmania.DungeonObjects.Entities.Entity;
-import dungeonmania.Interfaces.IMovable;
+import dungeonmania.DungeonObjects.EntityTypes;
+import dungeonmania.DungeonObjects.Player;
+import dungeonmania.Interfaces.IEnemy;
 import dungeonmania.Interfaces.IMovingStrategy;
 import dungeonmania.MovingStrategies.ConfusedMoveStrat;
 import dungeonmania.MovingStrategies.CowerMoveStrat;
-import dungeonmania.response.models.RoundResponse;
 import dungeonmania.util.DungeonFactory.EntityStruct;
+import org.json.JSONObject;
 
-public class ZombieToast extends Entity implements IMovable {
+
+public class ZombieToast extends Entity implements IEnemy {
     private static final String OBSERVING_ID = "player";
 
-    private int attackDamage;
-    private int health;
+    private double attackDamage;
+    private double health;
 
     private Player observing = null;
     private DungeonMap map = super.getMap();
@@ -29,13 +28,23 @@ public class ZombieToast extends Entity implements IMovable {
         this.health = config.getInt("zombie_health");
     }
 
-    public int getAttackDamage() {
+    public double getAttackDamage() {
         return attackDamage;
     }
 
-    public int getHealth() {
+    public double getHealth() {
         return health;
     }
+
+    public void death() {
+        getMap().removeEntity(this);
+        return;
+    }
+
+    public String getClasString() {
+        return super.getType();
+    }
+
 
     @Override
     public void move() {
@@ -49,9 +58,6 @@ public class ZombieToast extends Entity implements IMovable {
         switchMoveStrat();
         moveStrat.moveEntity();
     }
-
-    @Override
-    public RoundResponse battleWith(Entity opponent) { return null; }
 
     private void switchMoveStrat() {
         boolean invincible = (boolean) observing.getState().get("invincible");

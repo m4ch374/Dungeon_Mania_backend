@@ -6,7 +6,6 @@ import dungeonmania.Interfaces.IMovable;
 import dungeonmania.Interfaces.IMovingStrategy;
 import dungeonmania.MovingStrategies.AllyMoveStrat;
 import dungeonmania.response.models.EntityResponse;
-import dungeonmania.response.models.RoundResponse;
 import dungeonmania.util.DungeonFactory.EntityStruct;
 
 public class FriendlyCharacter extends Entity implements IMovable {
@@ -27,11 +26,4 @@ public class FriendlyCharacter extends Entity implements IMovable {
     public void move() {
         moveStrat.moveEntity();
     }
-
-    @Override
-    public RoundResponse battleWith(Entity opponent) {
-        // Porbably would need this in milestone 3 so imma keep it
-        return null;
-    }
-    
 }

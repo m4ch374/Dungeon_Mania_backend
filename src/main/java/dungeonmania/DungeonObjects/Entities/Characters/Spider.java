@@ -7,18 +7,17 @@ import org.json.JSONObject;
 import dungeonmania.DungeonObjects.EntityTypes;
 import dungeonmania.DungeonObjects.DungeonMap.DungeonMap;
 import dungeonmania.DungeonObjects.Entities.Entity;
-import dungeonmania.Interfaces.IMovable;
+import dungeonmania.Interfaces.IEnemy;
 import dungeonmania.Interfaces.IMovingStrategy;
 import dungeonmania.MovingStrategies.CircularMoveStrat;
-import dungeonmania.response.models.RoundResponse;
 import dungeonmania.util.Position;
 import dungeonmania.util.DungeonFactory.EntityStruct;
 
-public class Spider extends Entity implements IMovable {
+public class Spider extends Entity implements IEnemy {
     private static int spawnId = 0;
 
-    private int attackDamage;
-    private int health;
+    private double attackDamage;
+    private double health;
     
     IMovingStrategy moveStrat;
 
@@ -30,22 +29,27 @@ public class Spider extends Entity implements IMovable {
         moveStrat = new CircularMoveStrat(this, super.getMap());
     }
 
-    public int getAttackDamage() {
+    public double getAttackDamage() {
         return attackDamage;
     }
 
-    public int getHealth() {
+    public double getHealth() {
         return health;
+    }
+
+    public void death() {
+        getMap().removeEntity(this);
+        return;
+    }
+
+    public String getClasString() {
+        return super.getType();
     }
 
     @Override
     public void move() {
         moveStrat.moveEntity();
     }
-
-    @Override
-    public RoundResponse battleWith(Entity opponent) { return null; }
-    
     
     public static void spawnSpider(JSONObject config, int currTick, DungeonMap map) {
         int spawnRate = config.getInt("spider_spawn_rate");
@@ -64,6 +68,10 @@ public class Spider extends Entity implements IMovable {
         Random random = new Random();
         int entityX = random.nextInt(maxX - minX) + minX;
         int entityY = random.nextInt(maxY - minY) + minY;
+
+        // minimum 5 x 5 grid
+        entityX = entityX < 5 ? 5 : entityX;
+        entityY = entityY < 5 ? 5 : entityY;
 
         EntityStruct struct = new EntityStruct("spawned_spider" + spawnId, EntityTypes.SPIDER.toString(), map);
         Spider spiderSpawned = new Spider(struct, config);
