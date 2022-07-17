@@ -43,6 +43,7 @@ public class FloorSwitch extends Entity implements IStaticInteractable {
             .stream()
             .filter(e -> (e instanceof Bomb))
             .map(e -> (Bomb) e)
+            .filter(e -> !e.isCollectible())
             .forEach(e -> e.activate(getMap().getEntityPos(e)));
     }
 
