@@ -11,5 +11,5 @@
             "y": 2
         }
     ],
-    "goal-condition": {"goal": "enemy"}
+    "goal-condition": {"goal": "enemies"}
 }
