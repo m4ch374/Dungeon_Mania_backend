@@ -1,7 +1,7 @@
 package dungeonmania.Interactions;
 
 import dungeonmania.DungeonObjects.Player;
-import dungeonmania.Interfaces.IMovable;
+import dungeonmania.Interfaces.IEnemy;
 import dungeonmania.response.models.BattleResponse;
 import dungeonmania.response.models.ItemResponse;
 import dungeonmania.response.models.RoundResponse;
@@ -14,7 +14,7 @@ import java.util.List;
 public class Combat {
 
     private Player player;
-    private IMovable enemy;
+    private IEnemy enemy;
     private HashMap<String, Object> playerState;
     private double playerInitialHealth;
     private double playerAttackDamage;
@@ -25,7 +25,7 @@ public class Combat {
     private List<ItemResponse> items;
     private List<RoundResponse> rounds = new ArrayList<RoundResponse>();
 
-    public Combat(Player player, IMovable enemy){
+    public Combat(Player player, IEnemy enemy){
         this.player = player;
         this.enemy = enemy;
         this.playerState = player.getState();

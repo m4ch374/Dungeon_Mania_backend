@@ -1,19 +1,19 @@
 package dungeonmania.DungeonObjects.Entities.Characters;
 
-import org.json.JSONObject;
-
-import dungeonmania.DungeonObjects.EntityTypes;
-import dungeonmania.DungeonObjects.Player;
 import dungeonmania.DungeonObjects.DungeonMap.DungeonMap;
 import dungeonmania.DungeonObjects.Entities.Entity;
-import dungeonmania.Interfaces.IMovable;
+import dungeonmania.DungeonObjects.EntityTypes;
+import dungeonmania.DungeonObjects.Player;
+import dungeonmania.Interfaces.IEnemy;
 import dungeonmania.Interfaces.IMovingStrategy;
 import dungeonmania.MovingStrategies.ConfusedMoveStrat;
 import dungeonmania.MovingStrategies.CowerMoveStrat;
 import dungeonmania.response.models.RoundResponse;
 import dungeonmania.util.DungeonFactory.EntityStruct;
+import org.json.JSONObject;
 
-public class ZombieToast extends Entity implements IMovable {
+
+public class ZombieToast extends Entity implements IEnemy {
     private static final String OBSERVING_ID = "player";
 
     private double attackDamage;

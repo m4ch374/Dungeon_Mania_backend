@@ -171,7 +171,6 @@ public class CombatTests {
         }
     }
 
-
     @Test
     @DisplayName("Test basic battle calculations - mercenary - player loses")
     public void testHealthBelowZeroMercenary() {
