@@ -417,19 +417,22 @@ public class Player extends Entity {
     }
 
     public List<BattleResponse> initiateBattle() {
-        List<BattleResponse> battles = new ArrayList<BattleResponse>();
-        for (Entity enemy : getMap().getEntitiesOverlapped(this)){
-            if (enemy instanceof IEnemy){
-                Combat battle = new Combat(this, (IEnemy) enemy);
-                battle.resolveCombat();
-                battles.add(battle.returnBattleResponse());
+        if (! this.isInvincible() || ! this.isInvisible()){
+            List<BattleResponse> battles = new ArrayList<BattleResponse>();
+            for (Entity enemy : getMap().getEntitiesOverlapped(this)){
+                if (enemy instanceof IEnemy){
+                    Combat battle = new Combat(this, (IEnemy) enemy);
+                    battle.resolveCombat();
+                    battles.add(battle.returnBattleResponse());
+                }
             }
+            if (battles.size() == 0){
+                return null;
+            }
+            
+            return battles;
         }
-        if (battles.size() == 0){
-            return null;
-        }
-        
-        return battles;
+        return null;
     }
 
     public void openDoor(int key) throws InvalidActionException {
