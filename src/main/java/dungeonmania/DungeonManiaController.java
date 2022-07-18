@@ -8,6 +8,7 @@ import dungeonmania.util.FileLoader;
 import dungeonmania.util.DungeonFactory.DungeonBuilder;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class DungeonManiaController {

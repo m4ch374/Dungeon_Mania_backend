@@ -17,7 +17,6 @@ import dungeonmania.Interfaces.IEnemy;
 import dungeonmania.Interfaces.IEquipment;
 import dungeonmania.Interfaces.IStaticInteractable;
 import dungeonmania.exceptions.InvalidActionException;
-import dungeonmania.exceptions.UninteractableException;
 import dungeonmania.response.models.BattleResponse;
 import dungeonmania.response.models.ItemResponse;
 import dungeonmania.util.Direction;
@@ -50,6 +49,9 @@ public class Player extends Entity {
     private final int allyAttackBonous;
     private final int allyDefenceBonous;
 
+    private final int midnight_armour_attack;
+    private final int midnight_armour_defence;
+
     private double InvincibilityRemainingTime = 0;
     private double InvisibilityRemainingTime = 0;
 
@@ -73,6 +75,9 @@ public class Player extends Entity {
         // ally attack & defence not found in config file
         this.allyAttackBonous = config.has("ally_attack") ? config.getInt("ally_attack") : 0;
         this.allyDefenceBonous = config.has("ally_defence") ? config.getInt("ally_defence") : 0;
+
+        this.midnight_armour_attack = config.has("midnight_armour_attack") ? config.getInt("midnight_armour_attack") : 0;
+        this.midnight_armour_defence = config.has("midnight_armour_defence") ? config.getInt("midnight_armour_defence") : 0;
 
         this.backpack = new Backpack(config.getInt("bow_durability"), config.getInt("shield_durability"));
 
@@ -117,6 +122,18 @@ public class Player extends Entity {
 
     private boolean holdingShield() {
         return backpack.hasShield();
+    }
+
+    private boolean holdingSceptre() {
+        return backpack.hasSceptre();
+    }
+
+    private boolean holdingMidnightArmour() {
+        return backpack.hasMidnightArmour();
+    }
+
+    private boolean holdingTimeTurner() {
+        return backpack.hasTimeTurner();
     }
 
     public void collect(ICollectable item) throws InvalidActionException {
@@ -400,6 +417,9 @@ public class Player extends Entity {
         state.put("sword", holdingSword());                     // boolean
         state.put("bow", holdingBow());                         // boolean
         state.put("shield", holdingShield());                   // boolean
+        state.put("sceptre", holdingSceptre());                 // boolean
+        state.put("midnightArmour", holdingMidnightArmour());   // boolean
+        state.put("timeTurner", holdingTimeTurner());           // boolean
         state.put("attackDamage", getAttackDamage());           // double
         state.put("ally", this.allyNum);                        // int
         state.put("ItemResponse", getEquipmentUsedInRound());   // List<ItemResponse>
@@ -436,6 +456,8 @@ public class Player extends Entity {
 
         if (holdingBow()) { ad *= 2; }
 
+        if (holdingMidnightArmour()) { ad += this.midnight_armour_attack; }
+
         ad += this.allyNum * this.allyAttackBonous;
         return ad;
     }
@@ -447,6 +469,8 @@ public class Player extends Entity {
     public double attackedBy(double ad) {
         int defence = 0;
         defence += this.allyNum * this.allyDefenceBonous;
+
+        if (holdingMidnightArmour()) { defence += this.midnight_armour_defence; }
 
         if (holdingShield()) {
             defence = this.shield_defence;
@@ -483,10 +507,12 @@ public class Player extends Entity {
     }
 
     public void openDoor(int key) throws InvalidActionException {
-        if (!backpack.hasAKey() || !backpack.hasTheKey(key)) {
-            throw new InvalidActionException("ERROR: Can not open the door");
-        } else {
-            backpack.useKey();
+        if (!backpack.hasSunStone()) {
+            if (!backpack.hasAKey() || !backpack.hasTheKey(key)) {
+                throw new InvalidActionException("ERROR: Can not open the door");
+            } else {
+                backpack.useKey();
+            }
         }
     }
 }
