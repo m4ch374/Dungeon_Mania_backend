@@ -242,7 +242,6 @@ public final class Backpack {
     }
 
     public void useEquipment(String ItemId) throws InvalidActionException {
-
         IEquipment item = getItemById(ItemId);
 
         if (item instanceof Bow) {
