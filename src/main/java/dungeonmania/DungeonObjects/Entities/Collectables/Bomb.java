@@ -56,13 +56,15 @@ public class Bomb extends Entity implements ICollectable, IEquipment {
 
     // Destroy entities within range but not player
     public void activate(Position pos) {
+        Position playerPos = getMap().getPlayerPos();
+
         int x = pos.getX();
         int y = pos.getY();
 
         for (int i = x - bombRadius; i <= x + bombRadius; i++) {
             for (int j = y - bombRadius; j <= y + bombRadius; j++) {
                 Position p = new Position(i, j);
-                if (i == x && j == y) {
+                if (p.equals(playerPos)) {
                     getMap().removeAtPosExceptPlayer(p);
                 } else {
                     getMap().removeAllAtPos(p);

@@ -181,7 +181,13 @@ public class PlayerCollectionTest {
 
         pickAll(dmc);
 
+        DungeonResponse DungonRes = dmc.getDungeonResponseModel();
+        assertEquals(18, DungonRes.getInventory().size());
+
         assertDoesNotThrow(() -> dmc.build("bow"));
+
+        DungonRes = dmc.getDungeonResponseModel();
+        assertEquals(15, DungonRes.getInventory().size());
     }
 
     @Test
@@ -196,7 +202,13 @@ public class PlayerCollectionTest {
         dmc.tick(Direction.RIGHT);
         dmc.tick(Direction.UP);
 
+        DungeonResponse DungonRes = dmc.getDungeonResponseModel();
+        assertEquals(3, DungonRes.getInventory().size());
+
         assertDoesNotThrow(() -> dmc.build("shield"));
+
+        DungonRes = dmc.getDungeonResponseModel();
+        assertEquals(1, DungonRes.getInventory().size());
     }
 
     @Test
@@ -211,7 +223,13 @@ public class PlayerCollectionTest {
         dmc.tick(Direction.RIGHT);
         dmc.tick(Direction.DOWN);
 
+        DungeonResponse DungonRes = dmc.getDungeonResponseModel();
+        assertEquals(3, DungonRes.getInventory().size());
+
         assertDoesNotThrow(() -> dmc.build("shield"));
+
+        DungonRes = dmc.getDungeonResponseModel();
+        assertEquals(1, DungonRes.getInventory().size());
     }
 
     @Test
@@ -222,7 +240,13 @@ public class PlayerCollectionTest {
 
         pickAll(dmc);
 
+        DungeonResponse DungonRes = dmc.getDungeonResponseModel();
+        assertEquals(18, DungonRes.getInventory().size());
+
         assertDoesNotThrow(() -> dmc.build("shield"));
+
+        DungonRes = dmc.getDungeonResponseModel();
+        assertEquals(16, DungonRes.getInventory().size());
     }
 
     @Test
@@ -357,5 +381,142 @@ public class PlayerCollectionTest {
             System.out.println(e.getMessage());
             assertEquals(true, false);
         }
+    }
+
+    @Test
+    @DisplayName("Drop item: Active switch after drop a bomb")
+    public void testActiveAfter() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse DungonRes = dmc.newGame("d_playerCollectionTest", "c_playerCollectionTest");
+
+        assertEquals(22, DungonRes.getEntities().size());
+
+        dmc.tick(Direction.LEFT);
+        dmc.tick(Direction.UP);
+        dmc.tick(Direction.UP);
+        dmc.tick(Direction.DOWN);
+
+
+        DungonRes = dmc.getDungeonResponseModel();
+        assertEquals(20, DungonRes.getEntities().size());
+
+        ArrayList<String> bomb_id = new ArrayList<String>();
+        DungonRes.getInventory()
+                .stream()
+                .filter(e -> e.getType().equals(EntityTypes.BOMB.toString()))
+                .forEach(e -> bomb_id.add(e.getId()));
+
+        assertEquals(1, bomb_id.size());
+
+        try {
+            DungonRes = dmc.tick(bomb_id.get(0));
+            assertEquals(21, DungonRes.getEntities().size());
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+            assertEquals(true, false);
+        } catch (InvalidActionException e) {
+            System.out.println(e.getMessage());
+            assertEquals(true, false);
+        }
+
+        dmc.tick(Direction.LEFT);
+        dmc.tick(Direction.UP);
+        dmc.tick(Direction.LEFT);
+        dmc.tick(Direction.LEFT);
+        dmc.tick(Direction.DOWN);
+        DungonRes = dmc.tick(Direction.RIGHT);
+
+        assertEquals(9, DungonRes.getEntities().size());
+    }
+
+    private void pickAll2(DungeonManiaController dmc) {
+        dmc.tick(Direction.LEFT);
+        dmc.tick(Direction.LEFT);
+        dmc.tick(Direction.RIGHT);
+        dmc.tick(Direction.RIGHT);
+        dmc.tick(Direction.RIGHT);
+        dmc.tick(Direction.LEFT);
+        dmc.tick(Direction.DOWN);
+        dmc.tick(Direction.DOWN);
+        dmc.tick(Direction.UP);
+        dmc.tick(Direction.UP);
+        dmc.tick(Direction.UP);
+        dmc.tick(Direction.UP);
+        dmc.tick(Direction.RIGHT);
+    }
+
+    @Test
+    @DisplayName("Item collection: Pick all advanced item")
+    public void pickAlld_AdvancedCollection() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        dmc.newGame("d_AdvancedCollection", "c_playerCollectionTest");
+
+        DungeonResponse DungonRes = dmc.getDungeonResponseModel();
+        assertEquals(0, DungonRes.getInventory().size());
+        assertEquals(9, DungonRes.getEntities().size());
+
+        pickAll2(dmc);
+
+        DungonRes = dmc.getDungeonResponseModel();
+        assertEquals(8, DungonRes.getInventory().size());
+        assertEquals(1, DungonRes.getEntities().size());
+    }
+
+    @Test
+    @DisplayName("Crafted: Make sceptre: WTS")
+    public void makeSceptre() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        dmc.newGame("d_AdvancedCollection", "c_playerCollectionTest");
+
+        pickAll2(dmc);
+
+        assertDoesNotThrow(() -> dmc.build("sceptre"));
+
+        DungeonResponse DungonRes = dmc.getDungeonResponseModel();
+        assertEquals(6, DungonRes.getInventory().size());
+    }
+
+    @Test
+    @DisplayName("Crafted: Make sceptre: AKS")
+    public void makeSceptre2() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        dmc.newGame("d_AdvancedCollection", "c_playerCollectionTest");
+
+        dmc.tick(Direction.LEFT);
+        dmc.tick(Direction.LEFT);
+        dmc.tick(Direction.RIGHT);
+        dmc.tick(Direction.RIGHT);
+        dmc.tick(Direction.DOWN);
+        dmc.tick(Direction.RIGHT);
+        dmc.tick(Direction.RIGHT);
+        dmc.tick(Direction.UP);
+        dmc.tick(Direction.UP);
+        dmc.tick(Direction.UP);
+        dmc.tick(Direction.UP);
+        dmc.tick(Direction.LEFT);
+        dmc.tick(Direction.LEFT);
+        dmc.tick(Direction.DOWN);
+
+        DungeonResponse DungonRes = dmc.getDungeonResponseModel();
+        assertEquals(4, DungonRes.getInventory().size());
+
+        assertDoesNotThrow(() -> dmc.build("sceptre"));
+
+        DungonRes = dmc.getDungeonResponseModel();
+        assertEquals(1, DungonRes.getInventory().size());
+    }
+
+    @Test
+    @DisplayName("Crafted: Make midnight armour")
+    public void makeMidnightArmour() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        dmc.newGame("d_AdvancedCollection", "c_playerCollectionTest");
+
+        pickAll2(dmc);
+
+        assertDoesNotThrow(() -> dmc.build("midnight_armour"));
+
+        DungeonResponse DungonRes = dmc.getDungeonResponseModel();
+        assertEquals(7, DungonRes.getInventory().size());
     }
 }
