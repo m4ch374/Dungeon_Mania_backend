@@ -66,7 +66,7 @@ public class ZombieToast extends Entity implements IEnemy {
     }
 
     private void switchMoveStrat() {
-        boolean invincible = (boolean) observing.getState().get("invincible");
+        boolean invincible = observing.isInvincible();
 
         if (invincible && !(moveStrat instanceof CowerMoveStrat)) {
             moveStrat = new CowerMoveStrat(this, map, OBSERVING_ID);

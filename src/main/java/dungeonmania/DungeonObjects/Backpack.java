@@ -231,13 +231,17 @@ public final class Backpack {
         }
     }
 
-    public void useEquipment(String type) {
-        if (type.equals(EntityTypes.BOW.toString())) {
-            useBow(this.Bows.get(0));
-        } else if (type.equals(EntityTypes.SWORD.toString())) {
-            useSword(this.Swords.get(0));
-        } else if (type.equals(EntityTypes.SHIELD.toString())) {
-            useShield(this.Shields.get(0));
+    public void useEquipment(String ItemId) throws InvalidActionException {
+        IEquipment item = getItemById(ItemId);
+
+        if (item instanceof Bow) {
+            useBow((Bow) item);
+        } else if (item instanceof Sword) {
+            useSword((Sword) item);
+        } else if (item instanceof Shield) {
+            useShield((Shield) item);
+        } else {
+            throw new InvalidActionException("ERROR: Can not use this equipment");
         }
     }
 

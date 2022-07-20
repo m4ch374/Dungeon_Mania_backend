@@ -24,7 +24,6 @@ import dungeonmania.util.DungeonFactory.EntityStruct;
 import dungeonmania.util.Position;
 import dungeonmania.util.Tracker;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.json.JSONObject;
@@ -52,8 +51,8 @@ public class Player extends Entity {
     private final int midnight_armour_attack;
     private final int midnight_armour_defence;
 
-    private double InvincibilityRemainingTime = 0;
-    private double InvisibilityRemainingTime = 0;
+    private int potionRemainingTime = 0;
+    private ArrayList<IEquipment> potionList = new ArrayList<IEquipment>();
 
     private final Backpack backpack;
 
@@ -96,43 +95,47 @@ public class Player extends Entity {
         return backpack.getBuildables();
     }
 
-    private Position getPos() {
+    public Position getCurrentPosition() {
         return getMap().getEntityPos(this);
     }
 
-    private boolean isDead() {
+    public Position getPreviousPosition() {
+        return this.previousPosition;
+    }
+
+    public boolean isDead() {
         return (this.health <= 0);
     }
 
-    private boolean isInvincible() {
-        return (this.InvincibilityRemainingTime > 0);
+    public boolean isInvincible() {
+        return (this.potionList.size() > 0 && (this.potionList.get(0) instanceof InvincibilityPotion));
     }
 
-    private boolean isInvisible() {
-        return (this.InvisibilityRemainingTime > 0);
+    public boolean isInvisible() {
+        return (this.potionList.size() > 0 && (this.potionList.get(0) instanceof InvisibilityPotion));
     }
 
-    private boolean holdingSword() {
+    public boolean holdingSword() {
         return backpack.hasSword();
     }
 
-    private boolean holdingBow() {
+    public boolean holdingBow() {
         return backpack.hasBow();
     }
 
-    private boolean holdingShield() {
+    public boolean holdingShield() {
         return backpack.hasShield();
     }
 
-    private boolean holdingSceptre() {
+    public boolean holdingSceptre() {
         return backpack.hasSceptre();
     }
 
-    private boolean holdingMidnightArmour() {
+    public boolean holdingMidnightArmour() {
         return backpack.hasMidnightArmour();
     }
 
-    private boolean holdingTimeTurner() {
+    public boolean holdingTimeTurner() {
         return backpack.hasTimeTurner();
     }
 
@@ -157,12 +160,21 @@ public class Player extends Entity {
 
     private void updatePotions() {
         // update potion state
-        if (isInvincible()) {
-            this.InvincibilityRemainingTime -= 1;
+        if (this.potionRemainingTime > 0) {
+            this.potionRemainingTime -= 1;
+            if (this.potionRemainingTime <= 0) {
+                this.potionList.remove(0);
+            }
         }
 
-        if (isInvisible()) {
-            this.InvisibilityRemainingTime -= 1;
+        if (this.potionRemainingTime <= 0 && this.potionList.size() >= 1) {
+            IEquipment potion = this.potionList.get(0);
+
+            if (potion instanceof InvincibilityPotion) {
+                this.potionRemainingTime += this.invincibility_potion_duration;
+            } else {
+                this.potionRemainingTime += this.invisibility_potion_duration;
+            }
         }
     }
 
@@ -199,12 +211,18 @@ public class Player extends Entity {
         IEquipment item = backpack.useItem(itemUsedId);
 
         if (item instanceof InvincibilityPotion) {
-            this.InvincibilityRemainingTime += this.invincibility_potion_duration;
+            potionList.add(item);
+            if (this.potionRemainingTime <= 0) {
+                this.potionRemainingTime += this.invincibility_potion_duration;
+            }
         } else if (item instanceof InvisibilityPotion) {
-            this.InvisibilityRemainingTime += this.invisibility_potion_duration;
+            potionList.add(item);
+            if (this.potionRemainingTime <= 0) {
+                this.potionRemainingTime += this.invisibility_potion_duration;
+            }
         } else if (item instanceof Bomb) {
             Bomb bomb = (Bomb) item;
-            Position pos = getPos();
+            Position pos = getCurrentPosition();
             if (playerCloseActiveSwitch(pos)) {
                 bomb.activate(pos);
             } else {
@@ -301,13 +319,13 @@ public class Player extends Entity {
 
     private void move(Position destination) throws InvalidActionException {
         if (previousPosition == null)
-            previousPosition = getPos();
+            previousPosition = getCurrentPosition();
 
         // reset it to False for a new teleportation event.
         this.haveFoundFinalDest = false;
         // Check if something is blocking the player
         if (ableToMove(destination)) {
-            this.previousPosition = getPos();
+            this.previousPosition = getCurrentPosition();
 
             // move the player
             getMap().moveEntityTo(this, destination);
@@ -345,7 +363,7 @@ public class Player extends Entity {
     }
 
     private Portal getOverlapPortal() {
-        List<Entity> inCell = getMap().getEntitiesAt(getPos());
+        List<Entity> inCell = getMap().getEntitiesAt(getCurrentPosition());
         List<Portal> portal = inCell
                                 .stream()
                                 .filter(e -> (e instanceof Portal))
@@ -386,7 +404,7 @@ public class Player extends Entity {
         } else if (action.equals(Constant.PLAYERMOVE)) {
             this.direction = direction;
 
-            Position position = getPos().translateBy(direction);
+            Position position = getCurrentPosition().translateBy(direction);
 
             move(position);
             updatePotions();
@@ -409,30 +427,8 @@ public class Player extends Entity {
         }
     }
 
-    public HashMap<String, Object> getState() {
-        HashMap<String, Object> state = new HashMap<String, Object>();
-
-        state.put("health", this.health);                       // double
-        state.put("invincible", isInvincible());                // boolean
-        state.put("invisible", isInvisible());                  // boolean
-        state.put("dead", isDead());                            // boolean
-        state.put("sword", holdingSword());                     // boolean
-        state.put("bow", holdingBow());                         // boolean
-        state.put("shield", holdingShield());                   // boolean
-        state.put("sceptre", holdingSceptre());                 // boolean
-        state.put("midnightArmour", holdingMidnightArmour());   // boolean
-        state.put("timeTurner", holdingTimeTurner());           // boolean
-        state.put("attackDamage", getAttackDamage());           // double
-        state.put("ally", this.allyNum);                        // int
-        state.put("ItemResponse", getEquipmentUsedInRound());   // List<ItemResponse>
-        state.put("currentPosition", getPos());                 // Position
-        state.put("previousPosition", this.previousPosition);   // Position
-
-        return state;
-    }
-
     // items that can/will be used in the battle at the moment
-    private List<ItemResponse> getEquipmentUsedInRound () {
+    public List<ItemResponse> getEquipmentUsedInRound () {
         ArrayList<ItemResponse> items = new ArrayList<ItemResponse>();
         ArrayList<IEquipment> battleEquipment = new ArrayList<IEquipment>();
 
@@ -447,8 +443,8 @@ public class Player extends Entity {
         return items;
     }
 
-    public void useEquipment(String type) {
-        backpack.useEquipment(type);
+    public void useEquipment(String itemId) throws InvalidActionException {
+        backpack.useEquipment(itemId);
     }
 
     public double getAttackDamage() {
@@ -476,7 +472,6 @@ public class Player extends Entity {
 
         if (holdingShield()) {
             defence = this.shield_defence;
-            useEquipment(EntityTypes.SHIELD.toString());
         }
 
         double playerHealthDelta = ((ad - defence) / 10);
