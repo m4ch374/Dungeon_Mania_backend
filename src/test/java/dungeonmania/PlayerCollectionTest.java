@@ -492,7 +492,10 @@ public class PlayerCollectionTest {
         dmc.tick(Direction.UP);
         dmc.tick(Direction.UP);
         dmc.tick(Direction.UP);
+        dmc.tick(Direction.UP);
         dmc.tick(Direction.LEFT);
+        dmc.tick(Direction.LEFT);
+        dmc.tick(Direction.DOWN);
 
         DungeonResponse DungonRes = dmc.getDungeonResponseModel();
         assertEquals(4, DungonRes.getInventory().size());

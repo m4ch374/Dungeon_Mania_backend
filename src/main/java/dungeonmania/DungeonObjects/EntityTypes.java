@@ -29,8 +29,8 @@ public enum EntityTypes {
     SHIELD("shield", -1),
 
     // TODO layer
-    TIMETURNER("time_turner", -1),
-    SUNSTONE("sun_stone", -1),
+    TIMETURNER("time_turner", 2),
+    SUNSTONE("sun_stone", 2),
     SCEPTRE("sceptre", -1),
     MIDNIGHTARMOUR("midnight_armour", -1);
 

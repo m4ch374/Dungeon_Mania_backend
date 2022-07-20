@@ -150,7 +150,7 @@ public final class Backpack {
                 if (this.Woods.size() >= 1) {
                     useWoods(1);
                 } else {
-                    useArrows(1);
+                    useArrows(2);
                 }
 
                 if (this.treasure.size() >= 1) {
@@ -199,10 +199,8 @@ public final class Backpack {
             this.Swords.add((Sword) item);
         } else if (item instanceof TimeTurner) {
             this.TimeTurners.add((TimeTurner) item);
-        } else if (item instanceof MidnightArmour) {
-            this.MidnightArmours.add((MidnightArmour) item);
-        } else if (item instanceof Sceptre) {
-            this.Sceptres.add((Sceptre) item);
+        } else if (item instanceof SunStone) {
+            this.SunStones.add((SunStone) item);
         } else {
             throw new InvalidActionException("ERROR: Can not collect item");
         }
