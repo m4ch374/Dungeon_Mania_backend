@@ -30,7 +30,7 @@
         "goal": "OR",
         "subgoals": [
             {"goal": "treasure"},
-            {"goal": "enemy"}
+            {"goal": "enemies"}
         ]
     }
 }
