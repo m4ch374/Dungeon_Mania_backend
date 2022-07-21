@@ -119,7 +119,7 @@ public final class Backpack {
         return Buildables;
     }
 
-    public void make(String type) throws InvalidActionException, IllegalArgumentException {
+    public void make(String type, boolean noZombies) throws InvalidActionException, IllegalArgumentException {
         if (type.equals(EntityTypes.BOW.toString())) {
             if (this.Woods.size() >= 1 && this.Arrows.size() >= 3) {
                 useWoods(1);
@@ -166,8 +166,7 @@ public final class Backpack {
                 throw new InvalidActionException("ERROR: Not Enough Material For " + type);
             }
         } else if (type.equals(EntityTypes.MIDNIGHTARMOUR.toString())) {
-            // TODO check map has no zombie
-            if (this.Swords.size() >= 1 && this.SunStones.size() >= 1) {
+            if (noZombies && this.Swords.size() >= 1 && this.SunStones.size() >= 1) {
                 useSunStone(1);
                 useSword(1);
 
@@ -181,6 +180,17 @@ public final class Backpack {
     }
 
     public void addItem(ICollectable item) throws InvalidActionException {
+        if (item instanceof Key && hasAKey()) {
+            throw new InvalidActionException("ERROR: Already has a key");
+        }
+
+        if (item instanceof Bomb) {
+            Bomb bomb = (Bomb) item;
+            if (!bomb.isCollectible()) {
+                throw new InvalidActionException("ERROR: Cannot collect a dropped bomb");
+            }
+        }
+
         if (item instanceof Treasure) {
             this.treasure.add((Treasure) item);
         } else if (item instanceof Key) {
@@ -231,13 +241,18 @@ public final class Backpack {
         }
     }
 
-    public void useEquipment(String type) {
-        if (type.equals(EntityTypes.BOW.toString())) {
-            useBow(this.Bows.get(0));
-        } else if (type.equals(EntityTypes.SWORD.toString())) {
-            useSword(this.Swords.get(0));
-        } else if (type.equals(EntityTypes.SHIELD.toString())) {
-            useShield(this.Shields.get(0));
+    public void useEquipment(String ItemId) throws InvalidActionException {
+
+        IEquipment item = getItemById(ItemId);
+
+        if (item instanceof Bow) {
+            useBow((Bow) item);
+        } else if (item instanceof Sword) {
+            useSword((Sword) item);
+        } else if (item instanceof Shield) {
+            useShield((Shield) item);
+        } else {
+            throw new InvalidActionException("ERROR: Can not use this equipment");
         }
     }
 

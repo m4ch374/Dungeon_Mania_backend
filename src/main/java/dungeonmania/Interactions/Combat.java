@@ -6,7 +6,6 @@ import dungeonmania.response.models.BattleResponse;
 import dungeonmania.response.models.ItemResponse;
 import dungeonmania.response.models.RoundResponse;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 
@@ -15,7 +14,6 @@ public class Combat {
 
     private Player player;
     private IEnemy enemy;
-    private HashMap<String, Object> playerState;
     private double playerInitialHealth;
     private double playerAttackDamage;
     private double playerHealth;
@@ -28,8 +26,7 @@ public class Combat {
     public Combat(Player player, IEnemy enemy){
         this.player = player;
         this.enemy = enemy;
-        this.playerState = player.getState();
-        this.items = (List<ItemResponse>) playerState.get("ItemResponse");
+        this.items = player.getEquipmentUsedInRound();
         
         this.playerAttackDamage = player.getAttackDamage();
         this.playerInitialHealth = player.getHealth();
@@ -45,7 +42,7 @@ public class Combat {
     public void resolveCombat(){
         while (playerHealth > 0 && enemyHealth > 0) {
             /*If a potion is used then combat is ended prematurely*/
-            if ((boolean) playerState.get("invincible")){
+            if (player.isInvincible()){
                 enemy.death();
                 return;
             }

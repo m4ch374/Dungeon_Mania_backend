@@ -1,21 +1,13 @@
 package dungeonmania.DungeonObjects;
 
-import dungeonmania.DungeonObjects.Entities.Collectables.Bomb;
 import dungeonmania.DungeonObjects.Entities.Collectables.InvincibilityPotion;
 import dungeonmania.DungeonObjects.Entities.Collectables.InvisibilityPotion;
-import dungeonmania.DungeonObjects.Entities.Collectables.Key;
 import dungeonmania.DungeonObjects.Entities.Entity;
-import dungeonmania.DungeonObjects.Entities.Statics.Boulder;
-import dungeonmania.DungeonObjects.Entities.Statics.Door;
-import dungeonmania.DungeonObjects.Entities.Statics.Exit;
-import dungeonmania.DungeonObjects.Entities.Statics.FloorSwitch;
-import dungeonmania.DungeonObjects.Entities.Statics.Portal;
-import dungeonmania.DungeonObjects.Entities.Statics.Wall;
 import dungeonmania.Interactions.Combat;
 import dungeonmania.Interfaces.ICollectable;
 import dungeonmania.Interfaces.IEnemy;
 import dungeonmania.Interfaces.IEquipment;
-import dungeonmania.Interfaces.IStaticInteractable;
+import dungeonmania.MovingStrategies.PlayerMovement;
 import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.response.models.BattleResponse;
 import dungeonmania.response.models.ItemResponse;
@@ -24,18 +16,11 @@ import dungeonmania.util.DungeonFactory.EntityStruct;
 import dungeonmania.util.Position;
 import dungeonmania.util.Tracker;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.json.JSONObject;
 
 
-
-
-
 public class Player extends Entity {
-
-    private Position previousPosition = null;
 
     private double health;
     private final int attackDamage;
@@ -45,22 +30,21 @@ public class Player extends Entity {
     private final int invincibility_potion_duration;
     private final int invisibility_potion_duration;
 
-    private int allyNum = 0;
+    private int allyNum;
     private final int allyAttackBonous;
     private final int allyDefenceBonous;
 
     private final int midnight_armour_attack;
     private final int midnight_armour_defence;
 
-    private double InvincibilityRemainingTime = 0;
-    private double InvisibilityRemainingTime = 0;
+    private int potionRemainingTime;
+    private final ArrayList<IEquipment> potionList;
 
     private final Backpack backpack;
 
-    // current moving direction, used for boulder
-    private Direction direction = null;
+    private final PlayerMovement movement;
 
-    Tracker tracker = null;
+    Tracker tracker;
 
     public Player(EntityStruct metaData, JSONObject config, Tracker tracker) {
         super(metaData);
@@ -80,12 +64,17 @@ public class Player extends Entity {
         this.midnight_armour_defence = config.has("midnight_armour_defence") ? config.getInt("midnight_armour_defence") : 0;
 
         this.backpack = new Backpack(config.getInt("bow_durability"), config.getInt("shield_durability"));
+        this.movement = new PlayerMovement(this, getMap());
+        this.potionList = new ArrayList<IEquipment>();
+
+        this.potionRemainingTime = 0;
+        this.allyNum = 0;
 
         this.tracker = tracker;
     }
 
     public Direction getDirection() {
-        return this.direction;
+        return movement.getDirection();
     }
 
     public List<ItemResponse> getPlayerItems() {
@@ -96,58 +85,51 @@ public class Player extends Entity {
         return backpack.getBuildables();
     }
 
-    private Position getPos() {
-        return getMap().getEntityPos(this);
+    public Position getCurrentPosition() {
+        return movement.getCurrentPosition();
     }
 
-    private boolean isDead() {
+    public Position getPreviousPosition() {
+        return movement.getPreviousPosition();
+    }
+
+    public boolean isDead() {
         return (this.health <= 0);
     }
 
-    private boolean isInvincible() {
-        return (this.InvincibilityRemainingTime > 0);
+    public boolean isInvincible() {
+        return (this.potionList.size() > 0 && (this.potionList.get(0) instanceof InvincibilityPotion));
     }
 
-    private boolean isInvisible() {
-        return (this.InvisibilityRemainingTime > 0);
+    public boolean isInvisible() {
+        return (this.potionList.size() > 0 && (this.potionList.get(0) instanceof InvisibilityPotion));
     }
 
-    private boolean holdingSword() {
+    public boolean holdingSword() {
         return backpack.hasSword();
     }
 
-    private boolean holdingBow() {
+    public boolean holdingBow() {
         return backpack.hasBow();
     }
 
-    private boolean holdingShield() {
+    public boolean holdingShield() {
         return backpack.hasShield();
     }
 
-    private boolean holdingSceptre() {
+    public boolean holdingSceptre() {
         return backpack.hasSceptre();
     }
 
-    private boolean holdingMidnightArmour() {
+    public boolean holdingMidnightArmour() {
         return backpack.hasMidnightArmour();
     }
 
-    private boolean holdingTimeTurner() {
+    public boolean holdingTimeTurner() {
         return backpack.hasTimeTurner();
     }
 
     public void collect(ICollectable item) throws InvalidActionException {
-        if (item instanceof Key && backpack.hasAKey()) {
-            throw new InvalidActionException("ERROR: Already has a key");
-        }
-
-        if (item instanceof Bomb) {
-            Bomb bomb = (Bomb) item;
-            if (!bomb.isCollectible()) {
-                throw new InvalidActionException("ERROR: Cannot collect a dropped bomb");
-            }
-        }
-
         backpack.addItem(item);
     }
 
@@ -155,43 +137,9 @@ public class Player extends Entity {
         tracker.notifyTreasure();
     }
 
-    private void updatePotions() {
-        // update potion state
-        if (isInvincible()) {
-            this.InvincibilityRemainingTime -= 1;
-        }
-
-        if (isInvisible()) {
-            this.InvisibilityRemainingTime -= 1;
-        }
-    }
-
     private void make(String type) throws InvalidActionException, IllegalArgumentException {
-        backpack.make(type);
-    }
-
-    private boolean playerCloseActiveSwitch(Position pos) {
-        int x = pos.getX();
-        int y = pos.getY();
-
-        Position up = new Position(x - 1, y);
-        Position down = new Position(x + 1, y);
-        Position left = new Position(x, y - 1);
-        Position right = new Position(x, y + 1);
-
-        List<Entity> entityList = new ArrayList<Entity>();
-        entityList.addAll(getMap().getEntitiesAt(up));
-        entityList.addAll(getMap().getEntitiesAt(down));
-        entityList.addAll(getMap().getEntitiesAt(left));
-        entityList.addAll(getMap().getEntitiesAt(right));
-
-        boolean activeSwitch = entityList
-                                .stream()
-                                .filter(e -> (e instanceof FloorSwitch))
-                                .map(e -> (FloorSwitch) e)
-                                .anyMatch(e -> e.isActive());
-
-        return activeSwitch;
+        // TODO check map has no zombie
+        backpack.make(type, true);
     }
 
     // do not use this for bribe mercenaries
@@ -199,201 +147,64 @@ public class Player extends Entity {
         IEquipment item = backpack.useItem(itemUsedId);
 
         if (item instanceof InvincibilityPotion) {
-            this.InvincibilityRemainingTime += this.invincibility_potion_duration;
+            potionList.add(item);
+            if (this.potionRemainingTime <= 0) {
+                this.potionRemainingTime += this.invincibility_potion_duration;
+            }
         } else if (item instanceof InvisibilityPotion) {
-            this.InvisibilityRemainingTime += this.invisibility_potion_duration;
-        } else if (item instanceof Bomb) {
-            Bomb bomb = (Bomb) item;
-            Position pos = getPos();
-            if (playerCloseActiveSwitch(pos)) {
-                bomb.activate(pos);
+            potionList.add(item);
+            if (this.potionRemainingTime <= 0) {
+                this.potionRemainingTime += this.invisibility_potion_duration;
+            }
+        }
+    }
+
+    private void updatePotions() {
+        // update potion state
+        if (this.potionRemainingTime > 0) {
+            this.potionRemainingTime -= 1;
+            if (this.potionRemainingTime <= 0) {
+                this.potionList.remove(0);
+            }
+        }
+
+        if (this.potionRemainingTime <= 0 && this.potionList.size() >= 1) {
+            IEquipment potion = this.potionList.get(0);
+
+            if (potion instanceof InvincibilityPotion) {
+                this.potionRemainingTime += this.invincibility_potion_duration;
             } else {
-                getMap().placeEntityAt(bomb, pos);
+                this.potionRemainingTime += this.invisibility_potion_duration;
             }
         }
     }
 
-    private boolean ableToMove(Position destination) {
-        List<Entity> inCell = getMap().getEntitiesAt(destination);
-
-        Boolean hasFixedBomb = inCell
-                            .stream()
-                            .filter(e -> (e instanceof Bomb))
-                            .map(e -> (Bomb) e)
-                            .anyMatch(e -> !e.isCollectible());
-
-        if (hasFixedBomb) return false;
-
-        List<IStaticInteractable> staticEntity = inCell
-                                                .stream()
-                                                .filter(e -> (e instanceof IStaticInteractable))
-                                                .map(e -> (IStaticInteractable) e)
-                                                .collect(Collectors.toList());
-
-        // check if a static entity blocking the player, include door interaction
-        for (IStaticInteractable entity : staticEntity) {
-            try {
-                if (entity instanceof Wall) {
-                    return false;
-                } else if (entity instanceof Door) {
-                    Door door = (Door) entity;
-                    if (!door.isOpen()) {
-                        door.interactedBy(this);
-                    }
-                }
-            } catch (InvalidActionException e) {
-                System.out.println(e.getMessage());
-                return false;
-            }
-        }
-
-        // if nothing else block player, check if player can push the boulder
-        for (IStaticInteractable entity : staticEntity) {
-            try {
-                if (entity instanceof Boulder) {
-                    // LOGIC: if interactedBy() does NOT throw the Exception, then the boulder has moved
-                    // thus its safe for player to also move. 
-                    Boulder boulder = (Boulder) entity;
-                    boulder.interactedBy(this);
-                    System.out.println("Found a boulder & interacted it in ableToMove()");
-                    // DO NOT "return;" here, since we want to interact with other overlapping entities
-                // } else if (entity instanceof Portal) {
-                //     Portal portal = (Portal) entity;
-                //     portal.interactedBy(this);
-                }
-            } catch (InvalidActionException e) {
-                System.out.println(e.getMessage());
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-
-    private void interactWithOverlapCollections(Position destination) throws InvalidActionException {
-        List<Entity> inCell = getMap().getEntitiesAt(destination);
-
-        List<ICollectable> collections = inCell
-                                        .stream()
-                                        .filter(e -> (e instanceof ICollectable))
-                                        .map(e -> (ICollectable) e)
-                                        .collect(Collectors.toList());
-
-        // interaction with collections
-        for (ICollectable collection : collections) {
-            try {
-                collection.collectedBy(this);
-            } catch (InvalidActionException e) {
-                System.out.println(e.getMessage());
-
-                // Inactive bombs will block players as a wall
-                if (collection instanceof Bomb) {
-                    throw new InvalidActionException("ERROR: Unpickable bomb, should never happened");
-                }
-            }
-        }
-    }
-
-    // Variable used to help prevent recursive backtracking in multi-teleportaion cases (also works with multiple seperate teleportations)
-    // MUST be declared outside scope of the fnc for obvious reasons
-    public boolean haveFoundFinalDest = false;
-
-    private void move(Position destination) throws InvalidActionException {
-        if (previousPosition == null)
-            previousPosition = getPos();
-
-        // reset it to False for a new teleportation event.
-        this.haveFoundFinalDest = false;
-        // Check if something is blocking the player
-        if (ableToMove(destination)) {
-            this.previousPosition = getPos();
-
-            // move the player
-            getMap().moveEntityTo(this, destination);
-
-            // deal with interaction of collections
-            interactWithOverlapCollections(destination);
-
-            // deal with Exit if its at new Pos
-            interactWithExit(destination);
-
-            // deal with interaction of overlapped portal
-            Portal portal = getOverlapPortal();
-            if (portal != null) {
-                // Get destinationS of the current Portal, player can jump into (0th index is the original intended destination)
-                List<Position> destinationList = portal.getDestinations(getDirection());
-                for (Position destinationPos : destinationList) {
-                    try {
-                        // Call recursively on each new destination, IFF theres another Portal there
-                        if (this.haveFoundFinalDest == true) {return;}
-                        move(destinationPos);
-                        // If exception not thrown, it is Safe to move into current Position in loop 
-                        if (this.haveFoundFinalDest == true) {return;}
-                        getMap().moveEntityTo(this, destinationPos); this.haveFoundFinalDest = true;//throw new InvalidActionException("Success multi-teleportaion");
-                        // // throw exception here? so the final portal's destination down the line doesnt get overriden via backtracing in recursion
-                        // System.out.println("Player new pos" + getPos() + ", in move()");
-                        // break;
-                    } catch (InvalidActionException e) {
-                        // nothing here, just let the player overlap with portal without teleport
-                        // this structure will allow player go in portal as much as possible
-                        // and player will stop at the portal which he cannot goes in
-                    }
-                }
-            } 
-        }
-    }
-
-    private Portal getOverlapPortal() {
-        List<Entity> inCell = getMap().getEntitiesAt(getPos());
-        List<Portal> portal = inCell
-                                .stream()
-                                .filter(e -> (e instanceof Portal))
-                                .map(e -> (Portal) e)
-                                .collect(Collectors.toList());
-
-        if (portal.size() == 0) return null;
-
-        // If multiple portals overlap, always take the first one, it may be random, but it doesn't matter
-        return portal.get(0);
-    }
-
-    public void interactWithExit(Position currPos) {
-        List<Entity> inCell = getMap().getEntitiesAt(currPos);
-
-        List<IStaticInteractable> interactables = inCell
-                                        .stream()
-                                        .filter(e -> (e instanceof IStaticInteractable))
-                                        .map(e -> (IStaticInteractable) e)
-                                        .collect(Collectors.toList());
-        for (IStaticInteractable inter : interactables) {
-            if (inter instanceof Exit) {
-                Exit exit = (Exit) inter;
-                try {
-                    exit.interactedBy(this);
-                } catch (InvalidActionException e) {
-                    // do nothing
-                }
-            }
-        }
-    }
-
-    public void tick(String action, Direction direction, String str) throws InvalidActionException, IllegalArgumentException {
+    public void tick(String action, Direction direction, String item) throws InvalidActionException, IllegalArgumentException {
         if (action.equals(Constant.PLAYERUSE)) {
-            useItem(str);
+            useItem(item);
         } else if (action.equals(Constant.PLAYERMAKE)) {
-            make(str);
+            make(item);
         } else if (action.equals(Constant.PLAYERMOVE)) {
-            this.direction = direction;
+            movement.setDirection(direction);
 
-            Position position = getPos().translateBy(direction);
+            Position position = getCurrentPosition().translateBy(direction);
+            movement.move(position);
 
-            move(position);
             updatePotions();
 
-            this.direction = null;
+            movement.setDirection(null);
         } else {
             throw new IllegalArgumentException("ERROR: Undefined player behavior");
+        }
+    }
+
+    public void openDoor(int key) throws InvalidActionException {
+        if (!backpack.hasSunStone()) {
+            if (!backpack.hasAKey() || !backpack.hasTheKey(key)) {
+                throw new InvalidActionException("ERROR: Can not open the door");
+            } else {
+                backpack.useKey();
+            }
         }
     }
 
@@ -409,30 +220,8 @@ public class Player extends Entity {
         }
     }
 
-    public HashMap<String, Object> getState() {
-        HashMap<String, Object> state = new HashMap<String, Object>();
-
-        state.put("health", this.health);                       // double
-        state.put("invincible", isInvincible());                // boolean
-        state.put("invisible", isInvisible());                  // boolean
-        state.put("dead", isDead());                            // boolean
-        state.put("sword", holdingSword());                     // boolean
-        state.put("bow", holdingBow());                         // boolean
-        state.put("shield", holdingShield());                   // boolean
-        state.put("sceptre", holdingSceptre());                 // boolean
-        state.put("midnightArmour", holdingMidnightArmour());   // boolean
-        state.put("timeTurner", holdingTimeTurner());           // boolean
-        state.put("attackDamage", getAttackDamage());           // double
-        state.put("ally", this.allyNum);                        // int
-        state.put("ItemResponse", getEquipmentUsedInRound());   // List<ItemResponse>
-        state.put("currentPosition", getPos());                 // Position
-        state.put("previousPosition", this.previousPosition);   // Position
-
-        return state;
-    }
-
     // items that can/will be used in the battle at the moment
-    private List<ItemResponse> getEquipmentUsedInRound () {
+    public List<ItemResponse> getEquipmentUsedInRound () {
         ArrayList<ItemResponse> items = new ArrayList<ItemResponse>();
         ArrayList<IEquipment> battleEquipment = new ArrayList<IEquipment>();
 
@@ -447,8 +236,8 @@ public class Player extends Entity {
         return items;
     }
 
-    public void useEquipment(String type) {
-        backpack.useEquipment(type);
+    public void useEquipment(String itemId) throws InvalidActionException {
+        backpack.useEquipment(itemId);
     }
 
     public double getAttackDamage() {
@@ -476,7 +265,6 @@ public class Player extends Entity {
 
         if (holdingShield()) {
             defence = this.shield_defence;
-            useEquipment(EntityTypes.SHIELD.toString());
         }
 
         double playerHealthDelta = ((ad - defence) / 10);
@@ -506,15 +294,5 @@ public class Player extends Entity {
             return battles;
         }
         return null;
-    }
-
-    public void openDoor(int key) throws InvalidActionException {
-        if (!backpack.hasSunStone()) {
-            if (!backpack.hasAKey() || !backpack.hasTheKey(key)) {
-                throw new InvalidActionException("ERROR: Can not open the door");
-            } else {
-                backpack.useKey();
-            }
-        }
     }
 }
