@@ -116,8 +116,6 @@ public class ZombieToastSpawner extends Entity implements IPlayerInteractable, I
     }
 
     private boolean playerHasWeapon(Player player) {
-        Map<String, Object> playerState = player.getState();
-
-        return ((boolean)playerState.get("sword") || (boolean)playerState.get("bow"));
+        return (player.holdingSword() || player.holdingBow() );
     }
 }

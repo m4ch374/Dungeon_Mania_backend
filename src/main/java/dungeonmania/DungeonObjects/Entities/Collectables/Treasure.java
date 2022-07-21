@@ -13,25 +13,13 @@ import dungeonmania.DungeonObjects.Player;
 
 public class Treasure extends Entity implements ICollectable, IEquipment {
 
-    private int quantity;
-
     public Treasure(EntityStruct metaData) {
         super(metaData);
-        this.quantity = 1;
     }
 
     @Override
     public String getId() {
         return super.getId();
-    }
-
-    public Treasure(EntityStruct metaData, int quantity) {
-        super(metaData);
-        this.quantity = quantity;
-    }
-
-    public int getQuantity() {
-        return this.quantity;
     }
 
     @Override
