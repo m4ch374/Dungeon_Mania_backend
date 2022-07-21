@@ -8,6 +8,7 @@ import dungeonmania.util.FileLoader;
 import dungeonmania.util.DungeonFactory.DungeonBuilder;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class DungeonManiaController {
@@ -86,4 +87,26 @@ public class DungeonManiaController {
         dungeonState.interact(entityId);
         return dungeonState.toDungeonResponse();
     }
+
+    /**
+     * /game/save
+     */
+    public DungeonResponse saveGame(String name) throws IllegalArgumentException {
+        return null;
+    }
+
+    /**
+     * /game/load
+     */
+    public DungeonResponse loadGame(String name) throws IllegalArgumentException {
+        return null;
+    }
+
+    /**
+     * /games/all
+     */
+    public List<String> allGames() {
+        return new ArrayList<>();
+    }
+
 }

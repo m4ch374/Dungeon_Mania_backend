@@ -81,6 +81,10 @@ public class DungeonMapParser {
                 return new Bomb(metaData, config);
             case SWORD:
                 return new Sword(metaData, config);
+            case SUNSTONE:
+                return new SunStone(metaData);
+            case TIMETURNER:
+                return new TimeTurner(metaData);
             default:
                 return null;
         }

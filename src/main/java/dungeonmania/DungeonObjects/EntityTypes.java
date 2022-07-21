@@ -26,7 +26,13 @@ public enum EntityTypes {
     BOMB("bomb", 2),
     SWORD("sword", 2),
     BOW("bow", -1),
-    SHIELD("shield", -1);
+    SHIELD("shield", -1),
+
+    // TODO layer
+    TIMETURNER("time_turner", 2),
+    SUNSTONE("sun_stone", 2),
+    SCEPTRE("sceptre", -1),
+    MIDNIGHTARMOUR("midnight_armour", -1);
 
     // Map of value to enum
     private static final Map<String, EntityTypes> map = new HashMap<String, EntityTypes>();

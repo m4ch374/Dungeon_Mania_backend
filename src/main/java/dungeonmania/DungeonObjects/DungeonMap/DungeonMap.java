@@ -159,4 +159,14 @@ public class DungeonMap {
         
         spawnerEntities.forEach(e -> e.spawn(config, currTick));
     }
+
+    public Position getPlayerPos() {
+        for (Entity entity : lookup.keySet()) {
+            if (entity instanceof Player) {
+                return lookup.get(entity);
+            }
+        }
+
+        return null;
+    }
 }
