@@ -9,7 +9,7 @@ import dungeonmania.DungeonObjects.DungeonState;
 import dungeonmania.DungeonObjects.Player;
 import dungeonmania.DungeonObjects.DungeonMap.DungeonMap;
 import dungeonmania.util.FileLoader;
-import dungeonmania.util.Tracker;
+import dungeonmania.util.Tracker.Tracker;
 
 public class DungeonBuilder {
     private String dungeonId = "Stubbed";

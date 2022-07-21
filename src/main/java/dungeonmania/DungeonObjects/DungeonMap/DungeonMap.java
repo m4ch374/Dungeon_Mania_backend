@@ -14,7 +14,7 @@ import dungeonmania.DungeonObjects.Entities.Characters.Spider;
 import dungeonmania.Interfaces.IMovable;
 import dungeonmania.Interfaces.ISpawnable;
 import dungeonmania.util.Position;
-import dungeonmania.util.Tracker;
+import dungeonmania.util.Tracker.Tracker;
 
 public class DungeonMap {
     // Assumes the map is not unlimited and surrounded by walls

@@ -9,8 +9,9 @@ import dungeonmania.Interfaces.IMovingStrategy;
 import dungeonmania.MovingStrategies.ConfusedMoveStrat;
 import dungeonmania.MovingStrategies.CowerMoveStrat;
 import dungeonmania.util.Position;
-import dungeonmania.util.Tracker;
 import dungeonmania.util.DungeonFactory.EntityStruct;
+import dungeonmania.util.Tracker.Tracker;
+
 import org.json.JSONObject;
 
 

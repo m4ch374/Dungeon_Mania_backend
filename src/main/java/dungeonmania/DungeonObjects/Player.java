@@ -13,8 +13,9 @@ import dungeonmania.response.models.BattleResponse;
 import dungeonmania.response.models.ItemResponse;
 import dungeonmania.util.Direction;
 import dungeonmania.util.DungeonFactory.EntityStruct;
+import dungeonmania.util.Tracker.Tracker;
 import dungeonmania.util.Position;
-import dungeonmania.util.Tracker;
+
 import java.util.ArrayList;
 import java.util.List;
 import org.json.JSONObject;

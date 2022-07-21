@@ -1,4 +1,4 @@
-package dungeonmania.util;
+package dungeonmania.util.Tracker;
 
 import java.util.Arrays;
 import java.util.List;

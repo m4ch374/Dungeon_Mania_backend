@@ -11,8 +11,8 @@ import dungeonmania.Interfaces.IEnemy;
 import dungeonmania.Interfaces.IMovingStrategy;
 import dungeonmania.MovingStrategies.CircularMoveStrat;
 import dungeonmania.util.Position;
-import dungeonmania.util.Tracker;
 import dungeonmania.util.DungeonFactory.EntityStruct;
+import dungeonmania.util.Tracker.Tracker;
 
 public class Spider extends Entity implements IEnemy {
     private static int spawnId = 0;

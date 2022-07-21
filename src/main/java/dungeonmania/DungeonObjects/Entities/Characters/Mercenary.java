@@ -9,8 +9,8 @@ import dungeonmania.MovingStrategies.SeekerMoveStrat;
 import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.response.models.EntityResponse;
 import dungeonmania.util.Position;
-import dungeonmania.util.Tracker;
 import dungeonmania.util.DungeonFactory.EntityStruct;
+import dungeonmania.util.Tracker.Tracker;
 
 import org.json.JSONObject;
 import java.util.List;
