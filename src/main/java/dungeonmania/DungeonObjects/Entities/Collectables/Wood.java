@@ -13,25 +13,13 @@ import dungeonmania.DungeonObjects.Player;
 
 public class Wood extends Entity implements ICollectable, IEquipment {
 
-    private int quantity;
-
     public Wood(EntityStruct metaData) {
         super(metaData);
-        this.quantity = 1;
-    }
-
-    public Wood(EntityStruct metaData, int quantity) {
-        super(metaData);
-        this.quantity = quantity;
     }
 
     @Override
     public String getId() {
         return super.getId();
-    }
-
-    public int getQuantity() {
-        return this.quantity;
     }
 
     @Override

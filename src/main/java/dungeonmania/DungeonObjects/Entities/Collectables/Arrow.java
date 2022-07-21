@@ -12,25 +12,13 @@ import static dungeonmania.DungeonObjects.EntityTypes.ARROWS;
 
 public class Arrow extends Entity implements ICollectable, IEquipment {
 
-    private int quantity;
-
     public Arrow(EntityStruct metaData) {
         super(metaData);
-        this.quantity = 1;
     }
 
     @Override
     public String getId() {
         return super.getId();
-    }
-
-    public Arrow(EntityStruct metaData, int quantity) {
-        super(metaData);
-        this.quantity = quantity;
-    }
-
-    public int getQuantity() {
-        return this.quantity;
     }
 
     @Override

@@ -181,6 +181,17 @@ public final class Backpack {
     }
 
     public void addItem(ICollectable item) throws InvalidActionException {
+        if (item instanceof Key && hasAKey()) {
+            throw new InvalidActionException("ERROR: Already has a key");
+        }
+
+        if (item instanceof Bomb) {
+            Bomb bomb = (Bomb) item;
+            if (!bomb.isCollectible()) {
+                throw new InvalidActionException("ERROR: Cannot collect a dropped bomb");
+            }
+        }
+
         if (item instanceof Treasure) {
             this.treasure.add((Treasure) item);
         } else if (item instanceof Key) {
