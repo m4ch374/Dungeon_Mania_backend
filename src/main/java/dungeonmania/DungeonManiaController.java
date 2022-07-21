@@ -42,7 +42,7 @@ public class DungeonManiaController {
         try {
             dungeonState = DungeonBuilder.setConfig(dungeonName, configName).build();
         } catch (Exception e) {
-            throw new IllegalArgumentException("Wrong dungeon or config name");
+            throw new IllegalArgumentException(e.getMessage());
         }
         
         return dungeonState.toDungeonResponse();
