@@ -8,7 +8,6 @@ import dungeonmania.MovingStrategies.CowerMoveStrat;
 import dungeonmania.MovingStrategies.SeekerMoveStrat;
 import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.response.models.EntityResponse;
-import dungeonmania.response.models.RoundResponse;
 import dungeonmania.util.Position;
 import dungeonmania.util.Tracker;
 import dungeonmania.util.DungeonFactory.EntityStruct;
@@ -83,6 +82,8 @@ public class Mercenary extends Entity implements IPlayerInteractable, IEnemy {
         
         switchMoveStrat();
         Position pos = moveStrat.moveEntity();
+
+        // Prolly need to refactor this
         // Check for portal cases (NOTE: multi-teleportation not included due to time constraints)
         Portal portal = getNewPosPortal(pos);
         if (portal != null) {
@@ -112,9 +113,6 @@ public class Mercenary extends Entity implements IPlayerInteractable, IEnemy {
         if (portal.size() == 0) return null;
         return portal.get(0);
     }
-
-    // @Override
-    public RoundResponse battleWith(Entity opponent) { return null; }
 
     @Override
     public EntityResponse toEntityResponse() {
