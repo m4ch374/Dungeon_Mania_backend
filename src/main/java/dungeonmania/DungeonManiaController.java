@@ -7,7 +7,6 @@ import dungeonmania.util.Direction;
 import dungeonmania.util.FileLoader;
 import dungeonmania.util.DungeonFactory.DungeonBuilder;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +41,7 @@ public class DungeonManiaController {
     public DungeonResponse newGame(String dungeonName, String configName) throws IllegalArgumentException {
         try {
             dungeonState = DungeonBuilder.setConfig(dungeonName, configName).build();
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new IllegalArgumentException("Wrong dungeon or config name");
         }
         
