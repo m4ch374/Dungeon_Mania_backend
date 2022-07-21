@@ -138,7 +138,8 @@ public class Player extends Entity {
     }
 
     private void make(String type) throws InvalidActionException, IllegalArgumentException {
-        backpack.make(type);
+        // TODO check map has no zombie
+        backpack.make(type, true);
     }
 
     // do not use this for bribe mercenaries
@@ -178,11 +179,11 @@ public class Player extends Entity {
         }
     }
 
-    public void tick(String action, Direction direction, String str) throws InvalidActionException, IllegalArgumentException {
+    public void tick(String action, Direction direction, String item) throws InvalidActionException, IllegalArgumentException {
         if (action.equals(Constant.PLAYERUSE)) {
-            useItem(str);
+            useItem(item);
         } else if (action.equals(Constant.PLAYERMAKE)) {
-            make(str);
+            make(item);
         } else if (action.equals(Constant.PLAYERMOVE)) {
             movement.setDirection(direction);
 

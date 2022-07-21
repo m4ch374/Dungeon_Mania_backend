@@ -119,7 +119,7 @@ public final class Backpack {
         return Buildables;
     }
 
-    public void make(String type) throws InvalidActionException, IllegalArgumentException {
+    public void make(String type, boolean noZombies) throws InvalidActionException, IllegalArgumentException {
         if (type.equals(EntityTypes.BOW.toString())) {
             if (this.Woods.size() >= 1 && this.Arrows.size() >= 3) {
                 useWoods(1);
@@ -166,8 +166,7 @@ public final class Backpack {
                 throw new InvalidActionException("ERROR: Not Enough Material For " + type);
             }
         } else if (type.equals(EntityTypes.MIDNIGHTARMOUR.toString())) {
-            // TODO check map has no zombie
-            if (this.Swords.size() >= 1 && this.SunStones.size() >= 1) {
+            if (noZombies && this.Swords.size() >= 1 && this.SunStones.size() >= 1) {
                 useSunStone(1);
                 useSword(1);
 
@@ -243,6 +242,7 @@ public final class Backpack {
     }
 
     public void useEquipment(String ItemId) throws InvalidActionException {
+
         IEquipment item = getItemById(ItemId);
 
         if (item instanceof Bow) {
