@@ -137,8 +137,8 @@ public class SeekerMoveStrat implements IMovingStrategy {
     private boolean cannotMoveCloser(Position nextPos) {
         Player p = (Player) seekingEntity;
 
-        Position playerPrevPos = (Position) p.getState().get("previousPosition");
-        Position playerCurrPos = (Position) p.getState().get("currentPosition");
+        Position playerPrevPos = p.getCurrentPosition();
+        Position playerCurrPos = p.getPreviousPosition();
 
         return playerCurrPos.equals(playerPrevPos) && map.getEntitiesAt(nextPos).stream().filter(e -> e instanceof Player).count() > 0;
     }

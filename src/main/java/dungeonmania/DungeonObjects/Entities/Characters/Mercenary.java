@@ -146,8 +146,8 @@ public class Mercenary extends Entity implements IPlayerInteractable, IEnemy {
     }
     
     private void switchMoveStrat() {
-        boolean invincible = (boolean) observing.getState().get("invincible");
-        boolean invisible = (boolean) observing.getState().get("invisible");
+        boolean invincible = observing.isInvincible();
+        boolean invisible = observing.isInvisible();
 
         if (invincible && !(moveStrat instanceof CowerMoveStrat)) {
             moveStrat = new CowerMoveStrat(this, map, OBSERVING_ID);
