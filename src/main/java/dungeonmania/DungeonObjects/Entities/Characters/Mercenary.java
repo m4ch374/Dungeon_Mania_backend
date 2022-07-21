@@ -10,6 +10,7 @@ import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.response.models.EntityResponse;
 import dungeonmania.util.Position;
 import dungeonmania.util.DungeonFactory.EntityStruct;
+import dungeonmania.util.Tracker.GoalTypes;
 import dungeonmania.util.Tracker.Tracker;
 
 import org.json.JSONObject;
@@ -64,7 +65,7 @@ public class Mercenary extends Entity implements IPlayerInteractable, IEnemy {
 
     public void death() {
         getMap().removeEntity(this);
-        tracker.notifyEnemy();
+        tracker.notifyTracker(GoalTypes.ENEMIES);
     }
 
     public String getClasString() {

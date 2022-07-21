@@ -10,6 +10,7 @@ import dungeonmania.MovingStrategies.ConfusedMoveStrat;
 import dungeonmania.MovingStrategies.CowerMoveStrat;
 import dungeonmania.util.Position;
 import dungeonmania.util.DungeonFactory.EntityStruct;
+import dungeonmania.util.Tracker.GoalTypes;
 import dungeonmania.util.Tracker.Tracker;
 
 import org.json.JSONObject;
@@ -44,7 +45,7 @@ public class ZombieToast extends Entity implements IEnemy {
 
     public void death() {
         getMap().removeEntity(this);
-        tracker.notifyEnemy();
+        tracker.notifyTracker(GoalTypes.ENEMIES);
     }
 
     public String getClasString() {

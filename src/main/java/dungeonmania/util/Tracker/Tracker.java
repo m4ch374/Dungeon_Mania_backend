@@ -17,16 +17,12 @@ public class Tracker {
         rootNode = NodeBuilder.buildNode(rawGoals, config);
     }
 
-    public void notifyTreasure() {
-        rootNode.notifyTracker(GoalTypes.TREASURE);
+    public void notifyTracker(GoalTypes types) {
+        rootNode.notifyTracker(types);
     }
 
-    public void notifyEnemy() {
-        rootNode.notifyTracker(GoalTypes.ENEMIES);
-    }
-
-    public void notifyExits() {
-        rootNode.notifyTracker(GoalTypes.EXIT);
+    public void unnotifyTracker(GoalTypes types) {
+        rootNode.notifyTracker(types);
     }
 
     public String getUnfinishedGoals(DungeonMap map) {
