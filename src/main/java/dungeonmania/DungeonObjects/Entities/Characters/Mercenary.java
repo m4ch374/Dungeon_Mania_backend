@@ -1,10 +1,8 @@
 package dungeonmania.DungeonObjects.Entities.Characters;
 
 import dungeonmania.Interfaces.IEnemy;
-import dungeonmania.Interfaces.IMovable;
 import dungeonmania.Interfaces.IMovingStrategy;
 import dungeonmania.Interfaces.IPlayerInteractable;
-import dungeonmania.Interfaces.IEnemy;
 import dungeonmania.MovingStrategies.ConfusedMoveStrat;
 import dungeonmania.MovingStrategies.CowerMoveStrat;
 import dungeonmania.MovingStrategies.SeekerMoveStrat;
@@ -12,7 +10,6 @@ import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.response.models.EntityResponse;
 import dungeonmania.response.models.RoundResponse;
 import dungeonmania.util.Position;
-import dungeonmania.util.Direction;
 import dungeonmania.util.Tracker;
 import dungeonmania.util.DungeonFactory.EntityStruct;
 
@@ -24,7 +21,6 @@ import dungeonmania.DungeonObjects.EntityTypes;
 import dungeonmania.DungeonObjects.Player;
 import dungeonmania.DungeonObjects.DungeonMap.DungeonMap;
 import dungeonmania.DungeonObjects.Entities.Entity;
-import dungeonmania.DungeonObjects.Entities.Characters.*;
 import dungeonmania.DungeonObjects.Entities.Statics.Portal;
 
 public class Mercenary extends Entity implements IPlayerInteractable, IEnemy {
