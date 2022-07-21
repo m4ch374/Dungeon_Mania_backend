@@ -76,10 +76,10 @@ public class Mercenary extends Entity implements IPlayerInteractable, IEnemy {
     public void move() {
         if (observing == null)
         observing = map.getAllEntities().stream()
-        .filter(e -> e.getType().equals(EntityTypes.PLAYER.toString()))
-        .map(e -> (Player) e)
-        .findFirst()
-        .get();
+                    .filter(e -> e.getType().equals(EntityTypes.PLAYER.toString()))
+                    .map(e -> (Player) e)
+                    .findFirst()
+                    .get();
         
         switchMoveStrat();
         Position pos = moveStrat.moveEntity();
