@@ -86,6 +86,10 @@ public class DungeonState {
         }
     }
 
+    public void build(String buildable) throws IllegalArgumentException, InvalidActionException {
+        player.tick(Constant.PLAYERMAKE, null, buildable);
+    }
+
     public void interact(String entityId) throws IllegalArgumentException, InvalidActionException {
         Entity entityToInteract = map.getAllEntities().stream().filter(e -> e.getId().equals(entityId)).findFirst().orElse(null);
 
