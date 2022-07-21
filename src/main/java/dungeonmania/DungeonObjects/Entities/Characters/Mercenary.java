@@ -127,7 +127,7 @@ public class Mercenary extends Entity implements IPlayerInteractable, IEnemy {
 
         Position distance = Position.calculatePositionBetween(currPos, playerPos);
 
-        if (distance.getX() > bribeRadius || distance.getY() > bribeRadius)
+        if (Math.abs(distance.getX()) > bribeRadius || Math.abs(distance.getY()) > bribeRadius)
             throw new InvalidActionException("Error: out of radius");
 
         player.bribe(brinbeAmount);
