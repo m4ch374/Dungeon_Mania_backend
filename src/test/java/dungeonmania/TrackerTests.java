@@ -113,4 +113,25 @@ public class TrackerTests {
         res = dmc.tick(Direction.DOWN);
         assertEquals("", res.getGoals());
     }
+
+    @Test
+    @DisplayName("Test composite treasure goal - 4 disjoint goals")
+    public void testComposite_4Disjoints() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame(D_DIR + "d_trackerTest_4Disjoints", C_DIR + "c_trackerTest_treasureTest");
+
+        assertTrue(res.getGoals().contains(":treasure"));
+        assertTrue(res.getGoals().contains(":enemies"));
+        assertTrue(res.getGoals().contains(":boulders"));
+        assertTrue(res.getGoals().contains(":exit"));
+
+        res = dmc.tick(Direction.DOWN);
+        assertTrue(res.getGoals().contains(":treasure"));
+        assertTrue(res.getGoals().contains(":enemies"));
+        assertTrue(res.getGoals().contains(":boulders"));
+        assertTrue(res.getGoals().contains(":exit"));
+
+        res = dmc.tick(Direction.DOWN);
+        assertEquals("", res.getGoals());
+    }
 }
