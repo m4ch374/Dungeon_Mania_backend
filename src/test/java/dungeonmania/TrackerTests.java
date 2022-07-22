@@ -86,6 +86,18 @@ public class TrackerTests {
     }
 
     @Test
+    @DisplayName("Test simple enemy with spawner")
+    public void testEnemies_SimpleSpawner() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame(D_DIR + "d_trackerTest_spawner", C_DIR + "c_trackerTest_enemyTest_playerOP_zombieSpawner");
+
+        assertTrue(res.getGoals().contains(":enemies"));
+
+        res = dmc.tick(Direction.UP);
+        assertEquals("", res.getGoals());
+    }
+
+    @Test
     @DisplayName("Test composite treasure goal - treasure or enemy")
     public void testComposite_treasureOr() {
         DungeonManiaController dmc = new DungeonManiaController();
