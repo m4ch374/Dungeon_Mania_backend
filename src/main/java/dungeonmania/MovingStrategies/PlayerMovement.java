@@ -84,15 +84,10 @@ public class PlayerMovement {
         for (IStaticInteractable entity : staticEntity) {
             try {
                 if (entity instanceof Boulder) {
+                    entity.interactedBy(player);
                     // LOGIC: if interactedBy() does NOT throw the Exception, then the boulder has moved
                     // thus its safe for player to also move. 
-                    Boulder boulder = (Boulder) entity;
-                    boulder.interactedBy(player);
-                    System.out.println("Found a boulder & interacted it in ableToMove()");
                     // DO NOT "return;" here, since we want to interact with other overlapping entities
-                // } else if (entity instanceof Portal) {
-                //     Portal portal = (Portal) entity;
-                //     portal.interactedBy(this);
                 }
             } catch (InvalidActionException e) {
                 System.out.println(e.getMessage());
@@ -191,7 +186,7 @@ public class PlayerMovement {
         return portal.get(0);
     }
 
-    public void interactWithExit(Position currPos) {
+    private void interactWithExit(Position currPos) {
         List<Entity> inCell = map.getEntitiesAt(currPos);
 
         List<IStaticInteractable> interactables = inCell
