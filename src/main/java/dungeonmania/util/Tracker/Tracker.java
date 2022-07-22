@@ -7,6 +7,7 @@ import org.json.JSONObject;
 
 import dungeonmania.DungeonObjects.EntityTypes;
 import dungeonmania.DungeonObjects.DungeonMap.DungeonMap;
+import dungeonmania.DungeonObjects.Entities.Entity;
 import dungeonmania.DungeonObjects.Entities.Statics.Boulder;
 
 // Its the last day so this one's gonna be very botched
@@ -29,6 +30,9 @@ public class Tracker {
         if (allBoulderOnSwitch(map))
             rootNode.notifyTracker(GoalTypes.BOULDERS);
 
+        if (!playerOnExit(map))
+            rootNode.unnotifyTracker(GoalTypes.EXIT);
+
         return rootNode.getEvaluationString();
     }
 
@@ -46,5 +50,16 @@ public class Tracker {
                 return false;
         }
         return true;
+    }
+
+    private boolean playerOnExit(DungeonMap map) {
+        Entity player = map.getAllEntities().stream()
+                    .filter(e -> e.getType().equals(EntityTypes.PLAYER.toString()))
+                    .findFirst()
+                    .get();
+
+        List<Entity> entitiesOverlapped = map.getEntitiesOverlapped(player);
+
+        return entitiesOverlapped.stream().filter(e -> e.getType().equals(EntityTypes.EXIT.toString())).count() != 0;
     }
 }
