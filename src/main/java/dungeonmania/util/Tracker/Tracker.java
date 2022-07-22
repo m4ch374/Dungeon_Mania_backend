@@ -56,7 +56,10 @@ public class Tracker {
         Entity player = map.getAllEntities().stream()
                     .filter(e -> e.getType().equals(EntityTypes.PLAYER.toString()))
                     .findFirst()
-                    .get();
+                    .orElse(null);
+
+        if (player == null)
+            return false;
 
         List<Entity> entitiesOverlapped = map.getEntitiesOverlapped(player);
 
