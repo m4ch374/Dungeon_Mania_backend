@@ -1,20 +1,17 @@
 package dungeonmania.DungeonObjects.Entities.Characters;
 
 import dungeonmania.Interfaces.IEnemy;
-import dungeonmania.Interfaces.IMovable;
 import dungeonmania.Interfaces.IMovingStrategy;
 import dungeonmania.Interfaces.IPlayerInteractable;
-import dungeonmania.Interfaces.IEnemy;
 import dungeonmania.MovingStrategies.ConfusedMoveStrat;
 import dungeonmania.MovingStrategies.CowerMoveStrat;
 import dungeonmania.MovingStrategies.SeekerMoveStrat;
 import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.response.models.EntityResponse;
-import dungeonmania.response.models.RoundResponse;
 import dungeonmania.util.Position;
-import dungeonmania.util.Direction;
-import dungeonmania.util.Tracker;
 import dungeonmania.util.DungeonFactory.EntityStruct;
+import dungeonmania.util.Tracker.GoalTypes;
+import dungeonmania.util.Tracker.Tracker;
 
 import org.json.JSONObject;
 import java.util.List;
@@ -24,7 +21,6 @@ import dungeonmania.DungeonObjects.EntityTypes;
 import dungeonmania.DungeonObjects.Player;
 import dungeonmania.DungeonObjects.DungeonMap.DungeonMap;
 import dungeonmania.DungeonObjects.Entities.Entity;
-import dungeonmania.DungeonObjects.Entities.Characters.*;
 import dungeonmania.DungeonObjects.Entities.Statics.Portal;
 
 public class Mercenary extends Entity implements IPlayerInteractable, IEnemy {
@@ -69,7 +65,7 @@ public class Mercenary extends Entity implements IPlayerInteractable, IEnemy {
 
     public void death() {
         getMap().removeEntity(this);
-        tracker.notifyEnemy();
+        tracker.notifyTracker(GoalTypes.ENEMIES);
     }
 
     public String getClasString() {
@@ -80,13 +76,15 @@ public class Mercenary extends Entity implements IPlayerInteractable, IEnemy {
     public void move() {
         if (observing == null)
         observing = map.getAllEntities().stream()
-        .filter(e -> e.getType().equals(EntityTypes.PLAYER.toString()))
-        .map(e -> (Player) e)
-        .findFirst()
-        .get();
+                    .filter(e -> e.getType().equals(EntityTypes.PLAYER.toString()))
+                    .map(e -> (Player) e)
+                    .findFirst()
+                    .get();
         
         switchMoveStrat();
         Position pos = moveStrat.moveEntity();
+
+        // Prolly need to refactor this
         // Check for portal cases (NOTE: multi-teleportation not included due to time constraints)
         Portal portal = getNewPosPortal(pos);
         if (portal != null) {
@@ -117,9 +115,6 @@ public class Mercenary extends Entity implements IPlayerInteractable, IEnemy {
         return portal.get(0);
     }
 
-    // @Override
-    public RoundResponse battleWith(Entity opponent) { return null; }
-
     @Override
     public EntityResponse toEntityResponse() {
         DungeonMap map = super.getMap();
@@ -133,7 +128,7 @@ public class Mercenary extends Entity implements IPlayerInteractable, IEnemy {
 
         Position distance = Position.calculatePositionBetween(currPos, playerPos);
 
-        if (distance.getX() > bribeRadius || distance.getY() > bribeRadius)
+        if (Math.abs(distance.getX()) > bribeRadius || Math.abs(distance.getY()) > bribeRadius)
             throw new InvalidActionException("Error: out of radius");
 
         player.bribe(brinbeAmount);
