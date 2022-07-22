@@ -14,8 +14,8 @@ import dungeonmania.response.models.BattleResponse;
 import dungeonmania.response.models.DungeonResponse;
 import dungeonmania.response.models.EntityResponse;
 import dungeonmania.util.Direction;
-import dungeonmania.util.Tracker;
 import dungeonmania.util.DungeonFactory.DungeonBuilder;
+import dungeonmania.util.Tracker.Tracker;
 
 public class DungeonState {
     // Metadata

@@ -20,8 +20,8 @@ import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.response.models.EntityResponse;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
-import dungeonmania.util.Tracker;
 import dungeonmania.util.DungeonFactory.EntityStruct;
+import dungeonmania.util.Tracker.Tracker;
 import dungeonmania.exceptions.*;
 
 public class ZombieToastSpawner extends Entity implements IPlayerInteractable, ISpawnable {

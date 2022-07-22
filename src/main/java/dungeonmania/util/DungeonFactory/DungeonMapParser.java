@@ -14,7 +14,7 @@ import dungeonmania.DungeonObjects.Entities.Characters.*;
 import dungeonmania.DungeonObjects.Entities.Collectables.*;
 import dungeonmania.DungeonObjects.Entities.Statics.*;
 import dungeonmania.util.Position;
-import dungeonmania.util.Tracker;
+import dungeonmania.util.Tracker.Tracker;
 
 public class DungeonMapParser {
     public static DungeonMap buildDungeonMap(JSONArray entities, JSONObject config, Tracker tracker) {
