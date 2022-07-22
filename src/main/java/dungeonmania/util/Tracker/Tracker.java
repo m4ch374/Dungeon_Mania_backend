@@ -38,6 +38,9 @@ public class Tracker {
                                     .map(e -> (Boulder) e)
                                     .collect(Collectors.toList());
 
+        if (boulders.isEmpty())
+            return false;
+
         for (Boulder boulder : boulders) {
             if (!boulder.overlappedWithSwitch())
                 return false;
