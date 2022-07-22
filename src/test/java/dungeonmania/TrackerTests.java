@@ -1,6 +1,7 @@
 package dungeonmania;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.DisplayName;
@@ -86,6 +87,18 @@ public class TrackerTests {
     }
 
     @Test
+    @DisplayName("Test simple enemy with spawner")
+    public void testEnemies_SimpleSpawner() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame(D_DIR + "d_trackerTest_spawner", C_DIR + "c_trackerTest_enemyTest_playerOP_zombieSpawner");
+
+        assertTrue(res.getGoals().contains(":enemies"));
+
+        res = dmc.tick(Direction.UP);
+        assertEquals("", res.getGoals());
+    }
+
+    @Test
     @DisplayName("Test composite treasure goal - treasure or enemy")
     public void testComposite_treasureOr() {
         DungeonManiaController dmc = new DungeonManiaController();
@@ -98,6 +111,87 @@ public class TrackerTests {
         assertTrue(res.getGoals().contains(":treasure"));
         assertTrue(res.getGoals().contains(":enemies"));
 
+        res = dmc.tick(Direction.DOWN);
+        assertEquals("", res.getGoals());
+    }
+
+    @Test
+    @DisplayName("Test composite treasure goal - 4 disjoint goals")
+    public void testComposite_4Disjoints() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame(D_DIR + "d_trackerTest_4Disjoints", C_DIR + "c_trackerTest_treasureTest");
+
+        assertTrue(res.getGoals().contains(":treasure"));
+        assertTrue(res.getGoals().contains(":enemies"));
+        assertTrue(res.getGoals().contains(":boulders"));
+        assertTrue(res.getGoals().contains(":exit"));
+
+        res = dmc.tick(Direction.DOWN);
+        assertTrue(res.getGoals().contains(":treasure"));
+        assertTrue(res.getGoals().contains(":enemies"));
+        assertTrue(res.getGoals().contains(":boulders"));
+        assertTrue(res.getGoals().contains(":exit"));
+
+        res = dmc.tick(Direction.DOWN);
+        assertEquals("", res.getGoals());
+    }
+
+    @Test
+    @DisplayName("Test composite goal - mixed conjunction & disjunction")
+    public void testComposite_mixedSimple() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame(D_DIR + "d_trackerTest_mixed", C_DIR + "c_trackerTest_enemyTest_playerOP");
+
+        assertTrue(res.getGoals().contains(":treasure"));
+        assertTrue(res.getGoals().contains(":enemies"));
+        assertTrue(res.getGoals().contains(":boulders"));
+        assertTrue(res.getGoals().contains(":exit"));
+
+        res = dmc.tick(Direction.RIGHT);
+        assertTrue(res.getGoals().contains(":treasure"));
+        assertFalse(res.getGoals().contains(":enemies"));
+        assertTrue(res.getGoals().contains(":boulders"));
+        assertTrue(res.getGoals().contains(":exit"));
+
+        dmc.tick(Direction.LEFT);
+        res = dmc.tick(Direction.DOWN);
+        assertFalse(res.getGoals().contains(":treasure"));
+        assertFalse(res.getGoals().contains(":enemies"));
+        assertFalse(res.getGoals().contains(":boulders"));
+        assertTrue(res.getGoals().contains(":exit"));
+
+        dmc.tick(Direction.DOWN);
+        res = dmc.tick(Direction.DOWN);
+        assertEquals("", res.getGoals());
+    }
+
+    @Test
+    @DisplayName("Test composite goal - exit last")
+    public void testComposite_mixed_exitLast() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame(D_DIR + "d_trackerTest_mixed", C_DIR + "c_trackerTest_enemyTest_playerOP");
+
+        assertTrue(res.getGoals().contains(":treasure"));
+        assertTrue(res.getGoals().contains(":enemies"));
+        assertTrue(res.getGoals().contains(":boulders"));
+        assertTrue(res.getGoals().contains(":exit"));
+
+        res = dmc.tick(Direction.RIGHT);
+        assertTrue(res.getGoals().contains(":treasure"));
+        assertFalse(res.getGoals().contains(":enemies"));
+        assertTrue(res.getGoals().contains(":boulders"));
+        assertTrue(res.getGoals().contains(":exit"));
+
+        dmc.tick(Direction.DOWN);
+        dmc.tick(Direction.DOWN);
+        dmc.tick(Direction.LEFT);
+        res = dmc.tick(Direction.UP);
+        assertFalse(res.getGoals().contains(":treasure"));
+        assertFalse(res.getGoals().contains(":enemies"));
+        assertFalse(res.getGoals().contains(":boulders"));
+        assertTrue(res.getGoals().contains(":exit"));
+
+        dmc.tick(Direction.DOWN);
         res = dmc.tick(Direction.DOWN);
         assertEquals("", res.getGoals());
     }
