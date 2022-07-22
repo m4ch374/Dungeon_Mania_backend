@@ -167,6 +167,14 @@ public class MercenaryBehaviourTest {
         dmc.newGame(DIR_NAME + "d_mercTest_bribeTest", C_DIR_NAME + "c_bribeTests_radius1");
 
         assertThrows(InvalidActionException.class, () -> dmc.interact("mercenary"));
+
+        dmc.tick(Direction.DOWN);
+        dmc.tick(Direction.DOWN);
+        dmc.tick(Direction.DOWN);
+        dmc.tick(Direction.DOWN);
+        dmc.tick(Direction.DOWN);
+
+        assertThrows(InvalidActionException.class, () -> dmc.interact("mercenary"));
     }
 
     @Test

@@ -92,11 +92,11 @@ public class TrackerTests {
         DungeonResponse res = dmc.newGame(D_DIR + "d_trackerTest_treasureOr", C_DIR + "c_trackerTest_treasureTest");
 
         assertTrue(res.getGoals().contains(":treasure"));
-        assertTrue(res.getGoals().contains(":enemy"));
+        assertTrue(res.getGoals().contains(":enemies"));
 
         res = dmc.tick(Direction.DOWN);
         assertTrue(res.getGoals().contains(":treasure"));
-        assertTrue(res.getGoals().contains(":enemy"));
+        assertTrue(res.getGoals().contains(":enemies"));
 
         res = dmc.tick(Direction.DOWN);
         assertEquals("", res.getGoals());

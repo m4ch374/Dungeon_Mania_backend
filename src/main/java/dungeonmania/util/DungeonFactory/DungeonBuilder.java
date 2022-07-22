@@ -9,7 +9,7 @@ import dungeonmania.DungeonObjects.DungeonState;
 import dungeonmania.DungeonObjects.Player;
 import dungeonmania.DungeonObjects.DungeonMap.DungeonMap;
 import dungeonmania.util.FileLoader;
-import dungeonmania.util.Tracker;
+import dungeonmania.util.Tracker.Tracker;
 
 public class DungeonBuilder {
     private String dungeonId = "Stubbed";
@@ -51,7 +51,7 @@ public class DungeonBuilder {
         return configJson;
     }
 
-    public DungeonState build() {
+    public DungeonState build() throws Exception {
         tracker = new Tracker(dungeonGoals, configJson);
         map = DungeonMapParser.buildDungeonMap(dungeonEntities, configJson, tracker);
         player = (Player) map.getAllEntities().stream().filter(e -> e instanceof Player).findFirst().get();
