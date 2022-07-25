@@ -100,6 +100,18 @@ public class DungeonState {
         ((IPlayerInteractable) entityToInteract).interactedByPlayer(player);
     }
 
+    public void saveGame(String name) {
+        // TODO: stubbed
+    }
+
+    public void loadGame(String name) {
+        // TODO: stubbed
+    }
+
+    public List<String> getAllGames() {
+        return null;
+    }
+
     public DungeonResponse toDungeonResponse() {
         List<EntityResponse> entities = map.getAllEntities().stream().map(e -> e.toEntityResponse()).collect(Collectors.toList());
         return new DungeonResponse(dungeonId, dungeonName, entities, player.getPlayerItems(), battles, player.getBuildables(), tracker.getUnfinishedGoals(map));
