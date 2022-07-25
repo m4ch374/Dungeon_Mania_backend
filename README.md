@@ -50,6 +50,11 @@ This specification is broken into four parts:
 - Fri 22 Jul 8am - Remove stale `gameMode` parameter from `generateDungeon`
 - Fri 22 Jul 3pm - Add rewind buttons for `time_turner` to frontend
 - Fri 22 Jul 3pm - Add dungeon generation to frontend and fix method signature for `generateDungeon`
+- Fri 22 Jul 5pm - Clarify Sun Stone and Sceptre.
+- Sat 23 Jul 12pm - Time travel clarifications
+- Sat 23 Jul 9pm - Clarify dungeon generation and time travel behaviour
+- Sun 24 Jul 9am - Fix description for exceptions in `interact()` and description for sun stone
+- Sun 24 Jul 9pm - Clarify dungeon state after time travel
 
 ## 1. Aims
 
@@ -149,7 +154,7 @@ In Milestone 3, the following collectable entities have been added:
 
 | Entity    | Image         | Description |
 | --------- | --------------| ------------|
-| Sun Stone | <img src='images/sun_stone.png' /> | Can be picked up by the player, and can be used to open doors and interchangeably with treasure; except it cannot be used to bribe mercenaries or assassins. Since the sun stone is classed as treasure it counts towards the treasure goal. When used in place of a key, it is retained after use. |
+| Sun Stone | <img src='images/sun_stone.png' /> | A special form of treasure, hard and treasuable. It can be picked up by the player. Can be used to open doors, and can be used interchangeably with treasure or keys when building entities. But it cannot be used to bribe mercenaries or assassins. Since it is classed as treasure it counts towards the treasure goal. When used for opening doors, or when replacing another material such as a key or treasure in building entities, it is retained after use. |
 
 ### 3.5 Buildable Entities
 
@@ -166,8 +171,8 @@ In Milestone 3, the following buildable entities have been added:
 
 | Entity    | Image         | Description |
 | --------- | --------------| ------------|
-| Sceptre   | <img src='images/sceptre.png' /> | Can be crafted with one wood or two arrows, one key or one treasure, and one sun stone. A character with a sceptre does not need to bribe mercenaries or assassins to become allies, as they can use the sceptre to control their minds. The effects only last for a certain number of ticks. |
-| Midnight Armour | <img src='images/midnight_armour.png' /> | Can be crafted with a sword and a sun stone if there are no zombies currently in the dungeon. Midnight armour provides extra attack damage as well as protection, and it lasts forever. |
+| Sceptre   | <img src='images/sceptre.png' /> | Can be crafted with (1 wood OR 2 arrows) + (1 key OR 1 treasure) + (1 sun stone). A character with a sceptre does not need to bribe mercenaries or assassins to become allies, as they can use the sceptre to control their minds without any distance constraint. But the effects only last for a certain number of ticks. |
+| Midnight Armour | <img src='images/midnight_armour.png' /> | Can be crafted with (1 sword + 1 sun stone) if there are no zombies currently in the dungeon. Midnight armour provides extra attack damage as well as protection, and it lasts forever. |
 
 ### 3.6 Battles
 
@@ -307,7 +312,7 @@ This part of the extension includes the following new entity:
 | --------- | --------------|
 | Time Travelling Portal | <img src="images/time_portal.png" /> |
 
-If a player travels through a time travelling portal, they exit through the same portal, except the dungeon state is that of 30 ticks previously.
+If a player travels through a time travelling portal, they exit through the same portal in a square cardinally adjacent to the portal, except the dungeon state is that of 30 ticks previously. If less than 30 ticks have passed, then the dungeon state is simply the initial dungeon state.
 
 #### 3.11.3 Time Travel Rules
 
@@ -319,12 +324,16 @@ When a character has time travelled, either by the rewind buttons or via a time 
 
 Only the character can travel through time travel portals.
 
+The older player should still collect items and play out all `tick` and `interact` movements with those items as they did before. Time travel takes the player to *prior* the tick takes place, e.g. if on tick 30 the player travels through a portal it arrives out of the other side before the beginning of tick 0.
+
 <details>
 <summary>
 Implementation Hint
 </summary>
 
-The design of this extension is up to you, however we recommend you treat time travel as moving backwards in a series of game states that are being stored (the state of the dungeon at tick X). When time travel occurs, the player is transported to that state, and all `tick` and `interact` functions are "played" out in the same order.
+The design of this extension is up to you, however we recommend you treat time travel as moving backwards in a series of game states that are being stored (the state of the dungeon at tick X). When time travel occurs, the player is transported to that state, and all `tick` and `interact` functions are "played" out in the same order *for the older player*, not the current player.
+
+This also means that when the older player reaches the tick during which they time travelled (either by using a time turner or through a portal), they should be removed from the map.
 
 </details>
 
@@ -837,7 +846,7 @@ IllegalArgumentException:
 </ul>
 InvalidActionException:
 <ul>
-<li>If the player does not have sufficient items to craft the buildable, or unbuildable for <code>midnight_armour</code> because there are zombies currently in the dungeon.</li>
+<li>If the player does not have sufficient items to craft the buildable, 💀 or unbuildable for <code>midnight_armour</code> because there are zombies currently in the dungeon.</li>
 </ul>
 </td>
 </tr>
@@ -860,7 +869,7 @@ IllegalArgumentException:
 </ul>
 InvalidActionException
 <ul>
-<li>💀 If the player is not within specified bribing radius to the mercenary, if they are bribing/mind-controlling</li>
+<li>💀 If the player is not within specified bribing radius to the mercenary, when they are bribing</li>
 <li>If the player is not cardinally adjacent to the spawner, if they are destroying a spawner</li>
 <li>💀 If the player does not have enough gold and does not have a sceptre and attempts to bribe/mind-control a mercenary</li>
 <li>If the player does not have a weapon and attempts to destroy a spawner</li>
@@ -977,7 +986,7 @@ public DungeonResponse generateDungeon(int xStart, int yStart, int xEnd, int yEn
 
 </td>
 <td>
-Generates a dungeon surrounded by walls in a rectangular grid from the start to the end position on the map. An exit will need to be at <code>(xEnd, yEnd)</code>
+Generates a dungeon surrounded by walls in a rectangular grid from the start to the end position on the map, where the start position is the top left corner and the exit is the bottom right corner. An exit will need to be at <code>(xEnd, yEnd)</code>
 </td>
 <td>
 IllegalArgumentException:
