@@ -3,7 +3,6 @@ package dungeonmania.DungeonObjects.Entities.Statics;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -22,7 +21,6 @@ import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 import dungeonmania.util.DungeonFactory.EntityStruct;
 import dungeonmania.util.Tracker.Tracker;
-import dungeonmania.exceptions.*;
 
 public class ZombieToastSpawner extends Entity implements IPlayerInteractable, ISpawnable {
     private static int spawnId = 0;
@@ -36,6 +34,7 @@ public class ZombieToastSpawner extends Entity implements IPlayerInteractable, I
         super(metaData);
         this.zombieSpawnRate = config.getInt("zombie_spawn_rate");
         map = super.getMap();
+        this.tracker = tracker;
     }
 
     @Override
@@ -116,6 +115,6 @@ public class ZombieToastSpawner extends Entity implements IPlayerInteractable, I
     }
 
     private boolean playerHasWeapon(Player player) {
-        return (player.holdingSword() || player.holdingBow() );
+        return (player.holdingSword() || player.holdingBow());
     }
 }
