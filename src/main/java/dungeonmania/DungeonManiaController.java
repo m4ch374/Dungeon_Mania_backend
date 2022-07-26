@@ -7,7 +7,6 @@ import dungeonmania.util.Direction;
 import dungeonmania.util.FileLoader;
 import dungeonmania.util.DungeonFactory.DungeonBuilder;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class DungeonManiaController {
@@ -91,21 +90,23 @@ public class DungeonManiaController {
      * /game/save
      */
     public DungeonResponse saveGame(String name) throws IllegalArgumentException {
-        return null;
+        dungeonState.saveGame(name);
+        return dungeonState.toDungeonResponse();
     }
 
     /**
      * /game/load
      */
     public DungeonResponse loadGame(String name) throws IllegalArgumentException {
-        return null;
+        dungeonState.loadGame(name);
+        return dungeonState.toDungeonResponse();
     }
 
     /**
      * /games/all
      */
     public List<String> allGames() {
-        return new ArrayList<>();
+        return dungeonState.getAllGames();
     }
 
 }
