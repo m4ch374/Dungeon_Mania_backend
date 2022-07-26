@@ -81,10 +81,27 @@ public class DungeonMapParser {
                 return new Bomb(metaData, config);
             case SWORD:
                 return new Sword(metaData, config);
+            case ASSASSIN:
+                return new Assassin(metaData, config, tracker);
+            case HYDRA:
+                return new Hydra(metaData, config, tracker);
+            case SWAMP_TILE:
+                int movement_factor = entityJson.getInt("movement_factor");
+                return new SwampTile(metaData, movement_factor);
             case SUNSTONE:
                 return new SunStone(metaData);
             case TIMETURNER:
                 return new TimeTurner(metaData);
+            case TIME_TRAVELLING_PORTAL:
+                return new TimeTravellingPortal(metaData);
+            case LIGHT_BULB_OFF:
+                return new LightBulb(metaData);
+            case WIRE:
+                return new Wire(metaData);
+            case SWITCH_DOOR:
+                String logic = entityJson.getString("logic");
+                keyId = entityJson.getInt("key");
+                return new SwitchDoor(metaData, keyId, logic);
             default:
                 return null;
         }

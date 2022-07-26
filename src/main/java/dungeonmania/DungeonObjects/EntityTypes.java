@@ -28,11 +28,24 @@ public enum EntityTypes {
     BOW("bow", -1),
     SHIELD("shield", -1),
 
-    // TODO layer
-    TIMETURNER("time_turner", 2),
+    // Additional objects in milestone 3
+    //
+    // Note:
+    // LIGHT_BULB_ON and OLDER_PLAYER may or may not be an entity depending on our implementation
+    // Added just in case, compatibility-wise.
+    ASSASSIN("assassin", 1),
+    HYDRA("hydra", 1),
+    SWAMP_TILE("swamp_tile", 5),
     SUNSTONE("sun_stone", 2),
     SCEPTRE("sceptre", -1),
-    MIDNIGHTARMOUR("midnight_armour", -1);
+    MIDNIGHTARMOUR("midnight_armour", -1),
+    TIMETURNER("time_turner", 2),
+    TIME_TRAVELLING_PORTAL("time_travelling_portal", 4),
+    LIGHT_BULB_OFF("light_bulb_off", 3),
+    LIGHT_BULB_ON("light_bulb_on", 3),
+    WIRE("wire", 3),
+    SWITCH_DOOR("switch_door", 3),
+    OLDER_PLAYER("older_player", 0);
 
     // Map of value to enum
     private static final Map<String, EntityTypes> map = new HashMap<String, EntityTypes>();
