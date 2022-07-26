@@ -48,6 +48,14 @@ public class Hydra extends Entity implements IEnemy {
         return health;
     }
 
+    public double getHealthIncreaseRate() {
+        return healthIncreaseRate;
+    }
+
+    public double getHealthIncreaseAmt() {
+        return healthIncreaseAmt;
+    }
+
     public void death() {
         getMap().removeEntity(this);
         tracker.notifyTracker(GoalTypes.ENEMIES);
