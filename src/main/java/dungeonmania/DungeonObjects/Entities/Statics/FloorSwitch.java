@@ -1,9 +1,6 @@
 package dungeonmania.DungeonObjects.Entities.Statics;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import dungeonmania.DungeonObjects.Entities.Entity;
 import dungeonmania.DungeonObjects.Entities.Collectables.Bomb;
@@ -49,5 +46,4 @@ public class FloorSwitch extends Entity implements IStaticInteractable {
 
     @Override
     public void interactedBy(Entity interactor) throws InvalidActionException {}
-    
 }

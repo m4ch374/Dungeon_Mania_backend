@@ -17,11 +17,6 @@ public class Arrow extends Entity implements ICollectable, IEquipment {
     }
 
     @Override
-    public String getId() {
-        return super.getId();
-    }
-
-    @Override
     public ItemResponse toItemResponse() {
         return new ItemResponse(getId(), ARROWS.toString());
     }
