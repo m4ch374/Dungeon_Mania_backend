@@ -10,7 +10,7 @@ import dungeonmania.DungeonObjects.EntityTypes;
 import dungeonmania.DungeonObjects.Player;
 import dungeonmania.DungeonObjects.DungeonMap.DungeonMap;
 import dungeonmania.DungeonObjects.Entities.Entity;
-import dungeonmania.DungeonObjects.Entities.Characters.*;
+import dungeonmania.DungeonObjects.Entities.Characters.Enemies.*;
 import dungeonmania.DungeonObjects.Entities.Collectables.*;
 import dungeonmania.DungeonObjects.Entities.Statics.*;
 import dungeonmania.util.Position;
