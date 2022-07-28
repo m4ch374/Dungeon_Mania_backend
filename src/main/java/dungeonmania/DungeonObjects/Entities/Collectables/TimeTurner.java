@@ -16,11 +16,6 @@ public class TimeTurner extends Entity implements ICollectable, IEquipment {
     }
 
     @Override
-    public String getId() {
-        return super.getId();
-    }
-
-    @Override
     public void collectedBy(Entity collector) throws InvalidActionException {
         if (collector instanceof Player) {
             Player player = (Player) collector;

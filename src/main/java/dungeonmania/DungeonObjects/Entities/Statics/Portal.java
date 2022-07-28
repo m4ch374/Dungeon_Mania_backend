@@ -12,7 +12,6 @@ import dungeonmania.util.Position;
 import dungeonmania.util.DungeonFactory.EntityStruct;
 import dungeonmania.DungeonObjects.EntityTypes;
 import dungeonmania.util.Direction;
-import dungeonmania.util.Position;
 import dungeonmania.exceptions.*;
 
 public class Portal extends Entity implements IStaticInteractable {

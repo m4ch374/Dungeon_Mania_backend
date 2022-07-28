@@ -2,16 +2,22 @@ package dungeonmania.DungeonObjects.Entities.Statics;
 
 import dungeonmania.DungeonObjects.Player;
 import dungeonmania.DungeonObjects.Entities.Entity;
+import dungeonmania.DungeonObjects.Entities.LogicEntity;
 import dungeonmania.Interfaces.IStaticInteractable;
 import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.util.DungeonFactory.EntityStruct;
 
-public class Door extends Entity implements IStaticInteractable {
+public class Door extends LogicEntity implements IStaticInteractable {
     private int keyId;
     private boolean isopen = false;
 
     public Door(EntityStruct metaData, int keyId) {
         super(metaData);
+        this.keyId = keyId;
+    }
+
+    public Door(EntityStruct metaData, int keyId, String logic) {
+        super(metaData, logic);
         this.keyId = keyId;
     }
 
@@ -32,5 +38,9 @@ public class Door extends Entity implements IStaticInteractable {
         } else {
             throw new InvalidActionException("ERROR: Door cannot interact with this entity");
         }
+    }
+
+    public String getLogic() {
+        return null;
     }
 }
