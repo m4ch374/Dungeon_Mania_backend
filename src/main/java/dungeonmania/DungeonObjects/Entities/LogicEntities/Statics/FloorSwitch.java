@@ -1,9 +1,6 @@
 package dungeonmania.DungeonObjects.Entities.LogicEntities.Statics;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import dungeonmania.DungeonObjects.Entities.Entity;
 import dungeonmania.DungeonObjects.Entities.Statics.Boulder;

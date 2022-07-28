@@ -329,13 +329,13 @@ public final class Backpack {
 
     private void useSunStone (int quantity) {
         for (int i = 0; i < quantity; i++) {
-            this.SunStones.remove(0);
+            this.sunStones.remove(0);
         }
     }
 
     private void useSword (int quantity) {
         for (int i = 0; i < quantity; i++) {
-            this.Swords.remove(0);
+            this.swords.remove(0);
         }
     }
 
