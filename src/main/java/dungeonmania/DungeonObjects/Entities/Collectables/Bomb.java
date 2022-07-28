@@ -4,6 +4,7 @@ import org.json.JSONObject;
 
 import dungeonmania.DungeonObjects.Player;
 import dungeonmania.DungeonObjects.Entities.Entity;
+import dungeonmania.DungeonObjects.Entities.LogicEntity;
 import dungeonmania.DungeonObjects.Entities.Statics.FloorSwitch;
 import dungeonmania.Interfaces.ICollectable;
 import dungeonmania.Interfaces.IEquipment;
@@ -17,7 +18,7 @@ import static dungeonmania.DungeonObjects.EntityTypes.BOMB;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Bomb extends Entity implements ICollectable, IEquipment {
+public class Bomb extends LogicEntity implements ICollectable, IEquipment {
 
     private int bombRadius;
     private boolean collectible = true;
@@ -27,9 +28,19 @@ public class Bomb extends Entity implements ICollectable, IEquipment {
         this.bombRadius = config.getInt("bomb_radius");
     }
 
+    public Bomb(EntityStruct metaData, JSONObject config, String logic) {
+        super(metaData, logic);
+        this.bombRadius = config.getInt("bomb_radius");
+    }
+
     @Override
-    public String getId() {
-        return super.getId();
+    public boolean isActive() {
+        return super.isActive();
+    }
+
+    @Override
+    public String getLogic() {
+        return super.getLogic();
     }
 
     public int getBombRadius() {
@@ -40,7 +51,7 @@ public class Bomb extends Entity implements ICollectable, IEquipment {
         this.collectible = false;
 
         Position pos = getMap().getPlayerPos();
-        if (playerCloseActiveSwitch(pos)) {
+        if (playerCloseActiveSwitch(pos) || isActive()) {
             activate(pos);
         } else {
             getMap().placeEntityAt(this, pos);

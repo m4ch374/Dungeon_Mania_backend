@@ -18,11 +18,6 @@ public class Treasure extends Entity implements ICollectable, IEquipment {
     }
 
     @Override
-    public String getId() {
-        return super.getId();
-    }
-
-    @Override
     public ItemResponse toItemResponse() {
         return new ItemResponse(getId(), TREASURE.toString());
     }

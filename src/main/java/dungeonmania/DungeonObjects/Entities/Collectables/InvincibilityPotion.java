@@ -19,11 +19,6 @@ public class InvincibilityPotion extends Entity implements ICollectable, IEquipm
     }
 
     @Override
-    public String getId() {
-        return super.getId();
-    }
-
-    @Override
     public ItemResponse toItemResponse() {
         return new ItemResponse(getId(), INVINCIBILITY_POTION.toString());
     }

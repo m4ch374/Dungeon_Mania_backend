@@ -19,11 +19,6 @@ public class InvisibilityPotion extends Entity implements ICollectable, IEquipme
     }
 
     @Override
-    public String getId() {
-        return super.getId();
-    }
-
-    @Override
     public ItemResponse toItemResponse() {
         return new ItemResponse(getId(), INVISIBILITY_POTION.toString());
     }

@@ -27,16 +27,16 @@ public final class Backpack {
 
     private Key key = null;
     private ArrayList<Treasure> treasure = new ArrayList<Treasure>();
-    private ArrayList<InvincibilityPotion> InvincibilityPotion = new ArrayList<InvincibilityPotion>();
-    private ArrayList<InvisibilityPotion> InvisibilityPotion = new ArrayList<InvisibilityPotion>();
-    private ArrayList<Wood> Woods = new ArrayList<Wood>();
-    private ArrayList<Arrow> Arrows = new ArrayList<Arrow>();
-    private ArrayList<Bomb> Bombs = new ArrayList<Bomb>();
-    private ArrayList<Sword> Swords = new ArrayList<Sword>();
-    private ArrayList<SunStone> SunStones = new ArrayList<SunStone>();
-    private ArrayList<MidnightArmour> MidnightArmours = new ArrayList<MidnightArmour>();
-    private ArrayList<Sceptre> Sceptres = new ArrayList<Sceptre>();
-    private ArrayList<TimeTurner> TimeTurners = new ArrayList<TimeTurner>();
+    private ArrayList<InvincibilityPotion> invincibilityPotion = new ArrayList<InvincibilityPotion>();
+    private ArrayList<InvisibilityPotion> invisibilityPotion = new ArrayList<InvisibilityPotion>();
+    private ArrayList<Wood> woods = new ArrayList<Wood>();
+    private ArrayList<Arrow> arrows = new ArrayList<Arrow>();
+    private ArrayList<Bomb> bombs = new ArrayList<Bomb>();
+    private ArrayList<Sword> swords = new ArrayList<Sword>();
+    private ArrayList<SunStone> sunStones = new ArrayList<SunStone>();
+    private ArrayList<MidnightArmour> midnightArmours = new ArrayList<MidnightArmour>();
+    private ArrayList<Sceptre> sceptres = new ArrayList<Sceptre>();
+    private ArrayList<TimeTurner> timeTurners = new ArrayList<TimeTurner>();
 
     private int idx = 0;
     private ArrayList<Bow> Bows = new ArrayList<Bow>();
@@ -57,7 +57,7 @@ public final class Backpack {
     }
 
     public boolean hasSword() {
-        return (this.Swords.size() >= 1);
+        return (this.swords.size() >= 1);
     }
 
     public boolean hasBow() {
@@ -69,19 +69,19 @@ public final class Backpack {
     }
 
     public boolean hasSceptre() {
-        return (this.Sceptres.size() >= 1);
+        return (this.sceptres.size() >= 1);
     }
 
     public boolean hasMidnightArmour() {
-        return (this.MidnightArmours.size() >= 1);
+        return (this.midnightArmours.size() >= 1);
     }
 
     public boolean hasSunStone() {
-        return (this.SunStones.size() >= 1);
+        return (this.sunStones.size() >= 1);
     }
 
     public boolean hasTimeTurner() {
-        return (this.TimeTurners.size() >= 1);
+        return (this.timeTurners.size() >= 1);
     }
 
     public List<ItemResponse> getItemResponse() {
@@ -89,18 +89,18 @@ public final class Backpack {
 
         if (key != null) items.add(key.toItemResponse());
         treasure.stream().forEach(e -> items.add(e.toItemResponse()));
-        InvincibilityPotion.stream().forEach(e -> items.add(e.toItemResponse()));
-        InvisibilityPotion.stream().forEach(e -> items.add(e.toItemResponse()));
-        Woods.stream().forEach(e -> items.add(e.toItemResponse()));
-        Arrows.stream().forEach(e -> items.add(e.toItemResponse()));
-        Bombs.stream().forEach(e -> items.add(e.toItemResponse()));
-        Swords.stream().forEach(e -> items.add(e.toItemResponse()));
+        invincibilityPotion.stream().forEach(e -> items.add(e.toItemResponse()));
+        invisibilityPotion.stream().forEach(e -> items.add(e.toItemResponse()));
+        woods.stream().forEach(e -> items.add(e.toItemResponse()));
+        arrows.stream().forEach(e -> items.add(e.toItemResponse()));
+        bombs.stream().forEach(e -> items.add(e.toItemResponse()));
+        swords.stream().forEach(e -> items.add(e.toItemResponse()));
         Bows.stream().forEach(e -> items.add(e.toItemResponse()));
         Shields.stream().forEach(e -> items.add(e.toItemResponse()));
-        SunStones.stream().forEach(e -> items.add(e.toItemResponse()));
-        MidnightArmours.stream().forEach(e -> items.add(e.toItemResponse()));
-        Sceptres.stream().forEach(e -> items.add(e.toItemResponse()));
-        TimeTurners.stream().forEach(e -> items.add(e.toItemResponse()));
+        sunStones.stream().forEach(e -> items.add(e.toItemResponse()));
+        midnightArmours.stream().forEach(e -> items.add(e.toItemResponse()));
+        sceptres.stream().forEach(e -> items.add(e.toItemResponse()));
+        timeTurners.stream().forEach(e -> items.add(e.toItemResponse()));
 
         return items;
     }
@@ -108,11 +108,11 @@ public final class Backpack {
     public List<String> getBuildables() {
         ArrayList<String> Buildables = new ArrayList<String>();
 
-        if (this.Woods.size() >= 1 && this.Arrows.size() >= 3) {
+        if (this.woods.size() >= 1 && this.arrows.size() >= 3) {
             Buildables.add(EntityTypes.BOW.toString());
         }
 
-        if (this.Woods.size() >= 2 && (this.treasure.size() >= 1 || this.key != null)) {
+        if (this.woods.size() >= 2 && (this.treasure.size() >= 1 || this.key != null)) {
             Buildables.add(EntityTypes.SHIELD.toString());
         }
 
@@ -121,7 +121,7 @@ public final class Backpack {
 
     public void make(String type, boolean noZombies) throws InvalidActionException, IllegalArgumentException {
         if (type.equals(EntityTypes.BOW.toString())) {
-            if (this.Woods.size() >= 1 && this.Arrows.size() >= 3) {
+            if (this.woods.size() >= 1 && this.arrows.size() >= 3) {
                 useWoods(1);
                 useArrows(3);
                 String id = "bow_" + getIdx();
@@ -130,12 +130,12 @@ public final class Backpack {
                 throw new InvalidActionException("ERROR: Not Enough Material For " + type);
             }
         } else if (type.equals(EntityTypes.SHIELD.toString())) {
-            if (this.Woods.size() >= 2 && this.treasure.size() >= 1) {
+            if (this.woods.size() >= 2 && this.treasure.size() >= 1) {
                 useWoods(2);
                 useTreasure(1);
                 String id = "shield_" + getIdx();
                 this.Shields.add(new Shield(id, shield_durability));
-            } else if (this.Woods.size() >= 2 && this.key != null) {
+            } else if (this.woods.size() >= 2 && this.key != null) {
                 useWoods(2);
                 useKey();
                 String id = "shield_" + getIdx();
@@ -144,10 +144,10 @@ public final class Backpack {
                 throw new InvalidActionException("ERROR: Not Enough Material For " + type);
             }
         } else if (type.equals(EntityTypes.SCEPTRE.toString())) {
-            if ((this.Woods.size() >= 1 || this.Arrows.size() >= 2)
+            if ((this.woods.size() >= 1 || this.arrows.size() >= 2)
             && (this.treasure.size() >= 1 || this.key != null)
-            && this.SunStones.size() >= 1) {
-                if (this.Woods.size() >= 1) {
+            && this.sunStones.size() >= 1) {
+                if (this.woods.size() >= 1) {
                     useWoods(1);
                 } else {
                     useArrows(2);
@@ -161,16 +161,16 @@ public final class Backpack {
 
                 useSunStone(1);
 
-                this.Sceptres.add(new Sceptre("sceptre_" + getIdx()));
+                this.sceptres.add(new Sceptre("sceptre_" + getIdx()));
             }else {
                 throw new InvalidActionException("ERROR: Not Enough Material For " + type);
             }
         } else if (type.equals(EntityTypes.MIDNIGHTARMOUR.toString())) {
-            if (noZombies && this.Swords.size() >= 1 && this.SunStones.size() >= 1) {
+            if (noZombies && this.swords.size() >= 1 && this.sunStones.size() >= 1) {
                 useSunStone(1);
                 useSword(1);
 
-                this.MidnightArmours.add(new MidnightArmour("midnightArmour_" + getIdx()));
+                this.midnightArmours.add(new MidnightArmour("midnightArmour_" + getIdx()));
             } else {
                 throw new InvalidActionException("ERROR: Not Enough Material For " + type);
             }
@@ -196,21 +196,21 @@ public final class Backpack {
         } else if (item instanceof Key) {
             this.key = (Key) item;
         } else if (item instanceof InvincibilityPotion) {
-            this.InvincibilityPotion.add((InvincibilityPotion) item);
+            this.invincibilityPotion.add((InvincibilityPotion) item);
         } else if (item instanceof InvisibilityPotion) {
-            this.InvisibilityPotion.add((InvisibilityPotion) item);
+            this.invisibilityPotion.add((InvisibilityPotion) item);
         } else if (item instanceof Wood) {
-            this.Woods.add((Wood) item);
+            this.woods.add((Wood) item);
         } else if (item instanceof Arrow) {
-            this.Arrows.add((Arrow) item);
+            this.arrows.add((Arrow) item);
         } else if (item instanceof Bomb) {
-            this.Bombs.add((Bomb) item);
+            this.bombs.add((Bomb) item);
         } else if (item instanceof Sword) {
-            this.Swords.add((Sword) item);
+            this.swords.add((Sword) item);
         } else if (item instanceof TimeTurner) {
-            this.TimeTurners.add((TimeTurner) item);
+            this.timeTurners.add((TimeTurner) item);
         } else if (item instanceof SunStone) {
-            this.SunStones.add((SunStone) item);
+            this.sunStones.add((SunStone) item);
         } else {
             throw new InvalidActionException("ERROR: Can not collect item");
         }
@@ -219,10 +219,10 @@ public final class Backpack {
     private IEquipment getItemById(String itemUsedId) throws InvalidActionException {
         ArrayList<IEquipment> item = new ArrayList<IEquipment>();
 
-        item.addAll(InvincibilityPotion.stream().filter(e -> e.getId().equals(itemUsedId)).collect(Collectors.toList()));
-        item.addAll(InvisibilityPotion.stream().filter(e -> e.getId().equals(itemUsedId)).collect(Collectors.toList()));
-        item.addAll(Bombs.stream().filter(e -> e.getId().equals(itemUsedId)).collect(Collectors.toList()));
-        item.addAll(Swords.stream().filter(e -> e.getId().equals(itemUsedId)).collect(Collectors.toList()));
+        item.addAll(invincibilityPotion.stream().filter(e -> e.getId().equals(itemUsedId)).collect(Collectors.toList()));
+        item.addAll(invisibilityPotion.stream().filter(e -> e.getId().equals(itemUsedId)).collect(Collectors.toList()));
+        item.addAll(bombs.stream().filter(e -> e.getId().equals(itemUsedId)).collect(Collectors.toList()));
+        item.addAll(swords.stream().filter(e -> e.getId().equals(itemUsedId)).collect(Collectors.toList()));
         item.addAll(Bows.stream().filter(e -> e.getId().equals(itemUsedId)).collect(Collectors.toList()));
         item.addAll(Shields.stream().filter(e -> e.getId().equals(itemUsedId)).collect(Collectors.toList()));
 
@@ -293,39 +293,39 @@ public final class Backpack {
 
     private void useWoods(int quantity) {
         for (int i = 0; i < quantity; i++) {
-            this.Woods.remove(0);
+            this.woods.remove(0);
         }
     }
 
     private void useArrows (int quantity) {
         for (int i = 0; i < quantity; i++) {
-            this.Arrows.remove(0);
+            this.arrows.remove(0);
         }
     }
 
     private void useSunStone (int quantity) {
         for (int i = 0; i < quantity; i++) {
-            this.SunStones.remove(0);
+            this.sunStones.remove(0);
         }
     }
 
     private void useSword (int quantity) {
         for (int i = 0; i < quantity; i++) {
-            this.Swords.remove(0);
+            this.swords.remove(0);
         }
     }
 
     private void useInvincibility(InvincibilityPotion potion) {
-        this.InvincibilityPotion.remove(potion);
+        this.invincibilityPotion.remove(potion);
     }
 
     private void useInvisibility(InvisibilityPotion potion) {
-        this.InvisibilityPotion.remove(potion);
+        this.invisibilityPotion.remove(potion);
     }
 
     private void useBomb(Bomb bomb) {
         bomb.drop();
-        this.Bombs.remove(bomb);
+        this.bombs.remove(bomb);
     }
 
     private void useSword(Sword sword) {
@@ -333,7 +333,7 @@ public final class Backpack {
         sword.reduceDurability(1);
 
         if (sword.getDurability() <= 0) {
-            this.Swords.remove(sword);
+            this.swords.remove(sword);
         }
     }
 
@@ -376,7 +376,7 @@ public final class Backpack {
      * @return
      */
     public Sword getSword() {
-        return this.Swords.get(0);
+        return this.swords.get(0);
     }
 
 }

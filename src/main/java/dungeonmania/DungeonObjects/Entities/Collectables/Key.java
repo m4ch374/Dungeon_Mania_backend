@@ -10,17 +10,14 @@ import dungeonmania.util.DungeonFactory.EntityStruct;
 
 import static dungeonmania.DungeonObjects.EntityTypes.KEY;
 
+import org.json.JSONObject;
+
 public class Key extends Entity implements ICollectable, IEquipment {
     private final int keyId;
 
     public Key(EntityStruct metaData, int keyId) {
         super(metaData);
         this.keyId = keyId;
-    }
-
-    @Override
-    public String getId() {
-        return super.getId();
     }
 
     public int getKey() {
@@ -39,5 +36,14 @@ public class Key extends Entity implements ICollectable, IEquipment {
             player.collect(this);
             getMap().removeEntity(this);
         }
+    }
+
+    public JSONObject toJson() {
+        JSONObject obj = new JSONObject();
+
+        obj.put("id", getId());
+        obj.put("keyId", keyId);
+
+        return obj;
     }
 }
