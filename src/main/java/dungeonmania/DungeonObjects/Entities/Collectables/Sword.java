@@ -21,11 +21,6 @@ public class Sword extends Entity implements ICollectable, IEquipment {
         this.durability = config.getInt("sword_durability");
     }
 
-    @Override
-    public String getId() {
-        return super.getId();
-    }
-
     public int getDurability() {
         return this.durability;
     }

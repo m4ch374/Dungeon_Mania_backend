@@ -18,11 +18,6 @@ public class Wood extends Entity implements ICollectable, IEquipment {
     }
 
     @Override
-    public String getId() {
-        return super.getId();
-    }
-
-    @Override
     public ItemResponse toItemResponse() {
         return new ItemResponse(getId(), WOOD.toString());
     }

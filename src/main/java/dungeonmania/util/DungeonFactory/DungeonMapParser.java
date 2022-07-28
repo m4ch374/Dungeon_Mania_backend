@@ -37,7 +37,7 @@ public class DungeonMapParser {
         String entityType = entityJson.getString("type");
         String entityId = getEntityId(idMap, entityType);
         EntityStruct metaData = new EntityStruct(entityId, entityType, map);
-
+        String logic;
         // Switch case, better than if else at least
         switch(EntityTypes.lookupEnum(entityType)) {
             case PLAYER:
@@ -78,6 +78,10 @@ public class DungeonMapParser {
             case ARROWS:
                 return new Arrow(metaData);
             case BOMB:
+                if (entityJson.has("logic")) {
+                    logic = entityJson.getString("logic");
+                    return new Bomb(metaData, config, logic);
+                }
                 return new Bomb(metaData, config);
             case SWORD:
                 return new Sword(metaData, config);
@@ -95,11 +99,13 @@ public class DungeonMapParser {
             case TIME_TRAVELLING_PORTAL:
                 return new TimeTravellingPortal(metaData);
             case LIGHT_BULB_OFF:
-                return new LightBulb(metaData);
+                logic = entityJson.getString("logic");
+                return new LightBulb(metaData, logic);
             case WIRE:
-                return new Wire(metaData);
+                logic = entityJson.getString("logic");
+                return new Wire(metaData, logic);
             case SWITCH_DOOR:
-                String logic = entityJson.getString("logic");
+                logic = entityJson.getString("logic");
                 keyId = entityJson.getInt("key");
                 return new SwitchDoor(metaData, keyId, logic);
             default:
