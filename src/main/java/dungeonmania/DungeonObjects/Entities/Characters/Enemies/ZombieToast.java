@@ -29,6 +29,9 @@ public class ZombieToast extends Enemy {
 
     @Override
     public void move() {
+        if (super.trappedBySwamp())
+            return;
+
         switchMoveStrat();
         Position pos = moveStrat.moveEntity();
         map.moveEntityTo(this, pos);
