@@ -1,0 +1,47 @@
+{
+    "entities": [
+        {
+            "type": "exit",
+            "x": 5,
+            "y": 0
+        },
+        {
+            "type": "player",
+            "x": 1,
+            "y": 3
+        },
+        {
+            "type": "wall",
+            "x": 1,
+            "y": 5
+        },
+        {
+            "type": "wall",
+            "x": 0,
+            "y": 1
+        },
+        {
+            "type": "wall",
+            "x": 1,
+            "y": 2
+        },
+        {
+            "type": "wall",
+            "x": 2,
+            "y": 1
+        },
+        {
+            "type": "assassin",
+            "x": 1,
+            "y": 1
+        },
+        {
+            "type": "invincibility_potion",
+            "x": 1,
+            "y": 4
+        }
+    ],
+    "goal-condition": {
+        "goal": "exit"
+    }
+}

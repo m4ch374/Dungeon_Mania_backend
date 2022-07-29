@@ -1,0 +1,51 @@
+{
+    "entities": [
+        {
+            "type": "exit",
+            "x": 5,
+            "y": 0
+        },
+        {
+            "type": "player",
+            "x": 1,
+            "y": 1
+        },
+        {
+            "type": "wall",
+            "x": 1,
+            "y": 0
+        },
+        {
+            "type": "assassin",
+            "x": 1,
+            "y": 5
+        },
+        {
+            "type": "door",
+            "x": 1,
+            "y": 4,
+            "key": 1
+        },
+        {
+            "type": "door",
+            "x": 0,
+            "y": 5,
+            "key": 2
+        },
+        {
+            "type": "door",
+            "x": 2,
+            "y": 5,
+            "key": 3
+        },
+        {
+            "type": "door",
+            "x": 1,
+            "y": 6,
+            "key": 4
+        }
+    ],
+    "goal-condition": {
+        "goal": "exit"
+    }
+}
