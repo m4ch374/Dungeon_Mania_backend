@@ -43,12 +43,12 @@ public class MercenaryBehaviourTest {
         DungeonManiaController dmc = new DungeonManiaController();
         DungeonResponse res = dmc.newGame(DIR_NAME + "d_mercTest_moveLeftSimple", "c_msic_zeroDamage");
         
-        res = dmc.tick(Direction.UP);
+        res = dmc.tick(Direction.LEFT);
 
         Position mercPos = TestUtils.getEntityById(res, "mercenary").getPosition();
         assertEquals(new Position(4, 1), mercPos);
 
-        res = dmc.tick(Direction.UP);
+        res = dmc.tick(Direction.LEFT);
 
         mercPos = TestUtils.getEntityById(res, "mercenary").getPosition();
         assertEquals(new Position(3, 1), mercPos);
@@ -89,10 +89,10 @@ public class MercenaryBehaviourTest {
     }
 
     @Test
-    @DisplayName("Test zigzag movement for merc where it prioritize moving up on the first step")
-    public void testZigzagMovement_UpPriority() {
+    @DisplayName("Test diagonal movement for merc where the player is to the upper left of merc")
+    public void testDiagonalMovement_UpperLeft() {
         DungeonManiaController dmc = new DungeonManiaController();
-        DungeonResponse res = dmc.newGame(DIR_NAME + "d_mercTest_moveUpZigzag", "c_msic_zeroDamage");
+        DungeonResponse res = dmc.newGame(DIR_NAME + "d_mercTest_moveUpperLeft", "c_msic_zeroDamage");
         
         res = dmc.tick(Direction.UP);
 
@@ -102,34 +102,64 @@ public class MercenaryBehaviourTest {
         res = dmc.tick(Direction.UP);
 
         mercPos = TestUtils.getEntityById(res, "mercenary").getPosition();
-        assertEquals(new Position(2, 3), mercPos);
+        assertEquals(new Position(3, 2), mercPos);
 
         res = dmc.tick(Direction.UP);
 
         mercPos = TestUtils.getEntityById(res, "mercenary").getPosition();
-        assertEquals(new Position(2, 2), mercPos);
+        assertEquals(new Position(3, 1), mercPos);
+
+        res = dmc.tick(Direction.UP);
+
+        mercPos = TestUtils.getEntityById(res, "mercenary").getPosition();
+        assertEquals(new Position(2, 1), mercPos);
+
+        res = dmc.tick(Direction.UP);
+
+        mercPos = TestUtils.getEntityById(res, "mercenary").getPosition();
+        assertEquals(new Position(2, 1), mercPos);
     }
 
     @Test
-    @DisplayName("Test zigzag movement for merc where it prioritize moving right on the first step")
-    public void testZigzagMovement_RightPriority() {
+    @DisplayName("Test diagonal movement where the player is to the upper right of the merc")
+    public void testDiagonalMovement_UpperRight() {
         DungeonManiaController dmc = new DungeonManiaController();
-        DungeonResponse res = dmc.newGame(DIR_NAME + "d_mercTest_moveRightZigzag", "c_msic_zeroDamage");
+        DungeonResponse res = dmc.newGame(DIR_NAME + "d_mercTest_moveUpperRight", "c_msic_zeroDamage");
         
         res = dmc.tick(Direction.UP);
 
         Position mercPos = TestUtils.getEntityById(res, "mercenary").getPosition();
-        assertEquals(new Position(1, 4), mercPos);
+        assertEquals(new Position(0, 3), mercPos);
 
         res = dmc.tick(Direction.UP);
 
         mercPos = TestUtils.getEntityById(res, "mercenary").getPosition();
-        assertEquals(new Position(1, 3), mercPos);
+        assertEquals(new Position(0, 2), mercPos);
 
         res = dmc.tick(Direction.UP);
 
         mercPos = TestUtils.getEntityById(res, "mercenary").getPosition();
-        assertEquals(new Position(2, 3), mercPos);
+        assertEquals(new Position(0, 1), mercPos);
+        
+        res = dmc.tick(Direction.UP);
+
+        mercPos = TestUtils.getEntityById(res, "mercenary").getPosition();
+        assertEquals(new Position(1, 1), mercPos);
+        
+        res = dmc.tick(Direction.UP);
+
+        mercPos = TestUtils.getEntityById(res, "mercenary").getPosition();
+        assertEquals(new Position(2, 1), mercPos);
+
+        res = dmc.tick(Direction.UP);
+
+        mercPos = TestUtils.getEntityById(res, "mercenary").getPosition();
+        assertEquals(new Position(3, 1), mercPos);
+
+        res = dmc.tick(Direction.UP);
+
+        mercPos = TestUtils.getEntityById(res, "mercenary").getPosition();
+        assertEquals(new Position(3, 1), mercPos);
     }
 
     @Test
@@ -280,7 +310,7 @@ public class MercenaryBehaviourTest {
         res = dmc.tick(Direction.DOWN);
         Position originalMercPos = TestUtils.getEntityById(res, "mercenary").getPosition();
         assertEquals(new Position(1, 4), TestUtils.getEntityById(res, "player").getPosition());
-        assertEquals(new Position(1, 1), originalMercPos);
+        assertEquals(new Position(1, 0), originalMercPos);
         assertTrue(TestUtils.getEntities(res, "invincibility_potion").size() == 0);
 
         assertDoesNotThrow(() -> dmc.tick("invincibility_potion"));
@@ -308,7 +338,7 @@ public class MercenaryBehaviourTest {
         res = dmc.tick(Direction.UP);
         Position originalMercPos = TestUtils.getEntityById(res, "mercenary").getPosition();
         assertEquals(new Position(1, 1), TestUtils.getEntityById(res, "player").getPosition());
-        assertEquals(new Position(1, 4), originalMercPos);
+        assertEquals(new Position(1, 5), originalMercPos);
         assertTrue(TestUtils.getEntities(res, "invincibility_potion").size() == 0);
 
         assertDoesNotThrow(() -> dmc.tick("invincibility_potion"));
@@ -336,7 +366,7 @@ public class MercenaryBehaviourTest {
         res = dmc.tick(Direction.LEFT);
         Position originalMercPos = TestUtils.getEntityById(res, "mercenary").getPosition();
         assertEquals(new Position(1, 1), TestUtils.getEntityById(res, "player").getPosition());
-        assertEquals(new Position(4, 1), originalMercPos);
+        assertEquals(new Position(5, 1), originalMercPos);
         assertTrue(TestUtils.getEntities(res, "invincibility_potion").size() == 0);
 
         assertDoesNotThrow(() -> dmc.tick("invincibility_potion"));
@@ -349,7 +379,7 @@ public class MercenaryBehaviourTest {
         originalMercPos = TestUtils.getEntityById(res, "mercenary").getPosition();
 
         // goes back to normal move strat
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 99; i++) {
             res = dmc.tick(Direction.LEFT);
             assertEquals(originalMercPos.translateBy(new Position(-i - 1, 0)), TestUtils.getEntityById(res, "mercenary").getPosition());
         }
@@ -364,7 +394,7 @@ public class MercenaryBehaviourTest {
         res = dmc.tick(Direction.RIGHT);
         Position originalMercPos = TestUtils.getEntityById(res, "mercenary").getPosition();
         assertEquals(new Position(4, 1), TestUtils.getEntityById(res, "player").getPosition());
-        assertEquals(new Position(1, 1), originalMercPos);
+        assertEquals(new Position(0, 1), originalMercPos);
         assertTrue(TestUtils.getEntities(res, "invincibility_potion").size() == 0);
 
         assertDoesNotThrow(() -> dmc.tick("invincibility_potion"));
@@ -394,10 +424,9 @@ public class MercenaryBehaviourTest {
         res = dmc.tick(Direction.UP);
         assertEquals(new Position(1, 4), TestUtils.getEntityById(res, "mercenary").getPosition());
 
-        dmc.tick(Direction.UP);
-        dmc.tick(Direction.UP);
-        dmc.tick(Direction.UP);
-        res = dmc.tick(Direction.UP);
+        for (int i = 0; i < 4; i++) {
+            res = dmc.tick(Direction.UP);
+        }
 
         assertEquals(new Position(1, 1), TestUtils.getEntityById(res, "mercenary").getPosition());
     }
@@ -411,15 +440,13 @@ public class MercenaryBehaviourTest {
         assertEquals(new Position(2, 1), TestUtils.getEntityById(res, "mercenary").getPosition());
 
         res = dmc.tick(Direction.UP);
-        assertEquals(new Position(3, 1), TestUtils.getEntityById(res, "mercenary").getPosition());
+        assertEquals(new Position(1, 1), TestUtils.getEntityById(res, "mercenary").getPosition());
 
-        dmc.tick(Direction.UP);
-        dmc.tick(Direction.UP);
-        dmc.tick(Direction.UP);
-        dmc.tick(Direction.UP);
-        res = dmc.tick(Direction.UP);
-
-        assertEquals(new Position(3, 5), TestUtils.getEntityById(res, "mercenary").getPosition());
+        for (int i = 0; i < 4; i++) {
+            res = dmc.tick(Direction.UP);
+        }
+        
+        assertEquals(new Position(1, 5), TestUtils.getEntityById(res, "mercenary").getPosition());
     }
 
     @Test
@@ -431,14 +458,13 @@ public class MercenaryBehaviourTest {
         assertEquals(new Position(4, 2), TestUtils.getEntityById(res, "mercenary").getPosition());
 
         res = dmc.tick(Direction.LEFT);
-        assertEquals(new Position(4, 3), TestUtils.getEntityById(res, "mercenary").getPosition());
+        assertEquals(new Position(4, 1), TestUtils.getEntityById(res, "mercenary").getPosition());
 
-        dmc.tick(Direction.LEFT);
-        dmc.tick(Direction.LEFT);
-        dmc.tick(Direction.LEFT);
-        res = dmc.tick(Direction.LEFT);
+        for (int i = 0; i < 4; i++) {
+            res = dmc.tick(Direction.LEFT);
+        }
 
-        assertEquals(new Position(1, 3), TestUtils.getEntityById(res, "mercenary").getPosition());
+        assertEquals(new Position(2, 2), TestUtils.getEntityById(res, "mercenary").getPosition());
     }
 
     @Test
@@ -457,7 +483,7 @@ public class MercenaryBehaviourTest {
         dmc.tick(Direction.RIGHT);
         res = dmc.tick(Direction.RIGHT);
 
-        assertEquals(new Position(3, 1), TestUtils.getEntityById(res, "mercenary").getPosition());
+        assertEquals(new Position(2, 2), TestUtils.getEntityById(res, "mercenary").getPosition());
     }
 
     @Test
@@ -493,6 +519,24 @@ public class MercenaryBehaviourTest {
             res = dmc.tick(Direction.RIGHT);
         }
 
-        assertEquals(new Position(3, 1), TestUtils.getEntityById(res, "mercenary").getPosition());
+        assertEquals(new Position(2, 2), TestUtils.getEntityById(res, "mercenary").getPosition());
+    }
+
+    @Test
+    @DisplayName("Test merc move around enclosed wall")
+    public void testMercMoveAroundAdvanced_enclosedWall() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame(DIR_NAME + "d_mercTest_wallsEnclosed", "c_msic_zeroDamage");
+
+        assertEquals(new Position(0, 2), TestUtils.getEntityById(res, "mercenary").getPosition());
+
+        res = dmc.tick(Direction.RIGHT);
+        assertEquals(new Position(-1, 2), TestUtils.getEntityById(res, "mercenary").getPosition());
+
+        for (int i = 0; i < 8; i++) {
+            res = dmc.tick(Direction.RIGHT);
+        }
+
+        assertEquals(new Position(2, 2), TestUtils.getEntityById(res, "mercenary").getPosition());
     }
 }
