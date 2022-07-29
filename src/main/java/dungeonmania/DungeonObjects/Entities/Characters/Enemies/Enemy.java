@@ -6,6 +6,7 @@ import dungeonmania.DungeonObjects.EntityTypes;
 import dungeonmania.DungeonObjects.Player;
 import dungeonmania.DungeonObjects.DungeonMap.DungeonMap;
 import dungeonmania.DungeonObjects.Entities.Entity;
+import dungeonmania.DungeonObjects.Entities.Statics.SwampTile;
 import dungeonmania.Interfaces.IEnemy;
 import dungeonmania.util.DungeonFactory.EntityStruct;
 import dungeonmania.util.Tracker.GoalTypes;
@@ -40,6 +41,19 @@ public abstract class Enemy extends Entity implements IEnemy {
                         .get();
         
         return observing;
+    }
+
+    protected boolean trappedBySwamp() {
+        SwampTile tile = map.getEntitiesOverlapped(this).stream()
+                            .filter(e -> e.getType().equals(EntityTypes.SWAMP_TILE.toString()))
+                            .map(e -> (SwampTile) e)
+                            .findFirst()
+                            .orElse(null);
+
+        if (tile == null)
+            return false;
+
+        return !tile.ableToMove(this);
     }
 
     @Override

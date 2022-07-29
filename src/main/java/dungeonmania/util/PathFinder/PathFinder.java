@@ -1,12 +1,8 @@
 package dungeonmania.util.PathFinder;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.Set;
 
 import dungeonmania.DungeonObjects.DungeonMap.DungeonMap;
@@ -33,37 +29,36 @@ public class PathFinder {
         if (outOfBounds(grid, source) || outOfBounds(grid, destination)) 
             return null;
 
-        Map<Position, List<Position>> gridMap = grid.getGridMap();
-        Map<Edge, Integer> edgeWeightMap = grid.getEdgeWeightMap();
+        Map<Position, Set<Edge>> gridMap = grid.getGridMap();
 
         Map<Position, Integer> distance = getInitialDisance(gridMap.keySet(), source);
         Map<Position, Position> prevPos = getInitialPrevPos(gridMap.keySet(), source);
 
-        Queue<Position> queue = new LinkedList<Position>(Arrays.asList(source));
-        Set<Position> visitedPos = new HashSet<Position>();
-        while(!queue.isEmpty()) {
-            Position currPos = queue.poll();
-            visitedPos.add(currPos);
+        Set<Position> allPos = new HashSet<Position>(gridMap.keySet());
 
-            List<Position> adjacentPositions = gridMap.get(currPos);
-            for (Position adjacentPos : adjacentPositions) {
-                if (visitedPos.contains(adjacentPos))
-                    continue;
+        while(!allPos.isEmpty()) {
+            Position currFrom = getMinDistVertex(allPos, distance);
+            if (currFrom == null)
+                return getBacktrackedPos(prevPos, source, destination);
 
-                queue.add(adjacentPos);
+            allPos.remove(currFrom);
 
-                int edgeWeight = edgeWeightMap.get(new Edge(currPos, adjacentPos));
+            Set<Edge> connectedEdges = gridMap.get(currFrom);
 
-                int currDist = distance.get(currPos);
-                int adjDist = distance.get(adjacentPos);
+            for (Edge connectedEdge : connectedEdges) {
+                Position to = connectedEdge.getTo();
+
+                int edgeWeight = connectedEdge.getWeight();
+
+                int currDist = distance.get(currFrom);
+                int adjDist = distance.get(to);
 
                 if (adjDist == INF || currDist + edgeWeight < adjDist) {
-                    distance.replace(adjacentPos, currDist + edgeWeight);
-                    prevPos.replace(adjacentPos, currPos);
+                    distance.replace(to, currDist + edgeWeight);
+                    prevPos.replace(to, currFrom);
                 }
             }
         }
-
         return getBacktrackedPos(prevPos, source, destination);
     }
 
@@ -99,7 +94,10 @@ public class PathFinder {
 
         Position backtrackedPos = prevPos.get(currPos);
 
-        if (backtrackedPos == source)
+        if (backtrackedPos == null)
+            return null;
+
+        if (backtrackedPos.equals(source))
             return currPos;
 
         return getBacktrackedPos(prevPos, source, backtrackedPos);
@@ -110,5 +108,20 @@ public class PathFinder {
         boolean outOfVerticalBounds = pos.getY() < grid.getTopBound()  || pos.getY() > grid.getBottomBound();
 
         return outOfHorizontalBounds || outOfVerticalBounds;
+    }
+
+    private static Position getMinDistVertex(Set<Position> allPos, Map<Position, Integer> dist) {
+        int minDist = Integer.MAX_VALUE;
+        Position minPos = null;
+
+        for (Position pos : allPos) {
+            int distance = dist.get(pos);
+
+            if (distance != INF && distance < minDist) {
+                minDist = distance;
+                minPos = pos;
+            }
+        }
+        return minPos;
     }
 }

@@ -98,17 +98,17 @@ public class AssassinBehaviourTest {
         res = dmc.tick(Direction.UP);
 
         Position mercPos = TestUtils.getEntityById(res, "assassin").getPosition();
-        assertEquals(new Position(3, 3), mercPos);
+        assertEquals(new Position(2, 4), mercPos);
 
         res = dmc.tick(Direction.UP);
 
         mercPos = TestUtils.getEntityById(res, "assassin").getPosition();
-        assertEquals(new Position(3, 2), mercPos);
+        assertEquals(new Position(2, 3), mercPos);
 
         res = dmc.tick(Direction.UP);
 
         mercPos = TestUtils.getEntityById(res, "assassin").getPosition();
-        assertEquals(new Position(3, 1), mercPos);
+        assertEquals(new Position(2, 2), mercPos);
 
         res = dmc.tick(Direction.UP);
 
@@ -130,37 +130,37 @@ public class AssassinBehaviourTest {
         res = dmc.tick(Direction.UP);
 
         Position mercPos = TestUtils.getEntityById(res, "assassin").getPosition();
-        assertEquals(new Position(0, 3), mercPos);
+        assertEquals(new Position(1, 4), mercPos);
 
         res = dmc.tick(Direction.UP);
 
         mercPos = TestUtils.getEntityById(res, "assassin").getPosition();
-        assertEquals(new Position(0, 2), mercPos);
+        assertEquals(new Position(2, 4), mercPos);
 
         res = dmc.tick(Direction.UP);
 
         mercPos = TestUtils.getEntityById(res, "assassin").getPosition();
-        assertEquals(new Position(0, 1), mercPos);
+        assertEquals(new Position(3, 4), mercPos);
         
         res = dmc.tick(Direction.UP);
 
         mercPos = TestUtils.getEntityById(res, "assassin").getPosition();
-        assertEquals(new Position(1, 1), mercPos);
+        assertEquals(new Position(4, 4), mercPos);
         
         res = dmc.tick(Direction.UP);
 
         mercPos = TestUtils.getEntityById(res, "assassin").getPosition();
-        assertEquals(new Position(2, 1), mercPos);
+        assertEquals(new Position(4, 3), mercPos);
 
         res = dmc.tick(Direction.UP);
 
         mercPos = TestUtils.getEntityById(res, "assassin").getPosition();
-        assertEquals(new Position(3, 1), mercPos);
+        assertEquals(new Position(4, 2), mercPos);
 
         res = dmc.tick(Direction.UP);
 
         mercPos = TestUtils.getEntityById(res, "assassin").getPosition();
-        assertEquals(new Position(3, 1), mercPos);
+        assertEquals(new Position(4, 2), mercPos);
     }
 
     @Test
@@ -423,13 +423,13 @@ public class AssassinBehaviourTest {
         assertEquals(new Position(2, 4), TestUtils.getEntityById(res, "assassin").getPosition());
 
         res = dmc.tick(Direction.UP);
-        assertEquals(new Position(1, 4), TestUtils.getEntityById(res, "assassin").getPosition());
+        assertEquals(new Position(3, 4), TestUtils.getEntityById(res, "assassin").getPosition());
 
         for (int i = 0; i < 4; i++) {
             res = dmc.tick(Direction.UP);
         }
 
-        assertEquals(new Position(1, 1), TestUtils.getEntityById(res, "assassin").getPosition());
+        assertEquals(new Position(3, 1), TestUtils.getEntityById(res, "assassin").getPosition());
     }
 
     @Test
@@ -484,7 +484,7 @@ public class AssassinBehaviourTest {
         dmc.tick(Direction.RIGHT);
         res = dmc.tick(Direction.RIGHT);
 
-        assertEquals(new Position(2, 2), TestUtils.getEntityById(res, "assassin").getPosition());
+        assertEquals(new Position(3, 1), TestUtils.getEntityById(res, "assassin").getPosition());
     }
 
     @Test
@@ -520,7 +520,7 @@ public class AssassinBehaviourTest {
             res = dmc.tick(Direction.RIGHT);
         }
 
-        assertEquals(new Position(2, 2), TestUtils.getEntityById(res, "assassin").getPosition());
+        assertEquals(new Position(3, 1), TestUtils.getEntityById(res, "assassin").getPosition());
     }
 
     @Test
@@ -539,5 +539,104 @@ public class AssassinBehaviourTest {
         }
 
         assertEquals(new Position(2, 2), TestUtils.getEntityById(res, "assassin").getPosition());
+    }
+
+    @Test
+    @DisplayName("Test assassin use portal for shortest path")
+    public void testActivelyUsePortal() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame(DIR_NAME + "d_assassinTest_activelyUsePortal", "c_msic_zeroDamage");
+
+        assertEquals(new Position(1, 1), TestUtils.getEntityById(res, "assassin").getPosition());
+
+        res = dmc.tick(Direction.UP);
+        assertEquals(new Position(4, 1), TestUtils.getEntityById(res, "assassin").getPosition());
+
+        res = dmc.tick(Direction.UP);
+        assertEquals(new Position(4, 2), TestUtils.getEntityById(res, "assassin").getPosition());
+
+        res = dmc.tick(Direction.UP);
+        assertEquals(new Position(4, 3), TestUtils.getEntityById(res, "assassin").getPosition());
+
+        res = dmc.tick(Direction.UP);
+        assertEquals(new Position(4, 3), TestUtils.getEntityById(res, "assassin").getPosition());
+    }
+
+    @Test
+    @DisplayName("Test assassin not using portal for shortest path if the destination is blocked off")
+    public void testActivelyUsePortal_destinationBlocked() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame(DIR_NAME + "d_assassinTest_portalDestinationBlocked", "c_msic_zeroDamage");
+
+        assertEquals(new Position(1, 1), TestUtils.getEntityById(res, "assassin").getPosition());
+
+        res = dmc.tick(Direction.UP);
+        assertEquals(new Position(2, 1), TestUtils.getEntityById(res, "assassin").getPosition());
+
+        res = dmc.tick(Direction.UP);
+        assertEquals(new Position(2, 2), TestUtils.getEntityById(res, "assassin").getPosition());
+
+        res = dmc.tick(Direction.UP);
+        assertEquals(new Position(3, 2), TestUtils.getEntityById(res, "assassin").getPosition());
+
+        res = dmc.tick(Direction.UP);
+        assertEquals(new Position(4, 2), TestUtils.getEntityById(res, "assassin").getPosition());
+
+        res = dmc.tick(Direction.UP);
+        assertEquals(new Position(4, 3), TestUtils.getEntityById(res, "assassin").getPosition());
+
+        res = dmc.tick(Direction.UP);
+        assertEquals(new Position(4, 3), TestUtils.getEntityById(res, "assassin").getPosition());
+    }
+
+    @Test
+    @DisplayName("Test assassin use portal smartly")
+    public void testActivelyUsePortal_smart() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame(DIR_NAME + "d_assassinTest_usePortalSmartly", "c_msic_zeroDamage");
+
+        assertEquals(new Position(1, 1), TestUtils.getEntityById(res, "assassin").getPosition());
+
+        res = dmc.tick(Direction.LEFT);
+        assertEquals(new Position(1, 2), TestUtils.getEntityById(res, "assassin").getPosition());
+
+        res = dmc.tick(Direction.LEFT);
+        assertEquals(new Position(0, 2), TestUtils.getEntityById(res, "assassin").getPosition());
+
+        res = dmc.tick(Direction.LEFT);
+        assertEquals(new Position(5, 0), TestUtils.getEntityById(res, "assassin").getPosition());
+
+        res = dmc.tick(Direction.LEFT);
+        assertEquals(new Position(6, 0), TestUtils.getEntityById(res, "assassin").getPosition());
+
+        res = dmc.tick(Direction.LEFT);
+        assertEquals(new Position(7, 0), TestUtils.getEntityById(res, "assassin").getPosition());
+
+        res = dmc.tick(Direction.LEFT);
+        assertEquals(new Position(7, 0), TestUtils.getEntityById(res, "assassin").getPosition());
+    }
+
+    @Test
+    @DisplayName("Test assassin avoids swamp tile")
+    public void testSwamp_avoidSwampTile() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame(DIR_NAME + "d_assassinTest_avoidSwampTile", "c_msic_zeroDamage");
+
+        assertEquals(new Position(5, 1), TestUtils.getEntityById(res, "assassin").getPosition());
+
+        res = dmc.tick(Direction.LEFT);
+        assertEquals(new Position(5, 2), TestUtils.getEntityById(res, "assassin").getPosition());
+    }
+
+    @Test
+    @DisplayName("Test assassin uses swamp tile")
+    public void testSwamp_useSwampTileSmart() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame(DIR_NAME + "d_assassinTest_useSwamp", "c_msic_zeroDamage");
+
+        assertEquals(new Position(4, 1), TestUtils.getEntityById(res, "assassin").getPosition());
+
+        res = dmc.tick(Direction.LEFT);
+        assertEquals(new Position(3, 1), TestUtils.getEntityById(res, "assassin").getPosition());
     }
 }

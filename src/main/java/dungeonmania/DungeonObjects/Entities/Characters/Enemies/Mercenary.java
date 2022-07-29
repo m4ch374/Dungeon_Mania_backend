@@ -46,6 +46,9 @@ public class Mercenary extends Enemy implements IPlayerInteractable {
 
     @Override
     public void move() {
+        if (super.trappedBySwamp())
+            return;
+
         switchMoveStrat();
         Position pos = moveStrat.moveEntity();
 

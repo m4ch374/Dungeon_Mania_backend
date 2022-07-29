@@ -28,6 +28,9 @@ public class Spider extends Enemy {
 
     @Override
     public void move() {
+        if (super.trappedBySwamp())
+            return;
+
         Position posToMove = moveStrat.moveEntity();
         super.getMap().moveEntityTo(this, posToMove);
     }
