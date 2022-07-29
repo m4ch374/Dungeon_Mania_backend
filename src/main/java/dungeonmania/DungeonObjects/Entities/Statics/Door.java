@@ -2,7 +2,7 @@ package dungeonmania.DungeonObjects.Entities.Statics;
 
 import dungeonmania.DungeonObjects.Player;
 import dungeonmania.DungeonObjects.Entities.Entity;
-import dungeonmania.DungeonObjects.Entities.LogicEntity;
+import dungeonmania.DungeonObjects.Entities.LogicEntities.LogicEntity;
 import dungeonmania.Interfaces.IStaticInteractable;
 import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.util.DungeonFactory.EntityStruct;

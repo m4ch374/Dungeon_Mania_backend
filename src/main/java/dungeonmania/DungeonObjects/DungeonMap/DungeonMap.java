@@ -11,6 +11,7 @@ import org.json.JSONObject;
 import dungeonmania.DungeonObjects.Player;
 import dungeonmania.DungeonObjects.Entities.Entity;
 import dungeonmania.DungeonObjects.Entities.Characters.Enemies.Spider;
+import dungeonmania.DungeonObjects.Entities.Characters.Enemies.ZombieToast;
 import dungeonmania.Interfaces.IMovable;
 import dungeonmania.Interfaces.ISpawnable;
 import dungeonmania.util.Position;
@@ -168,5 +169,33 @@ public class DungeonMap {
         }
 
         return null;
+    }
+
+    public boolean hasZombie() {
+        for (Entity entity : lookup.keySet()) {
+            if (entity instanceof ZombieToast) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * get all entities in for dirct, check their state
+     * @param pos
+     * @return
+     */
+    public JSONObject getAdjacentActive(Position pos) {
+        // TODO neasty algo
+        // how to avoid wire adjacent wires loop themselves?
+        // how to confirm that there is a path form source(active switch) to the pos?
+        JSONObject json = new JSONObject();
+
+        json.put("switch_num", 0);                  // number of adjacent switch
+        json.put("all_switch_is_avtive", false);    // is all adjacent switch number active?
+        json.put("active_num", 0);                  // number of adjacent active entities
+
+        return json;
     }
 }

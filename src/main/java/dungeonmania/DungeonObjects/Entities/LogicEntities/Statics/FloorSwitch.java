@@ -1,9 +1,10 @@
-package dungeonmania.DungeonObjects.Entities.Statics;
+package dungeonmania.DungeonObjects.Entities.LogicEntities.Statics;
 
 import java.util.ArrayList;
 
 import dungeonmania.DungeonObjects.Entities.Entity;
-import dungeonmania.DungeonObjects.Entities.Collectables.Bomb;
+import dungeonmania.DungeonObjects.Entities.LogicEntities.Collectables.Bomb;
+import dungeonmania.DungeonObjects.Entities.Statics.Boulder;
 import dungeonmania.Interfaces.IStaticInteractable;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;

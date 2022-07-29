@@ -45,7 +45,12 @@ public enum EntityTypes {
     LIGHT_BULB_ON("light_bulb_on", 3),
     WIRE("wire", 3),
     SWITCH_DOOR("switch_door", 3),
-    OLDER_PLAYER("older_player", 0);
+    OLDER_PLAYER("older_player", 0),
+
+    // behavior definition
+    PLAYERMOVE("player_move", -5),
+    PLAYERMAKE("player_make", -5),
+    PLAYERUSE("player_use", -5);
 
     // Map of value to enum
     private static final Map<String, EntityTypes> map = new HashMap<String, EntityTypes>();
