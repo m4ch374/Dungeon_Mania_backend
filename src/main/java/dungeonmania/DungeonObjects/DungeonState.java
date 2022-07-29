@@ -45,7 +45,7 @@ public class DungeonState {
     // Turns out it does lol
     public void tick(String itemUsedId) throws IllegalArgumentException, InvalidActionException {
         currTick++;
-        player.tick(Constant.PLAYERUSE, null, itemUsedId);
+        player.tick(EntityTypes.PLAYERUSE.toString(), null, itemUsedId);
 
         map.updateCharPos();
         map.spawnEntites(config, currTick, tracker);
@@ -55,7 +55,7 @@ public class DungeonState {
         currTick++;
 
         try {
-            player.tick(Constant.PLAYERMOVE, movementDirection, null);
+            player.tick(EntityTypes.PLAYERMOVE.toString(), movementDirection, null);
         } catch (IllegalArgumentException e) {
             System.out.println("DungeonState: Player " + e.getMessage());
         } catch (InvalidActionException e) {
@@ -87,7 +87,7 @@ public class DungeonState {
     }
 
     public void build(String buildable) throws IllegalArgumentException, InvalidActionException {
-        player.tick(Constant.PLAYERMAKE, null, buildable);
+        player.tick(EntityTypes.PLAYERMAKE.toString(), null, buildable);
     }
 
     public void interact(String entityId) throws IllegalArgumentException, InvalidActionException {

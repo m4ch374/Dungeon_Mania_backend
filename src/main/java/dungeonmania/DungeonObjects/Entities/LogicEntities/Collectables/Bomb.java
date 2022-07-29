@@ -1,11 +1,11 @@
-package dungeonmania.DungeonObjects.Entities.Collectables;
+package dungeonmania.DungeonObjects.Entities.LogicEntities.Collectables;
 
 import org.json.JSONObject;
 
 import dungeonmania.DungeonObjects.Player;
 import dungeonmania.DungeonObjects.Entities.Entity;
-import dungeonmania.DungeonObjects.Entities.LogicEntity;
-import dungeonmania.DungeonObjects.Entities.Statics.FloorSwitch;
+import dungeonmania.DungeonObjects.Entities.LogicEntities.LogicEntity;
+import dungeonmania.DungeonObjects.Entities.LogicEntities.Statics.FloorSwitch;
 import dungeonmania.Interfaces.ICollectable;
 import dungeonmania.Interfaces.IEquipment;
 import dungeonmania.exceptions.InvalidActionException;
