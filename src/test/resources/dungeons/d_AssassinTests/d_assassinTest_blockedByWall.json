@@ -16,33 +16,29 @@
             "y": 0
         },
         {
-            "type": "mercenary",
+            "type": "assassin",
             "x": 1,
             "y": 5
         },
         {
-            "type": "door",
+            "type": "wall",
             "x": 1,
-            "y": 4,
-            "key": 1
+            "y": 4
         },
         {
-            "type": "door",
+            "type": "wall",
             "x": 0,
-            "y": 5,
-            "key": 2
+            "y": 5
         },
         {
-            "type": "door",
+            "type": "wall",
             "x": 2,
-            "y": 5,
-            "key": 3
+            "y": 5
         },
         {
-            "type": "door",
+            "type": "wall",
             "x": 1,
-            "y": 6,
-            "key": 4
+            "y": 6
         }
     ],
     "goal-condition": {
