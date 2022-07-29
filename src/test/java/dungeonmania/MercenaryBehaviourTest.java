@@ -560,4 +560,58 @@ public class MercenaryBehaviourTest {
         res = dmc.tick(Direction.UP);
         assertEquals(new Position(4, 3), TestUtils.getEntityById(res, "mercenary").getPosition());
     }
+
+    @Test
+    @DisplayName("Test merc not using portal for shortest path if the destination is blocked off")
+    public void testActivelyUsePortal_destinationBlocked() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame(DIR_NAME + "d_mercTest_portalDestinationBlocked", "c_msic_zeroDamage");
+
+        assertEquals(new Position(1, 1), TestUtils.getEntityById(res, "mercenary").getPosition());
+
+        res = dmc.tick(Direction.UP);
+        assertEquals(new Position(1, 2), TestUtils.getEntityById(res, "mercenary").getPosition());
+
+        res = dmc.tick(Direction.UP);
+        assertEquals(new Position(1, 3), TestUtils.getEntityById(res, "mercenary").getPosition());
+
+        res = dmc.tick(Direction.UP);
+        assertEquals(new Position(2, 3), TestUtils.getEntityById(res, "mercenary").getPosition());
+
+        res = dmc.tick(Direction.UP);
+        assertEquals(new Position(3, 3), TestUtils.getEntityById(res, "mercenary").getPosition());
+
+        res = dmc.tick(Direction.UP);
+        assertEquals(new Position(4, 3), TestUtils.getEntityById(res, "mercenary").getPosition());
+
+        res = dmc.tick(Direction.UP);
+        assertEquals(new Position(4, 3), TestUtils.getEntityById(res, "mercenary").getPosition());
+    }
+
+    @Test
+    @DisplayName("Test merc use portal smartly")
+    public void testActivelyUsePortal_smart() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame(DIR_NAME + "d_mercTest_usePortalSmartly", "c_msic_zeroDamage");
+
+        assertEquals(new Position(1, 1), TestUtils.getEntityById(res, "mercenary").getPosition());
+
+        res = dmc.tick(Direction.LEFT);
+        assertEquals(new Position(1, 2), TestUtils.getEntityById(res, "mercenary").getPosition());
+
+        res = dmc.tick(Direction.LEFT);
+        assertEquals(new Position(0, 2), TestUtils.getEntityById(res, "mercenary").getPosition());
+
+        res = dmc.tick(Direction.LEFT);
+        assertEquals(new Position(5, 0), TestUtils.getEntityById(res, "mercenary").getPosition());
+
+        res = dmc.tick(Direction.LEFT);
+        assertEquals(new Position(6, 0), TestUtils.getEntityById(res, "mercenary").getPosition());
+
+        res = dmc.tick(Direction.LEFT);
+        assertEquals(new Position(7, 0), TestUtils.getEntityById(res, "mercenary").getPosition());
+
+        res = dmc.tick(Direction.LEFT);
+        assertEquals(new Position(7, 0), TestUtils.getEntityById(res, "mercenary").getPosition());
+    }
 }
