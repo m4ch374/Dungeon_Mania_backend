@@ -10,7 +10,7 @@ import org.json.JSONObject;
 
 import dungeonmania.DungeonObjects.Player;
 import dungeonmania.DungeonObjects.Entities.Entity;
-import dungeonmania.DungeonObjects.Entities.Characters.Spider;
+import dungeonmania.DungeonObjects.Entities.Characters.Enemies.Spider;
 import dungeonmania.Interfaces.IMovable;
 import dungeonmania.Interfaces.ISpawnable;
 import dungeonmania.util.Position;
