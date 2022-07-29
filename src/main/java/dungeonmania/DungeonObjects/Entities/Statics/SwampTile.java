@@ -19,6 +19,10 @@ public class SwampTile extends Entity {
         super(metaData);
         this.movementFactor = movementFactor;
     }
+
+    public int getMovementFactor() {
+        return movementFactor;
+    }
     
     public boolean ableToMove(Entity movingEntity) {
         if (!(movingEntity instanceof IEnemy))
