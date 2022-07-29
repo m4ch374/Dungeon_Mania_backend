@@ -1,0 +1,34 @@
+{
+    "entities": [
+        {
+            "type" : "player",
+            "x" : 1,
+            "y" : 1
+        }, {
+            "type" : "hydra",
+            "x" : 4,
+            "y" : 3
+        }, {
+            "type": "exit",
+            "x": 5,
+            "y": 1
+        }, {
+            "type": "treasure",
+            "x": 4,
+            "y": 2
+        }, {
+            "type": "treasure",
+            "x": 4,
+            "y": 4
+        }, {
+            "type": "treasure",
+            "x": 3,
+            "y": 3
+        }, {
+            "type": "treasure",
+            "x": 5,
+            "y": 3
+        }
+    ],
+    "goal-condition": {"goal": "exit"}
+}

@@ -12,7 +12,7 @@ import dungeonmania.DungeonObjects.EntityTypes;
 import dungeonmania.DungeonObjects.Player;
 import dungeonmania.DungeonObjects.DungeonMap.DungeonMap;
 import dungeonmania.DungeonObjects.Entities.Entity;
-import dungeonmania.DungeonObjects.Entities.Characters.ZombieToast;
+import dungeonmania.DungeonObjects.Entities.Characters.Enemies.ZombieToast;
 import dungeonmania.Interfaces.IPlayerInteractable;
 import dungeonmania.Interfaces.ISpawnable;
 import dungeonmania.exceptions.InvalidActionException;

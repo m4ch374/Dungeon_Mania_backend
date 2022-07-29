@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 
 import dungeonmania.DungeonObjects.Player;
 import dungeonmania.DungeonObjects.Entities.Entity;
-import dungeonmania.DungeonObjects.Entities.Characters.Mercenary;
+import dungeonmania.DungeonObjects.Entities.Characters.Enemies.Mercenary;
 import dungeonmania.Interfaces.IStaticInteractable;
 import dungeonmania.util.Position;
 import dungeonmania.util.DungeonFactory.EntityStruct;
