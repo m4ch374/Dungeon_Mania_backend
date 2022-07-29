@@ -1,5 +1,6 @@
-package dungeonmania.DungeonObjects.Entities.Statics;
+package dungeonmania.DungeonObjects.Entities.LogicEntities.Statics;
 
+import dungeonmania.DungeonObjects.Entities.Statics.Door;
 import dungeonmania.util.DungeonFactory.EntityStruct;
 
 public class SwitchDoor extends Door {
