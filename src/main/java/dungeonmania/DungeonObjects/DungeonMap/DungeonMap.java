@@ -181,8 +181,15 @@ public class DungeonMap {
         return false;
     }
 
-    // TODO neasty algo
+    /**
+     * get all entities in for dirct, check their state
+     * @param pos
+     * @return
+     */
     public JSONObject getAdjacentActive(Position pos) {
+        // TODO neasty algo
+        // how to avoid wire adjacent wires loop themselves?
+        // how to confirm that there is a path form source(active switch) to the pos?
         JSONObject json = new JSONObject();
 
         json.put("switch_num", 0);                  // number of adjacent switch
