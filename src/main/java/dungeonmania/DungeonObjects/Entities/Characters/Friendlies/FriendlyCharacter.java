@@ -1,4 +1,4 @@
-package dungeonmania.DungeonObjects.Entities.Characters;
+package dungeonmania.DungeonObjects.Entities.Characters.Friendlies;
 
 import dungeonmania.DungeonObjects.DungeonMap.DungeonMap;
 import dungeonmania.DungeonObjects.Entities.Entity;
