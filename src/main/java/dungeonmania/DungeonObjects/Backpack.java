@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import dungeonmania.DungeonObjects.Entities.Collectables.Arrow;
-import dungeonmania.DungeonObjects.Entities.Collectables.Bomb;
 import dungeonmania.DungeonObjects.Entities.Collectables.Key;
 import dungeonmania.DungeonObjects.Entities.Collectables.SunStone;
 import dungeonmania.DungeonObjects.Entities.Collectables.Sword;
@@ -18,6 +17,7 @@ import dungeonmania.DungeonObjects.Entities.Craftables.Bow;
 import dungeonmania.DungeonObjects.Entities.Craftables.MidnightArmour;
 import dungeonmania.DungeonObjects.Entities.Craftables.Sceptre;
 import dungeonmania.DungeonObjects.Entities.Craftables.Shield;
+import dungeonmania.DungeonObjects.Entities.LogicEntities.Collectables.Bomb;
 import dungeonmania.Interfaces.ICollectable;
 import dungeonmania.Interfaces.IEquipment;
 import dungeonmania.exceptions.InvalidActionException;
@@ -119,7 +119,7 @@ public final class Backpack {
         return Buildables;
     }
 
-    public void make(String type, boolean noZombies) throws InvalidActionException, IllegalArgumentException {
+    public void make(String type, boolean hasZombies) throws InvalidActionException, IllegalArgumentException {
         if (type.equals(EntityTypes.BOW.toString())) {
             if (this.woods.size() >= 1 && this.arrows.size() >= 3) {
                 useWoods(1);
@@ -166,7 +166,7 @@ public final class Backpack {
                 throw new InvalidActionException("ERROR: Not Enough Material For " + type);
             }
         } else if (type.equals(EntityTypes.MIDNIGHTARMOUR.toString())) {
-            if (noZombies && this.swords.size() >= 1 && this.sunStones.size() >= 1) {
+            if (!hasZombies && this.swords.size() >= 1 && this.sunStones.size() >= 1) {
                 useSunStone(1);
                 useSword(1);
 

@@ -1,5 +1,6 @@
-package dungeonmania.DungeonObjects.Entities;
+package dungeonmania.DungeonObjects.Entities.LogicEntities;
 
+import dungeonmania.DungeonObjects.Entities.Entity;
 import dungeonmania.util.DungeonFactory.EntityStruct;
 
 public abstract class LogicEntity extends Entity {

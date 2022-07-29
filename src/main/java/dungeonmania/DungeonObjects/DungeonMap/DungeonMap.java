@@ -11,6 +11,7 @@ import org.json.JSONObject;
 import dungeonmania.DungeonObjects.Player;
 import dungeonmania.DungeonObjects.Entities.Entity;
 import dungeonmania.DungeonObjects.Entities.Characters.Spider;
+import dungeonmania.DungeonObjects.Entities.Characters.ZombieToast;
 import dungeonmania.Interfaces.IMovable;
 import dungeonmania.Interfaces.ISpawnable;
 import dungeonmania.util.Position;
@@ -168,5 +169,15 @@ public class DungeonMap {
         }
 
         return null;
+    }
+
+    public boolean hasZombie() {
+        for (Entity entity : lookup.keySet()) {
+            if (entity instanceof ZombieToast) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

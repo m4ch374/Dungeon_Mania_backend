@@ -1,6 +1,6 @@
-package dungeonmania.DungeonObjects.Entities.Statics;
+package dungeonmania.DungeonObjects.Entities.LogicEntities.Statics;
 
-import dungeonmania.DungeonObjects.Entities.LogicEntity;
+import dungeonmania.DungeonObjects.Entities.LogicEntities.LogicEntity;
 import dungeonmania.util.DungeonFactory.EntityStruct;
 
 public class LightBulb extends LogicEntity {

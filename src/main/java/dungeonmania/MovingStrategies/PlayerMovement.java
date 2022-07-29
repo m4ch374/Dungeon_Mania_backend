@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import dungeonmania.DungeonObjects.Player;
 import dungeonmania.DungeonObjects.DungeonMap.DungeonMap;
 import dungeonmania.DungeonObjects.Entities.Entity;
-import dungeonmania.DungeonObjects.Entities.Collectables.Bomb;
+import dungeonmania.DungeonObjects.Entities.LogicEntities.Collectables.Bomb;
 import dungeonmania.DungeonObjects.Entities.Statics.Boulder;
 import dungeonmania.DungeonObjects.Entities.Statics.Door;
 import dungeonmania.DungeonObjects.Entities.Statics.Exit;
