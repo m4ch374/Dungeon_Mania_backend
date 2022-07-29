@@ -539,4 +539,25 @@ public class MercenaryBehaviourTest {
 
         assertEquals(new Position(2, 2), TestUtils.getEntityById(res, "mercenary").getPosition());
     }
+
+    @Test
+    @DisplayName("Test merc use portal for shortest path")
+    public void testActivelyUsePortal() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame(DIR_NAME + "d_mercTest_activelyUsePortal", "c_msic_zeroDamage");
+
+        assertEquals(new Position(1, 1), TestUtils.getEntityById(res, "mercenary").getPosition());
+
+        res = dmc.tick(Direction.UP);
+        assertEquals(new Position(4, 1), TestUtils.getEntityById(res, "mercenary").getPosition());
+
+        res = dmc.tick(Direction.UP);
+        assertEquals(new Position(4, 2), TestUtils.getEntityById(res, "mercenary").getPosition());
+
+        res = dmc.tick(Direction.UP);
+        assertEquals(new Position(4, 3), TestUtils.getEntityById(res, "mercenary").getPosition());
+
+        res = dmc.tick(Direction.UP);
+        assertEquals(new Position(4, 3), TestUtils.getEntityById(res, "mercenary").getPosition());
+    }
 }
