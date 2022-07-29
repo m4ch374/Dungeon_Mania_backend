@@ -180,4 +180,15 @@ public class DungeonMap {
 
         return false;
     }
+
+    // TODO neasty algo
+    public JSONObject getAdjacentActive(Position pos) {
+        JSONObject json = new JSONObject();
+
+        json.put("switch_num", 0);                  // number of adjacent switch
+        json.put("all_switch_is_avtive", false);    // is all adjacent switch number active?
+        json.put("active_num", 0);                  // number of adjacent active entities
+
+        return json;
+    }
 }
