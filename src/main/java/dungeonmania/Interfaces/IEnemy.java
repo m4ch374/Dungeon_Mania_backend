@@ -8,4 +8,6 @@ public interface IEnemy extends IMovable{
     public void death();
 
     public String getClasString();
+
+    public double attacked(double attack);
 }

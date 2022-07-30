@@ -57,14 +57,11 @@ public class Combat {
             }
             
             double playerHealthDelta = player.attackedBy(enemyAttackDamage);
-            double enemyHealthDelta = (playerAttackDamage / 5);
-            enemyHealth -= enemyHealthDelta;
+            double enemyHealthDelta = enemy.attacked(playerAttackDamage);
+            enemyHealth = enemy.getHealth();
             playerHealth = player.getHealth();
 
-            rounds.add(new RoundResponse( -playerHealthDelta,  -enemyHealthDelta, items));
-        }
-        if (enemyHealth <= 0) {
-            enemy.death();
+            rounds.add(new RoundResponse(playerHealthDelta, enemyHealthDelta, items));
         }
         return;
     }

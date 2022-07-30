@@ -302,7 +302,7 @@ public class Player extends Entity {
         if (isDead()) {
             getMap().removeEntity(this);
         }
-        return playerHealthDelta;
+        return -playerHealthDelta;
     }
 
     public List<BattleResponse> initiateBattle() {

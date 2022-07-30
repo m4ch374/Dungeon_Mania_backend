@@ -21,4 +21,5 @@ public class Assassin extends Mercenary {
         this.bribeFailRate = config.getDouble("assassin_bribe_fail_rate");
         this.reconRadius = config.getInt("assassin_recon_radius");
     }
+    
 }
