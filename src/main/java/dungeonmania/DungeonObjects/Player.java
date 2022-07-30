@@ -212,14 +212,34 @@ public class Player extends Entity {
 
     // used for bribe mercenaries
     public void bribe(int quantity) throws InvalidActionException {
-        if (!holdingSceptre()) {
-            try {
-                backpack.useTreasures(quantity);
-                this.allyNum += 1;
-            } catch (InvalidActionException e) {
-                throw e;
-            }
+        try {
+            backpack.useTreasures(quantity);
+            this.allyNum += 1;
+        } catch (InvalidActionException e) {
+            throw e;
         }
+    }
+
+    public void notifyAllyReduce() {
+        this.allyNum -= 1;
+        tracker.notify();
+    }
+
+    public void notifyAllyIncrease() {
+        this.allyNum += 1;
+        tracker.notify();
+    }
+
+    public void mindControll() throws InvalidActionException {
+        if (holdingSceptre()) {
+            this.allyNum += 1;
+        } else {
+            throw new InvalidActionException("ERROR: Player do not have a sceptre");
+        }
+    }
+
+    public void tryBribe(int quantity) throws InvalidActionException  {
+        backpack.useTreasures(quantity);
     }
 
     // items that can/will be used in the battle at the moment
