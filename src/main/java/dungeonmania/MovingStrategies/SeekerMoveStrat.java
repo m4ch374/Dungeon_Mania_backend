@@ -66,6 +66,10 @@ public class SeekerMoveStrat implements IMovingStrategy {
         return hasWall || hasLockedDoors;
     }
 
+    private boolean overlapsWithPlayer(Position nextPos) {
+        return map.getEntitiesAt(nextPos).stream().filter(e -> e instanceof Player).count() > 0;
+    }
+
     // Very botched code
     private boolean cannotMoveCloser(Position nextPos) {
         Player p = (Player) seekingEntity;
@@ -73,7 +77,7 @@ public class SeekerMoveStrat implements IMovingStrategy {
         Position playerPrevPos = p.getCurrentPosition();
         Position playerCurrPos = p.getPreviousPosition();
 
-        return playerCurrPos.equals(playerPrevPos) && map.getEntitiesAt(nextPos).stream().filter(e -> e instanceof Player).count() > 0;
+        return playerCurrPos.equals(playerPrevPos) && overlapsWithPlayer(nextPos);
     }
 
     private Position fallBackNextPos(Position moverPos, Position seekingPos) {

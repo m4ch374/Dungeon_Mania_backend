@@ -639,4 +639,51 @@ public class AssassinBehaviourTest {
         res = dmc.tick(Direction.LEFT);
         assertEquals(new Position(3, 1), TestUtils.getEntityById(res, "assassin").getPosition());
     }
+
+    @Test
+    @DisplayName("Test assassin bribe always fail")
+    public void testBribe_alwaysFail() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame(DIR_NAME + "d_assassinTest_bribeTest", C_DIR_NAME + "c_bribeTest_assassinAlwaysFail");
+
+        dmc.tick(Direction.RIGHT);
+        res = dmc.tick(Direction.RIGHT);
+
+        assertEquals(0, TestUtils.getEntities(res, "treasure").size());
+        Position originalPos = TestUtils.getEntityById(res, "assassin").getPosition();
+
+        for (int i = 0; i < 100; i++) {
+            if (i % 2 == 0)
+                res = dmc.tick(Direction.LEFT);
+            else
+                res = dmc.tick(Direction.RIGHT);
+
+            assertEquals(originalPos, TestUtils.getEntityById(res, "assassin").getPosition());
+
+            assertDoesNotThrow(() -> dmc.interact("assassin"));
+        }
+    }
+
+    @Test
+    @DisplayName("Test assassin tracks within recon radius")
+    public void testTrack_withinRadius() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame(DIR_NAME + "d_assassinTest_tracksWhileInvisible", "c_assassinTests_reconTest");
+
+        assertEquals(new Position(0, 0), TestUtils.getEntityById(res, "assassin").getPosition());
+
+        res = dmc.tick(Direction.RIGHT);
+        assertEquals(new Position(1, 0), TestUtils.getEntityById(res, "assassin").getPosition());
+
+        assertDoesNotThrow(() -> {
+                assertEquals(new Position(1, 0), TestUtils.getEntityById(dmc.tick("invisibility_potion"), "assassin").getPosition());
+            }
+        );
+
+        res = dmc.tick(Direction.RIGHT);
+        assertEquals(new Position(2, 0), TestUtils.getEntityById(res, "assassin").getPosition());
+
+        res = dmc.tick(Direction.RIGHT);
+        assertEquals(new Position(3, 0), TestUtils.getEntityById(res, "assassin").getPosition());
+    }
 }
