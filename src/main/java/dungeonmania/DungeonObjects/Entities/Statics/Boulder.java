@@ -32,12 +32,6 @@ public class Boulder extends Entity implements IStaticInteractable {
         }
         // Finally, move the boulder
         move(newPos);
-        // activate switch
-        getMap().getEntitiesAt(newPos)
-                    .stream()
-                    .filter(e -> (e instanceof FloorSwitch))
-                    .map(e -> (FloorSwitch) e)
-                    .forEach(e -> e.active());
     }
 
     public Position determineNewPosition(Player player) {
