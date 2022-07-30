@@ -60,6 +60,10 @@ public class TrackerTests {
 
         res = dmc.tick(Direction.DOWN);
         assertEquals("", res.getGoals());
+
+        res = dmc.tick(Direction.DOWN);
+        System.out.println(res.getGoals());
+        assertTrue(res.getGoals().contains(":boulders"));
     }
 
     @Test
