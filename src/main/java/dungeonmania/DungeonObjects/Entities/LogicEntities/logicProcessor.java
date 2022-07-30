@@ -166,13 +166,6 @@ public abstract class logicProcessor {
                     }
                 }
 
-                // for (int i = 0; i < rows; i++) {
-                //     for (int j = 0; j < cols; j++) {
-                //         System.out.printf("%s ", matrix[i][j]);
-                //     }
-                //     System.out.println(".");
-                // }
-
                 if (LogicPathFinder.hasPath(matrix, rows, cols)) {
                     if (hasSwitchAt(destPos, map)) {
                         // adjacent active switch
