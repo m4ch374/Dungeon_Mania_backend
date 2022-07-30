@@ -16,7 +16,7 @@ public abstract class LogicEntity extends Entity {
     private static final String and = "and";
     private static final String or = "or";
     private static final String xor = "xor";
-    private static final String co_anc = "co_and";
+    private static final String co_and = "co_and";
 
     private final String logic;
 
@@ -30,10 +30,6 @@ public abstract class LogicEntity extends Entity {
         this.logic = logic;
     }
 
-    public String getLogic() {
-        return this.logic;
-    }
-
     public boolean isActive() {
         if (this.logic == null) {   // as non-logic entity
             if (this instanceof Bomb) {
@@ -43,6 +39,9 @@ public abstract class LogicEntity extends Entity {
         }
 
         Position pos = getMap().getEntityPos(this);
+        if(pos == null) { // droping a logic bomb
+            pos = getMap().getPlayerPos();
+        }
         JSONObject josn = logicProcessor.getAdjacentActive(pos, getMap());
 
         switch (this.logic){        // as logic entity
@@ -52,7 +51,7 @@ public abstract class LogicEntity extends Entity {
                 return isActiveOr(josn);
             case xor:
                 return isActiveXor(josn);
-            case co_anc:
+            case co_and:
                 return isActiveCoAnd(josn);
             default:
                 return false;
@@ -112,7 +111,7 @@ public abstract class LogicEntity extends Entity {
     }
 
     private boolean isActiveCoAnd(JSONObject josn) {
-        if (josn.getInt("active_num") >= 1) {
+        if (josn.getInt("active_num") >= 2) {
             return true;
         }
 

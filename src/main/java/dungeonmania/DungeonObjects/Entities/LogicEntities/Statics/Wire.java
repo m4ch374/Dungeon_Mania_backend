@@ -1,21 +1,11 @@
 package dungeonmania.DungeonObjects.Entities.LogicEntities.Statics;
 
-import dungeonmania.DungeonObjects.Entities.LogicEntities.LogicEntity;
+import dungeonmania.DungeonObjects.Entities.Entity;
 import dungeonmania.util.DungeonFactory.EntityStruct;
 
-public class Wire extends LogicEntity {
+public class Wire extends Entity {
 
-    public Wire(EntityStruct metaData, String logic) {
-        super(metaData, logic);
-    }
-
-    @Override
-    public boolean isActive() {
-        return super.isActive();
-    }
-
-    @Override
-    public String getLogic() {
-        return super.getLogic();
+    public Wire(EntityStruct metaData) {
+        super(metaData);
     }
 }

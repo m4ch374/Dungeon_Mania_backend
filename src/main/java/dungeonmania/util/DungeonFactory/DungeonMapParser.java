@@ -107,8 +107,7 @@ public class DungeonMapParser {
                 logic = entityJson.getString("logic");
                 return new LightBulb(metaData, logic);
             case WIRE:
-                logic = entityJson.getString("logic");
-                return new Wire(metaData, logic);
+                return new Wire(metaData);
             case SWITCH_DOOR:
                 logic = entityJson.getString("logic");
                 keyId = entityJson.getInt("key");
