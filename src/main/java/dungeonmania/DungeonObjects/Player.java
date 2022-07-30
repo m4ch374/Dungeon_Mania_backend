@@ -194,6 +194,8 @@ public class Player extends Entity {
             updatePotions();
 
             movement.setDirection(null);
+
+            getMap().activeBombIfActive();
         } else {
             throw new IllegalArgumentException("ERROR: Undefined player behavior");
         }
