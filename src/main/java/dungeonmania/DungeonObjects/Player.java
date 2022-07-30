@@ -222,12 +222,12 @@ public class Player extends Entity {
 
     public void notifyAllyReduce() {
         this.allyNum -= 1;
-        tracker.notify();
+        tracker.unnotifyTracker(GoalTypes.ENEMIES);
     }
 
     public void notifyAllyIncrease() {
         this.allyNum += 1;
-        tracker.notify();
+        tracker.notifyTracker(GoalTypes.ENEMIES);
     }
 
     public void mindControll() throws InvalidActionException {
