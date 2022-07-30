@@ -5,7 +5,6 @@ import org.json.JSONObject;
 import dungeonmania.DungeonObjects.Player;
 import dungeonmania.DungeonObjects.Entities.Entity;
 import dungeonmania.DungeonObjects.Entities.LogicEntities.LogicEntity;
-import dungeonmania.DungeonObjects.Entities.LogicEntities.Statics.FloorSwitch;
 import dungeonmania.Interfaces.ICollectable;
 import dungeonmania.Interfaces.IEquipment;
 import dungeonmania.exceptions.InvalidActionException;
@@ -14,9 +13,6 @@ import dungeonmania.util.Position;
 import dungeonmania.util.DungeonFactory.EntityStruct;
 
 import static dungeonmania.DungeonObjects.EntityTypes.BOMB;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class Bomb extends LogicEntity implements ICollectable, IEquipment {
 
@@ -51,7 +47,7 @@ public class Bomb extends LogicEntity implements ICollectable, IEquipment {
         this.collectible = false;
 
         Position pos = getMap().getPlayerPos();
-        if (playerCloseActiveSwitch(pos) || isActive()) {
+        if (isActive()) {
             activate(pos);
         } else {
             getMap().placeEntityAt(this, pos);
@@ -93,29 +89,5 @@ public class Bomb extends LogicEntity implements ICollectable, IEquipment {
                 }
             }
         }
-    }
-
-    private boolean playerCloseActiveSwitch(Position pos) {
-        int x = pos.getX();
-        int y = pos.getY();
-
-        Position up = new Position(x - 1, y);
-        Position down = new Position(x + 1, y);
-        Position left = new Position(x, y - 1);
-        Position right = new Position(x, y + 1);
-
-        List<Entity> entityList = new ArrayList<Entity>();
-        entityList.addAll(getMap().getEntitiesAt(up));
-        entityList.addAll(getMap().getEntitiesAt(down));
-        entityList.addAll(getMap().getEntitiesAt(left));
-        entityList.addAll(getMap().getEntitiesAt(right));
-
-        boolean activeSwitch = entityList
-                                .stream()
-                                .filter(e -> (e instanceof FloorSwitch))
-                                .map(e -> (FloorSwitch) e)
-                                .anyMatch(e -> e.isActive());
-
-        return activeSwitch;
     }
 }
