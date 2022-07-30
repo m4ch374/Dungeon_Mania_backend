@@ -48,6 +48,10 @@ public class Mercenary extends Enemy implements IPlayerInteractable {
         this.config = config;
     }
 
+    public int getBribeAmount() {
+        return brinbeAmount;
+    }
+
     @Override
     public void move() {
         if (super.trappedBySwamp())
@@ -126,13 +130,14 @@ public class Mercenary extends Enemy implements IPlayerInteractable {
         Position currPos = map.getEntityPos(this);
         
         EntityStruct metaData = new EntityStruct(super.getId(), super.getType(), map);
-        MindControlledCharacter character = new MindControlledCharacter(metaData, config, this, map);
+        MindControlledCharacter character = new MindControlledCharacter(metaData, config, this, map, player);
 
         map.removeEntity(this);
         map.placeEntityAt(character, currPos);
+        player.notifyAllyIncrease();
     }
 
-    private void bribedByPlayer(Player player) throws InvalidActionException {
+    protected void bribedByPlayer(Player player) throws InvalidActionException {
         Position currPos = map.getEntityPos(this);
         Position playerPos = map.getEntityPos(player);
 
