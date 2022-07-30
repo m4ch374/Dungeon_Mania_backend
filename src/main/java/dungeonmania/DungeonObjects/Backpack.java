@@ -378,5 +378,5 @@ public final class Backpack {
     public Sword getSword() {
         return this.swords.get(0);
     }
-
+    
 }

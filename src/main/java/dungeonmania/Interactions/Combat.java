@@ -40,10 +40,19 @@ public class Combat {
 
     /*Calculates player and npc health per round and adds record to this.rounds*/
     public void resolveCombat(){
+        for (ItemResponse item : this.items){
+            try {
+                player.useEquipment(item.getId());
+            } catch (Exception e) {
+                continue;
+            }
+        }
+        
         while (playerHealth > 0 && enemyHealth > 0) {
             /*If a potion is used then combat is ended prematurely*/
             if (player.isInvincible()){
                 enemy.death();
+                rounds.add(new RoundResponse(0, enemyHealth, this.items));
                 return;
             }
             

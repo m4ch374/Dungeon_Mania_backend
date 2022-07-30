@@ -13,13 +13,13 @@ import dungeonmania.response.models.BattleResponse;
 import dungeonmania.response.models.ItemResponse;
 import dungeonmania.util.Direction;
 import dungeonmania.util.DungeonFactory.EntityStruct;
+import dungeonmania.util.Position;
 import dungeonmania.util.Tracker.GoalTypes;
 import dungeonmania.util.Tracker.Tracker;
-import dungeonmania.util.Position;
-
 import java.util.ArrayList;
 import java.util.List;
 import org.json.JSONObject;
+
 
 
 public class Player extends Entity {
@@ -229,7 +229,7 @@ public class Player extends Entity {
         if (holdingSword()) battleEquipment.add(backpack.getSword());
         if (holdingBow()) battleEquipment.add(backpack.getBow());
         if (holdingShield()) battleEquipment.add(backpack.getShiled());
-
+        
         battleEquipment
             .stream()
             .forEach(e -> items.add(e.toItemResponse()));
@@ -279,21 +279,20 @@ public class Player extends Entity {
     }
 
     public List<BattleResponse> initiateBattle() {
-        if (! this.isInvincible() || ! this.isInvisible()){
-            List<BattleResponse> battles = new ArrayList<BattleResponse>();
-            for (Entity enemy : getMap().getEntitiesOverlapped(this)){
-                if (enemy instanceof IEnemy){
-                    Combat battle = new Combat(this, (IEnemy) enemy);
-                    battle.resolveCombat();
-                    battles.add(battle.returnBattleResponse());
-                }
-            }
-            if (battles.size() == 0){
-                return null;
-            }
-            
-            return battles;
+        if (this.isInvisible()){
+            return null;
         }
-        return null;
+        List<BattleResponse> battles = new ArrayList<BattleResponse>();
+        for (Entity enemy : getMap().getEntitiesOverlapped(this)){
+            if (enemy instanceof IEnemy){
+                Combat battle = new Combat(this, (IEnemy)enemy);
+                battle.resolveCombat();
+                battles.add(battle.returnBattleResponse());
+            }
+        }
+        if (battles.size() == 0){
+            return null;
+        }
+        return battles;
     }
 }
