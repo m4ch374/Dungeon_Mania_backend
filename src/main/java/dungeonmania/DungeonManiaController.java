@@ -6,6 +6,7 @@ import dungeonmania.response.models.DungeonResponse;
 import dungeonmania.util.Direction;
 import dungeonmania.util.FileLoader;
 import dungeonmania.util.DungeonFactory.DungeonBuilder;
+import dungeonmania.util.DungeonFactory.DungeonMazeFactory.MazeGenMetadata;
 
 import java.util.List;
 
@@ -39,7 +40,7 @@ public class DungeonManiaController {
      */
     public DungeonResponse newGame(String dungeonName, String configName) throws IllegalArgumentException {
         try {
-            dungeonState = DungeonBuilder.setConfig(dungeonName, configName).build();
+            dungeonState = DungeonBuilder.initializeBuilder().useMap(dungeonName).withConfig(configName).build();
         } catch (Exception e) {
             throw new IllegalArgumentException(e.getMessage());
         }
@@ -109,4 +110,16 @@ public class DungeonManiaController {
         return dungeonState.getAllGames();
     }
 
+    // Extension 2
+    public DungeonResponse generateDungeon(int xStart, int yStart, int xEnd, int yEnd, String configName) throws IllegalArgumentException {
+        MazeGenMetadata metadata = new MazeGenMetadata(xStart, yStart, xEnd, yEnd);
+
+        try {
+            dungeonState = DungeonBuilder.initializeBuilder().withConfig(configName).generateDungeon(metadata);
+        } catch (Exception e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+
+        return dungeonState.toDungeonResponse();
+    }
 }
