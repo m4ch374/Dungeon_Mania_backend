@@ -12,6 +12,7 @@ import dungeonmania.DungeonObjects.Player;
 import dungeonmania.DungeonObjects.Entities.Entity;
 import dungeonmania.DungeonObjects.Entities.Characters.Enemies.Spider;
 import dungeonmania.DungeonObjects.Entities.Characters.Enemies.ZombieToast;
+import dungeonmania.DungeonObjects.Entities.LogicEntities.Collectables.Bomb;
 import dungeonmania.Interfaces.IMovable;
 import dungeonmania.Interfaces.ISpawnable;
 import dungeonmania.util.Position;
@@ -181,21 +182,16 @@ public class DungeonMap {
         return false;
     }
 
-    /**
-     * get all entities in for dirct, check their state
-     * @param pos
-     * @return
-     */
-    public JSONObject getAdjacentActive(Position pos) {
-        // TODO neasty algo
-        // how to avoid wire adjacent wires loop themselves?
-        // how to confirm that there is a path form source(active switch) to the pos?
-        JSONObject json = new JSONObject();
+    public void activeBombIfActive() {
+        getAllEntities()
+                    .stream()
+                    .filter(e -> (e instanceof Bomb))
+                    .map(e -> (Bomb) e)
+                    .filter(e -> (e.isActive() && !e.isCollectible()))
+                    .forEach(e -> e.activate(getEntityPos(e)));
+    }
 
-        json.put("switch_num", 0);                  // number of adjacent switch
-        json.put("all_switch_is_avtive", false);    // is all adjacent switch number active?
-        json.put("active_num", 0);                  // number of adjacent active entities
-
-        return json;
+    public Map<Entity, Position> getLookup() {
+        return this.lookup;
     }
 }
