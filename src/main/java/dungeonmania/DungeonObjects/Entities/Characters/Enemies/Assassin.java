@@ -5,7 +5,11 @@ import java.util.Random;
 import org.json.JSONObject;
 
 import dungeonmania.DungeonObjects.Player;
+import dungeonmania.DungeonObjects.DungeonMap.DungeonMap;
+import dungeonmania.Interfaces.IMovingStrategy;
+import dungeonmania.MovingStrategies.SeekerMoveStrat;
 import dungeonmania.exceptions.InvalidActionException;
+import dungeonmania.util.Position;
 import dungeonmania.util.DungeonFactory.EntityStruct;
 import dungeonmania.util.Tracker.Tracker;
 
@@ -34,5 +38,28 @@ public class Assassin extends Mercenary {
             player.tryBribe(super.getBribeAmount());
         else
             super.bribedByPlayer(player);
+    }
+
+    @Override
+    protected void switchMoveStrat() {
+        super.switchMoveStrat();
+
+        DungeonMap map = super.getMap();
+        Player observing = super.getObservingEntity();
+
+        if (!observing.isInvisible())
+            return;
+        
+        Position observingPos = map.getEntityPos(observing);
+        Position currPos = map.getEntityPos(this);
+
+        Position distance = Position.calculatePositionBetween(currPos, observingPos);
+
+        if (Math.abs(distance.getX()) > reconRadius || Math.abs(distance.getY()) > reconRadius)
+            return;
+
+        IMovingStrategy currMoveStrat = super.getMoveStrat();
+        if (!(currMoveStrat instanceof SeekerMoveStrat))
+            setMoveStrat(new SeekerMoveStrat(this, map, observing.getId()));
     }
 }
