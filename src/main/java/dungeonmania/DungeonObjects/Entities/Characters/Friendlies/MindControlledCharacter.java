@@ -2,6 +2,7 @@ package dungeonmania.DungeonObjects.Entities.Characters.Friendlies;
 
 import org.json.JSONObject;
 
+import dungeonmania.DungeonObjects.Player;
 import dungeonmania.DungeonObjects.DungeonMap.DungeonMap;
 import dungeonmania.DungeonObjects.Entities.Entity;
 import dungeonmania.util.Position;
@@ -14,12 +15,14 @@ public class MindControlledCharacter extends FriendlyCharacter {
     // Is that even a word?
     Entity controllee;
     DungeonMap map;
+    Player notifyEntity;
 
-    public MindControlledCharacter(EntityStruct metaData, JSONObject config, Entity controllee, DungeonMap map) {
+    public MindControlledCharacter(EntityStruct metaData, JSONObject config, Entity controllee, DungeonMap map, Player notifyEntity) {
         super(metaData);
         this.remainingDuration = config.getInt("mind_control_duration");
         this.controllee = controllee;
         this.map = map;
+        this.notifyEntity = notifyEntity;
     }
 
     @Override
@@ -31,6 +34,7 @@ public class MindControlledCharacter extends FriendlyCharacter {
             Position currPos = map.getEntityPos(this);
             map.removeEntity(this);
             map.placeEntityAt(controllee, currPos);
+            notifyEntity.notifyAllyReduce();
         }
     }
     
