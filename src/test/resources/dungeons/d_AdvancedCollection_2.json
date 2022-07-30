@@ -1,0 +1,47 @@
+{
+    "entities": [
+        {
+            "type" : "sun_stone",
+            "x" : 2,
+            "y" : 0
+        },{
+            "type" : "time_turner",
+            "x" : 3,
+            "y" : 0
+        },{
+            "type" : "sword",
+            "x" : 2,
+            "y" : 1
+        },{
+            "type" : "arrow",
+            "x" : 0,
+            "y" : 2
+        },{
+            "type" : "arrow",
+            "x" : 1,
+            "y" : 2
+        },{
+            "type" : "player",
+            "x" : 2,
+            "y" : 2
+        },{
+            "type" : "wood",
+            "x" : 3,
+            "y" : 2
+        },{
+            "type" : "key",
+            "x" : 2,
+            "y" : 3,
+            "key" : 1
+        },{
+            "type" : "treasure",
+            "x" : 2,
+            "y" : 4
+        },{
+            "type" : "zombie_toast",
+            "x" : 50,
+            "y" : 50
+        }
+    ],
+    "goal-condition": {"goal": "exit"}
+}

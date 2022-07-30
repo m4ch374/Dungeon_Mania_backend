@@ -3,7 +3,6 @@ package dungeonmania;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-
 import static dungeonmania.TestUtils.getPlayer;
 
 import java.util.ArrayList;
@@ -518,5 +517,16 @@ public class PlayerCollectionTest {
 
         DungeonResponse DungonRes = dmc.getDungeonResponseModel();
         assertEquals(7, DungonRes.getInventory().size());
+    }
+
+    @Test
+    @DisplayName("Crafted: Cannot make midnight armour")
+    public void canNotMakeMidnightArmour() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        dmc.newGame("d_AdvancedCollection_2", "c_playerCollectionTest");
+
+        pickAll2(dmc);
+
+        assertThrows(InvalidActionException.class, () -> dmc.build("midnight_armour"));
     }
 }
