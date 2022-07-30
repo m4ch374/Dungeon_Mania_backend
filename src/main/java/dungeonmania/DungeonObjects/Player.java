@@ -250,7 +250,12 @@ public class Player extends Entity {
         if (holdingSword()) battleEquipment.add(backpack.getSword());
         if (holdingBow()) battleEquipment.add(backpack.getBow());
         if (holdingShield()) battleEquipment.add(backpack.getShiled());
-        
+
+        // potion
+        if (isInvincible() || isInvisible()) {
+            battleEquipment.add(this.potionList.get(0));
+        }
+
         battleEquipment
             .stream()
             .forEach(e -> items.add(e.toItemResponse()));
