@@ -663,4 +663,27 @@ public class AssassinBehaviourTest {
             assertDoesNotThrow(() -> dmc.interact("assassin"));
         }
     }
+
+    @Test
+    @DisplayName("Test assassin tracks within recon radius")
+    public void testTrack_withinRadius() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame(DIR_NAME + "d_assassinTest_tracksWhileInvisible", "c_assassinTests_reconTest");
+
+        assertEquals(new Position(0, 0), TestUtils.getEntityById(res, "assassin").getPosition());
+
+        res = dmc.tick(Direction.RIGHT);
+        assertEquals(new Position(1, 0), TestUtils.getEntityById(res, "assassin").getPosition());
+
+        assertDoesNotThrow(() -> {
+                assertEquals(new Position(1, 0), TestUtils.getEntityById(dmc.tick("invisibility_potion"), "assassin").getPosition());
+            }
+        );
+
+        res = dmc.tick(Direction.RIGHT);
+        assertEquals(new Position(2, 0), TestUtils.getEntityById(res, "assassin").getPosition());
+
+        res = dmc.tick(Direction.RIGHT);
+        assertEquals(new Position(3, 0), TestUtils.getEntityById(res, "assassin").getPosition());
+    }
 }
