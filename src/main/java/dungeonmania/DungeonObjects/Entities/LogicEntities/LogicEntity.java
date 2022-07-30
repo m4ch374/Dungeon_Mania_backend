@@ -30,10 +30,6 @@ public abstract class LogicEntity extends Entity {
         this.logic = logic;
     }
 
-    public String getLogic() {
-        return this.logic;
-    }
-
     public boolean isActive() {
         if (this.logic == null) {   // as non-logic entity
             if (this instanceof Bomb) {

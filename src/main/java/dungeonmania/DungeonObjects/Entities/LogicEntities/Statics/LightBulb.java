@@ -17,11 +17,6 @@ public class LightBulb extends LogicEntity {
     }
 
     @Override
-    public String getLogic() {
-        return super.getLogic();
-    }
-
-    @Override
     public EntityResponse toEntityResponse() {
         if (isActive()) {
             return new EntityResponse(getId(), EntityTypes.LIGHT_BULB_ON.toString(), getMap().getEntityPos(this), false);

@@ -34,11 +34,6 @@ public class Bomb extends LogicEntity implements ICollectable, IEquipment {
         return super.isActive();
     }
 
-    @Override
-    public String getLogic() {
-        return super.getLogic();
-    }
-
     public int getBombRadius() {
         return this.bombRadius;
     }
