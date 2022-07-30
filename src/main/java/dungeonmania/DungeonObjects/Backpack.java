@@ -1,18 +1,14 @@
 package dungeonmania.DungeonObjects;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import dungeonmania.DungeonObjects.Entities.Collectables.Arrow;
+import dungeonmania.DungeonObjects.Entities.Collectables.InvincibilityPotion;
+import dungeonmania.DungeonObjects.Entities.Collectables.InvisibilityPotion;
 import dungeonmania.DungeonObjects.Entities.Collectables.Key;
 import dungeonmania.DungeonObjects.Entities.Collectables.SunStone;
 import dungeonmania.DungeonObjects.Entities.Collectables.Sword;
 import dungeonmania.DungeonObjects.Entities.Collectables.TimeTurner;
 import dungeonmania.DungeonObjects.Entities.Collectables.Treasure;
 import dungeonmania.DungeonObjects.Entities.Collectables.Wood;
-import dungeonmania.DungeonObjects.Entities.Collectables.InvincibilityPotion;
-import dungeonmania.DungeonObjects.Entities.Collectables.InvisibilityPotion;
 import dungeonmania.DungeonObjects.Entities.Craftables.Bow;
 import dungeonmania.DungeonObjects.Entities.Craftables.MidnightArmour;
 import dungeonmania.DungeonObjects.Entities.Craftables.Sceptre;
@@ -22,6 +18,10 @@ import dungeonmania.Interfaces.ICollectable;
 import dungeonmania.Interfaces.IEquipment;
 import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.response.models.ItemResponse;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 
 public final class Backpack {
 
@@ -300,30 +300,6 @@ public final class Backpack {
     private void useArrows (int quantity) {
         for (int i = 0; i < quantity; i++) {
             this.arrows.remove(0);
-        }
-    }
-
-    private void useSunStone (int quantity) {
-        for (int i = 0; i < quantity; i++) {
-            this.sunStones.remove(0);
-        }
-    }
-
-    private void useSword (int quantity) {
-        for (int i = 0; i < quantity; i++) {
-            this.swords.remove(0);
-        }
-    }
-
-    private void useSunStone (int quantity) {
-        for (int i = 0; i < quantity; i++) {
-            this.sunStones.remove(0);
-        }
-    }
-
-    private void useSword (int quantity) {
-        for (int i = 0; i < quantity; i++) {
-            this.swords.remove(0);
         }
     }
 
