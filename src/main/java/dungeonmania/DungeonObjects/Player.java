@@ -55,8 +55,8 @@ public class Player extends Entity {
 
         this.sword_attack = config.getInt("sword_attack");
         this.shield_defence = config.getInt("shield_defence");
-        this.invincibility_potion_duration = config.getInt("invincibility_potion_duration");
-        this.invisibility_potion_duration = config.getInt("invisibility_potion_duration");
+        this.invincibility_potion_duration = config.getInt("invincibility_potion_duration") - 1;
+        this.invisibility_potion_duration = config.getInt("invisibility_potion_duration") - 1;
 
         // ally attack & defence not found in config file
         this.allyAttackBonous = config.has("ally_attack") ? config.getInt("ally_attack") : 0;
