@@ -146,7 +146,7 @@ public class ZombieMovementTest {
         res = dmc.tick(Direction.RIGHT);
         Position originalZombiePos = TestUtils.getEntityById(res, "zombie_toast").getPosition();
 
-        for (int i = 1; i < 99; i++) {
+        for (int i = 1; i < 98; i++) {
             res = dmc.tick(Direction.RIGHT);
             assertTrue(originalZombiePos.translateBy(new Position(-i, 0)).equals(TestUtils.getEntityById(res, "zombie_toast").getPosition()) 
                 || originalZombiePos.translateBy(new Position(-i - 1, 0)).equals(TestUtils.getEntityById(res, "zombie_toast").getPosition()));

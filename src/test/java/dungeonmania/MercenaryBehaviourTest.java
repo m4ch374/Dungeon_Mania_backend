@@ -315,7 +315,7 @@ public class MercenaryBehaviourTest {
 
         assertDoesNotThrow(() -> dmc.tick("invincibility_potion"));
 
-        for (int i = 1; i <= 99; i++) {
+        for (int i = 1; i <= 98; i++) {
             res = dmc.tick(Direction.DOWN);
             assertEquals(originalMercPos.translateBy(new Position(0, -i - 1)), TestUtils.getEntityById(res, "mercenary").getPosition());
         }
@@ -323,7 +323,7 @@ public class MercenaryBehaviourTest {
         originalMercPos = TestUtils.getEntityById(res, "mercenary").getPosition();
 
         // goes back to normal move strat
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 99; i++) {
             res = dmc.tick(Direction.DOWN);
             assertEquals(originalMercPos.translateBy(new Position(0, i + 1)), TestUtils.getEntityById(res, "mercenary").getPosition());
         }
@@ -343,7 +343,7 @@ public class MercenaryBehaviourTest {
 
         assertDoesNotThrow(() -> dmc.tick("invincibility_potion"));
 
-        for (int i = 1; i <= 99; i++) {
+        for (int i = 1; i <= 98; i++) {
             res = dmc.tick(Direction.UP);
             assertEquals(originalMercPos.translateBy(new Position(0, i + 1)), TestUtils.getEntityById(res, "mercenary").getPosition());
         }
@@ -351,7 +351,7 @@ public class MercenaryBehaviourTest {
         originalMercPos = TestUtils.getEntityById(res, "mercenary").getPosition();
 
         // goes back to normal move strat
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 99; i++) {
             res = dmc.tick(Direction.UP);
             assertEquals(originalMercPos.translateBy(new Position(0, -i - 1)), TestUtils.getEntityById(res, "mercenary").getPosition());
         }
@@ -371,7 +371,7 @@ public class MercenaryBehaviourTest {
 
         assertDoesNotThrow(() -> dmc.tick("invincibility_potion"));
 
-        for (int i = 1; i <= 99; i++) {
+        for (int i = 1; i <= 98; i++) {
             res = dmc.tick(Direction.LEFT);
             assertEquals(originalMercPos.translateBy(new Position(i + 1,0)), TestUtils.getEntityById(res, "mercenary").getPosition());
         }
@@ -379,7 +379,7 @@ public class MercenaryBehaviourTest {
         originalMercPos = TestUtils.getEntityById(res, "mercenary").getPosition();
 
         // goes back to normal move strat
-        for (int i = 0; i < 99; i++) {
+        for (int i = 0; i < 98; i++) {
             res = dmc.tick(Direction.LEFT);
             assertEquals(originalMercPos.translateBy(new Position(-i - 1, 0)), TestUtils.getEntityById(res, "mercenary").getPosition());
         }
@@ -399,7 +399,7 @@ public class MercenaryBehaviourTest {
 
         assertDoesNotThrow(() -> dmc.tick("invincibility_potion"));
 
-        for (int i = 1; i <= 99; i++) {
+        for (int i = 1; i <= 98; i++) {
             res = dmc.tick(Direction.RIGHT);
             assertEquals(originalMercPos.translateBy(new Position(-i - 1,0)), TestUtils.getEntityById(res, "mercenary").getPosition());
         }
@@ -407,7 +407,7 @@ public class MercenaryBehaviourTest {
         originalMercPos = TestUtils.getEntityById(res, "mercenary").getPosition();
 
         // goes back to normal move strat
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 99; i++) {
             res = dmc.tick(Direction.RIGHT);
             assertEquals(originalMercPos.translateBy(new Position(i + 1, 0)), TestUtils.getEntityById(res, "mercenary").getPosition());
         }
