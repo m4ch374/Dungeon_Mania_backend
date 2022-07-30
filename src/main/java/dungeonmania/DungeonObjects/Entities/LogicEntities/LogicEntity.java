@@ -42,15 +42,18 @@ public abstract class LogicEntity extends Entity {
             return false;
         }
 
+        Position pos = getMap().getEntityPos(this);
+        JSONObject josn = logicProcessor.getAdjacentActive(pos, getMap());
+
         switch (this.logic){        // as logic entity
             case and:
-                return isActiveAnd();
+                return isActiveAnd(josn);
             case or:
-                return isActiveOr();
+                return isActiveOr(josn);
             case xor:
-                return isActiveXor();
+                return isActiveXor(josn);
             case co_anc:
-                return isActiveCoAnd();
+                return isActiveCoAnd(josn);
             default:
                 return false;
         }
@@ -82,10 +85,7 @@ public abstract class LogicEntity extends Entity {
         return activeSwitch;
     }
 
-    private boolean isActiveAnd() {
-        Position pos = getMap().getEntityPos(this);
-        JSONObject josn = getMap().getAdjacentActive(pos);
-
+    private boolean isActiveAnd(JSONObject josn) {
         if (josn.getInt("switch_num") > 2 && josn.getBoolean("all_switch_is_avtive") && josn.getInt("active_num") >= 2) {
             return true;
         } else if (josn.getInt("switch_num") <= 2 && josn.getInt("active_num") >= 2) {
@@ -95,10 +95,7 @@ public abstract class LogicEntity extends Entity {
         return false;
     }
 
-    private boolean isActiveOr() {
-        Position pos = getMap().getEntityPos(this);
-        JSONObject josn = getMap().getAdjacentActive(pos);
-
+    private boolean isActiveOr(JSONObject josn) {
         if (josn.getInt("active_num") >= 1) {
             return true;
         }
@@ -106,10 +103,7 @@ public abstract class LogicEntity extends Entity {
         return false;
     }
 
-    private boolean isActiveXor() {
-        Position pos = getMap().getEntityPos(this);
-        JSONObject josn = getMap().getAdjacentActive(pos);
-
+    private boolean isActiveXor(JSONObject josn) {
         if (josn.getInt("active_num") == 1) {
             return true;
         }
@@ -117,10 +111,7 @@ public abstract class LogicEntity extends Entity {
         return false;
     }
 
-    private boolean isActiveCoAnd() {
-        Position pos = getMap().getEntityPos(this);
-        JSONObject josn = getMap().getAdjacentActive(pos);
-
+    private boolean isActiveCoAnd(JSONObject josn) {
         if (josn.getInt("active_num") >= 1) {
             return true;
         }

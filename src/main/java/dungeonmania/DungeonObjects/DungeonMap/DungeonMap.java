@@ -12,13 +12,9 @@ import dungeonmania.DungeonObjects.Player;
 import dungeonmania.DungeonObjects.Entities.Entity;
 import dungeonmania.DungeonObjects.Entities.Characters.Enemies.Spider;
 import dungeonmania.DungeonObjects.Entities.Characters.Enemies.ZombieToast;
-import dungeonmania.DungeonObjects.Entities.LogicEntities.LogicPathFinder;
 import dungeonmania.DungeonObjects.Entities.LogicEntities.Collectables.Bomb;
-import dungeonmania.DungeonObjects.Entities.LogicEntities.Statics.FloorSwitch;
-import dungeonmania.DungeonObjects.Entities.LogicEntities.Statics.Wire;
 import dungeonmania.Interfaces.IMovable;
 import dungeonmania.Interfaces.ISpawnable;
-import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 import dungeonmania.util.Tracker.Tracker;
 
@@ -186,194 +182,6 @@ public class DungeonMap {
         return false;
     }
 
-    private int getListSzieOfSwitch(List<Entity> list) {
-        return list.stream()
-                    .filter(e -> (e instanceof FloorSwitch))
-                    .collect(Collectors.toList())
-                    .size();
-    }
-
-    private boolean hasSource(List<Entity> list) {
-        int wires = list.stream()
-                                .filter(e -> (e instanceof FloorSwitch))
-                                .map(e -> (FloorSwitch) e)
-                                .filter(e -> e.isActive())
-                                .collect(Collectors.toList())
-                                .size();
-
-        return (wires > 0);
-    }
-
-    private boolean hasWire(List<Entity> list) {
-        int wires = list.stream()
-                                .filter(e -> (e instanceof Wire))
-                                .collect(Collectors.toList())
-                                .size();
-
-        return (wires > 0);
-    }
-
-    private char[][] get2DMap(int x, int y) {
-        char[][] matrix = new char[x][y];
-
-        return matrix;
-    }
-
-    private boolean hasSwitchAt(Position pos) {
-        List<Entity> list = getEntitiesAt(pos);
-        boolean hasSwitch = (list.stream()
-                            .filter(e -> (e instanceof FloorSwitch))
-                            .collect(Collectors.toList())
-                            .size() > 0);
-
-        return hasSwitch;
-    }
-
-    private HashMap<String, Integer> getMapSize() {
-        HashMap<String, Integer> mapSize = new HashMap<String, Integer>();
-        int max_y = 0;
-        int min_y = 0;
-        int max_x = 0;
-        int min_x = 0;
-
-        List<Position> pos_list = new ArrayList<>(map.keySet());
-
-        for (Position pos : pos_list) {
-            int x = pos.getX();
-            int y = pos.getY();
-
-            if (x > max_x) {
-                max_x = x;
-            }
-            if (x < min_x) {
-                min_x = x;
-            }
-            if (y > max_y) {
-                max_y = y;
-            }
-            if (y < min_y) {
-                max_x = y;
-            }
-        }
-
-        mapSize.put("max_y", max_y);
-        mapSize.put("min_y", min_y);
-        mapSize.put("max_x", max_x);
-        mapSize.put("min_x", min_x);
-
-        return mapSize;
-    }
-
-    /**
-     * get all entities in four dirct, check their state
-     * @param pos
-     * @return
-     */
-    public JSONObject getAdjacentActive(Position pos) {
-        int switch_num = 0;
-        int active_switch_num = 0;
-        int active_wire_num = 0;
-
-        // four dirct
-        Position up = pos.translateBy(Direction.UP);
-        Position down = pos.translateBy(Direction.DOWN);
-        Position left = pos.translateBy(Direction.LEFT);
-        Position right = pos.translateBy(Direction.RIGHT);
-
-        List<Position> dest_pos = new ArrayList<>();
-        dest_pos.add(up);
-        dest_pos.add(down);
-        dest_pos.add(left);
-        dest_pos.add(right);
-
-        // entities at four dirct
-        List<Entity> e_up = getEntitiesAt(up);
-        List<Entity> e_down = getEntitiesAt(down);
-        List<Entity> e_left = getEntitiesAt(left);
-        List<Entity> e_right = getEntitiesAt(right);
-
-        // count the number of switchs
-        switch_num += getListSzieOfSwitch(e_up);
-        switch_num += getListSzieOfSwitch(e_down);
-        switch_num += getListSzieOfSwitch(e_left);
-        switch_num += getListSzieOfSwitch(e_right);
-
-        // position of all active switch
-        List<FloorSwitch> active_switchs= lookup.keySet()
-                                                .stream()
-                                                .filter(e -> (e instanceof FloorSwitch))
-                                                .map(e -> (FloorSwitch) e)
-                                                .filter(e -> e.isActive())
-                                                .collect(Collectors.toList());
-
-        List<Position> active_switchs_pos = new ArrayList<>();
-        active_switchs
-                    .stream()
-                    .forEach(e -> active_switchs_pos.add(lookup.get(e)));
-
-        final int row_start = getMapSize().get("max_y");        // max y for map
-        final int row_end = getMapSize().get("min_y");;         // min y for map
-        final int col_start = getMapSize().get("max_x");;       // max x for map
-        final int col_end = getMapSize().get("min_x");;         // min x for map
-        final int rows = Math.abs(row_end - row_start);
-        final int cols = Math.abs(col_end - col_start);
-
-        // for each adjacent cell, there is at least one source connect to it
-        for (Position destPos : dest_pos) {
-            for (Position A_S_pos : active_switchs_pos) {
-
-                // build up the map for current dest and source
-                char[][] matrix = get2DMap(rows, cols);
-                for (int i = row_start; i <= row_end; i++) {
-                    for (int j = col_start; j <= col_end; j++) {
-                        Position new_pos = new Position(j, i); // mirror
-                        List<Entity> entities = getEntitiesAt(new_pos);
-
-                        // the position of entities might be negative
-                        // but not for 2D array :(
-                        final int r = i - row_start;
-                        final int c = j - col_start;
-
-                        if (entities != null) { // might empty
-                            if (new_pos.equals(pos)) {
-                                matrix[r][c] = 'D'; // current dest
-                            } else if (new_pos.equals(A_S_pos) && hasSource(entities)) {
-                                matrix[r][c] = 'S'; // current source
-                            } else if (hasWire(entities)) {
-                                matrix[r][c] = '1'; // wire
-                            } else {
-                                matrix[r][c] = '0'; // consider as block
-                            }
-                        } else {
-                            matrix[r][c] = '0'; // consider as block
-                        }
-                    }
-                }
-
-                if (LogicPathFinder.hasPath(matrix)) {
-                    if (hasSwitchAt(destPos)) {
-                        // adjacent active switch
-                        active_switch_num++;
-                    }
-                    // adjacent active wire
-                    active_wire_num++;
-                    break; // only one active source path needed for each adjacent cell
-                }
-            }
-        }
-
-        JSONObject json = new JSONObject();
-
-        // number of adjacent switch
-        json.put("switch_num", switch_num);
-        // is all adjacent switch number active?
-        json.put("all_switch_is_avtive", active_switch_num == switch_num);
-        // number of adjacent active entities
-        json.put("active_num", active_wire_num);
-
-        return json;
-    }
-
     public void activeBombIfActive() {
         getAllEntities()
                     .stream()
@@ -381,5 +189,9 @@ public class DungeonMap {
                     .map(e -> (Bomb) e)
                     .filter(e -> (e.isActive() && !e.isCollectible()))
                     .forEach(e -> e.activate(getEntityPos(e)));
+    }
+
+    public Map<Entity, Position> getLookup() {
+        return this.lookup;
     }
 }
