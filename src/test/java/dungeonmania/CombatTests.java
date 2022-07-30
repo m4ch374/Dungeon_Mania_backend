@@ -37,11 +37,24 @@ public class CombatTests {
          *  exit  
          * player  spider
          */
-        DungeonResponse initialResponse = controller.newGame(DIR_NAME + "d_battleTest_basicMercenary", configFile);
+        DungeonResponse initialResponse = controller.newGame(DIR_NAME + "d_battleTest_withSpider", configFile);
         int spiderCount = countEntityOfType(initialResponse, "spider");
         
-        // assertEquals(1, countEntityOfType(initialResponse, "player"));
-        // assertEquals(1, spiderCount);
+        assertEquals(1, countEntityOfType(initialResponse, "player"));
+        assertEquals(1, spiderCount);
+        return controller.tick(Direction.RIGHT);
+    }
+
+    private static DungeonResponse hydraSequence(DungeonManiaController controller, String configFile) {
+        /*
+         *  exit  
+         * player  hydra
+         */
+        DungeonResponse initialResponse = controller.newGame(DIR_NAME + "d_battleTest_withHydra", configFile);
+        int hydraCount = countEntityOfType(initialResponse, "hydra");
+        
+        assertEquals(1, countEntityOfType(initialResponse, "player"));
+        assertEquals(1, hydraCount);
         return controller.tick(Direction.RIGHT);
     }
 
@@ -179,9 +192,9 @@ public class CombatTests {
     @DisplayName("Test basic battle calculations - mercenary - player loses")
     public void testHealthBelowZeroMercenary() {
        DungeonManiaController controller = new DungeonManiaController();
-       DungeonResponse postBattleResponse = genericMercenarySequence(controller, "c_battleTests_basicMercenaryPlayerDies");
+       DungeonResponse postBattleResponse = genericMercenarySequence(controller, "c_battleTests/c_battleTests_basicMercenaryPlayerDies");
        BattleResponse battle = postBattleResponse.getBattles().get(0);
-       assertBattleCalculations("mercenary", battle, false, "c_battleTests_basicMercenaryPlayerDies");
+       assertBattleCalculations("mercenary", battle, false, "c_battleTests/c_battleTests_basicMercenaryPlayerDies");
     }
 
 
@@ -189,9 +202,9 @@ public class CombatTests {
     @DisplayName("Test basic battle calculations - mercenary - player wins")
     public void testRoundCalculationsMercenary() {
        DungeonManiaController controller = new DungeonManiaController();
-       DungeonResponse postBattleResponse = genericMercenarySequence(controller, "c_battleTests_basicMercenaryMercenaryDies");
+       DungeonResponse postBattleResponse = genericMercenarySequence(controller, "c_battleTests/c_battleTests_basicMercenaryMercenaryDies");
        BattleResponse battle = postBattleResponse.getBattles().get(0);
-       assertBattleCalculations("mercenary", battle, true, "c_battleTests_basicMercenaryMercenaryDies");
+       assertBattleCalculations("mercenary", battle, true, "c_battleTests/c_battleTests_basicMercenaryMercenaryDies");
     }
 
     
@@ -199,28 +212,89 @@ public class CombatTests {
     @DisplayName("Test Combat w/ 1 modifier (Sword)")
     public void testCombatWithSword() {
         DungeonManiaController controller = new DungeonManiaController();
-        DungeonResponse postBattleResponse = swordCombatSequence(controller, "c_battleTests_basicMercenaryMercenaryDies");
+        DungeonResponse postBattleResponse = swordCombatSequence(controller, "c_battleTests/c_battleTests_basicMercenaryMercenaryDies");
         BattleResponse battle = postBattleResponse.getBattles().get(0);
         List<String> mods = new ArrayList<String>();
         mods.add("sword");
-        assertModdedBattleCalculations("mercenary", battle, true, "c_battleTests_basicMercenaryMercenaryDies", mods, false);
+        assertModdedBattleCalculations("mercenary", battle, true, "c_battleTests/c_battleTests_basicMercenaryMercenaryDies", mods, false);
     }
 
     @Test
     @DisplayName("Test Combat w/ Ally Merc")
     public void testCombatWithAllyMerc() throws InvalidActionException {
         DungeonManiaController controller = new DungeonManiaController();
-        DungeonResponse postBattleResponse = mercAllyCombatSequence(controller, "c_battleTests_basicMercenaryMercenaryDies");
+        DungeonResponse postBattleResponse = mercAllyCombatSequence(controller, "c_battleTests/c_battleTests_basicMercenaryMercenaryDies");
         BattleResponse battle = postBattleResponse.getBattles().get(0);
-        assertAlliedBattleCalculations("mercenary", battle, true, "c_battleTests_basicMercenaryMercenaryDies");
+        assertAlliedBattleCalculations("mercenary", battle, true, "c_battleTests/c_battleTests_basicMercenaryMercenaryDies");
     }
 
     @Test
     @DisplayName("Test Combat w/ Spider")
     public void testCombatWithSpider(){
         DungeonManiaController controller = new DungeonManiaController();
-        DungeonResponse postBattleResponse = spiderSequence(controller, "c_battleTests_basicMercenaryMercenaryDies");
+        DungeonResponse postBattleResponse = spiderSequence(controller, "c_battleTests/c_battleTests_basicMercenaryMercenaryDies");
         BattleResponse battle = postBattleResponse.getBattles().get(0);
-        assertBattleCalculations("spider", battle, true, "c_battleTests_basicMercenaryMercenaryDies");
+        assertBattleCalculations("spider", battle, true, "c_battleTests/c_battleTests_basicMercenaryMercenaryDies");
+    }
+
+    private void assertHydraWBattleCalculations(String enemyType, BattleResponse battle, boolean enemyDies, String configFilePath) {
+        List<RoundResponse> rounds = battle.getRounds();
+        double playerHealth = Double.parseDouble(getValueFromConfigFile("player_health", configFilePath));
+        double enemyHealth = Double.parseDouble(getValueFromConfigFile(enemyType + "_health", configFilePath));
+        double playerAttack = Double.parseDouble(getValueFromConfigFile("player_attack", configFilePath));
+        double enemyAttack = Double.parseDouble(getValueFromConfigFile(enemyType + "_attack", configFilePath));
+
+        for (RoundResponse round : rounds) {
+            assertEquals(-(enemyAttack / 10), round.getDeltaCharacterHealth(), 0.001);
+            assertEquals(-(playerAttack / 5), round.getDeltaEnemyHealth(), 0.001);
+            enemyHealth += round.getDeltaEnemyHealth();
+            playerHealth += round.getDeltaCharacterHealth();
+        }
+        
+        if (enemyDies) {
+            assertTrue(enemyHealth <= 0);
+        } else {
+            assertTrue(playerHealth <= 0);
+        }
+    }
+
+    private void assertHydraLBattleCalculations(String enemyType, BattleResponse battle, boolean enemyDies, String configFilePath) {
+        List<RoundResponse> rounds = battle.getRounds();
+        double playerHealth = Double.parseDouble(getValueFromConfigFile("player_health", configFilePath));
+        double enemyHealth = Double.parseDouble(getValueFromConfigFile(enemyType + "_health", configFilePath));
+        double enemyHealthIncrease = Double.parseDouble(getValueFromConfigFile(enemyType + "_health_increase_amount", configFilePath));
+        double enemyAttack = Double.parseDouble(getValueFromConfigFile(enemyType + "_attack", configFilePath));
+
+        for (RoundResponse round : rounds) {
+            assertEquals(-(enemyAttack / 10), round.getDeltaCharacterHealth(), 0.001);
+            assertEquals(enemyHealthIncrease, round.getDeltaEnemyHealth(), 0.001);
+            enemyHealth += round.getDeltaEnemyHealth();
+            playerHealth += round.getDeltaCharacterHealth();
+        }
+        
+        if (enemyDies) {
+            assertTrue(enemyHealth <= 0);
+        } else {
+            assertTrue(playerHealth <= 0);
+        }
+    }
+
+
+    @Test
+    @DisplayName("Test Combat w/ Hydra and win")
+    public void testCombatWithHydraVictory(){
+        DungeonManiaController controller = new DungeonManiaController();
+        DungeonResponse postBattleResponse = hydraSequence(controller, "c_battleTests/c_battleTests_PlayerVsHydraPlayerWins");
+        BattleResponse battle = postBattleResponse.getBattles().get(0);
+        assertHydraWBattleCalculations("hydra", battle, true, "c_battleTests/c_battleTests_PlayerVsHydraPlayerWins");
+    }
+
+    @Test
+    @DisplayName("Test Combat w/ Hydra and lose due to infinite regen")
+    public void testCombatWithHydraLoss(){
+        DungeonManiaController controller = new DungeonManiaController();
+        DungeonResponse postBattleResponse = hydraSequence(controller, "c_battleTests/c_battleTests_PlayerVsHydraHydraWins");
+        BattleResponse battle = postBattleResponse.getBattles().get(0);
+        assertHydraLBattleCalculations("hydra", battle, false, "c_battleTests/c_battleTests_PlayerVsHydraHydraWins");
     }
 }

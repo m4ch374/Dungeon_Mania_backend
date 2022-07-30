@@ -68,6 +68,7 @@ public class Combat {
 
     /*Returns BattleResponse*/
     public BattleResponse returnBattleResponse(){
+        System.out.println("Combat ends successfully");
         BattleResponse response = new BattleResponse(enemy.getClasString(),
                 rounds , playerInitialHealth, enemyInitialHealth);
         return response;

@@ -33,14 +33,15 @@ public class Hydra extends ZombieToast {
 
         if (healthIncreases){
             this.setHealth((this.getHealth() + healthIncreaseAmt));
-            if (this.getHealth() <= 0){
-                this.death();
-            }
             return healthIncreaseAmt;
         }
 
         this.setHealth(this.getHealth() - (attack / 5));
 
+        if (this.getHealth() <= 0){
+            this.death();
+        }
+        
         return -(attack / 5);
     }
 }
