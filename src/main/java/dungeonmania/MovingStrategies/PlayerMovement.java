@@ -42,6 +42,10 @@ public class PlayerMovement {
         return map.getEntityPos(player);
     }
 
+    public void playerStays() {
+        this.previousPosition = map.getEntityPos(player);
+    }
+
     public Position getPreviousPosition() {
         return this.previousPosition;
     }
