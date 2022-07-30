@@ -6,10 +6,14 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import dungeonmania.DungeonObjects.DungeonState;
+import dungeonmania.DungeonObjects.EntityTypes;
 import dungeonmania.DungeonObjects.Player;
 import dungeonmania.DungeonObjects.DungeonMap.DungeonMap;
+import dungeonmania.DungeonObjects.Entities.Statics.Exit;
 import dungeonmania.util.FileLoader;
+import dungeonmania.util.Position;
 import dungeonmania.util.DungeonFactory.DungeonMazeFactory.MazeGenMetadata;
+import dungeonmania.util.DungeonFactory.DungeonMazeFactory.MazeGenerator;
 import dungeonmania.util.Tracker.Tracker;
 
 public class DungeonBuilder {
@@ -65,8 +69,25 @@ public class DungeonBuilder {
         return new DungeonState(this);
     }
 
-    public DungeonState generateDungeon(MazeGenMetadata metadata) {
-        return null;
+    public DungeonState generateDungeon(MazeGenMetadata metadata) throws Exception {
+        dungeonGoals = new JSONObject();
+        dungeonGoals.put("goal", "exit");
+        tracker = new Tracker(dungeonGoals, configJson);
+
+        // Generate maze
+        map = MazeGenerator.initGenerator(metadata).generateMazeMap();
+
+        // Add player to maze
+        EntityStruct playerMetaData = new EntityStruct("player", EntityTypes.PLAYER.toString(), map);
+        player = new Player(playerMetaData, configJson, tracker);
+        map.placeEntityAt(player, new Position(metadata.getxStart(), metadata.getyStart()));
+
+        // Add exit to maze
+        EntityStruct exitMetaData = new EntityStruct("exit", EntityTypes.EXIT.toString(), map);
+        Exit exit = new Exit(exitMetaData, tracker);
+        map.placeEntityAt(exit, new Position(metadata.getxEnd(), metadata.getyEnd()));
+
+        return new DungeonState(this);
     }
 
     private void setConfigJson(String configName) throws IOException {
