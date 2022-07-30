@@ -214,13 +214,11 @@ public class Player extends Entity {
 
     // used for bribe mercenaries
     public void bribe(int quantity) throws InvalidActionException {
-        if (!holdingSceptre()) {
-            try {
-                backpack.useTreasures(quantity);
-                this.allyNum += 1;
-            } catch (InvalidActionException e) {
-                throw e;
-            }
+        try {
+            backpack.useTreasures(quantity);
+            this.allyNum += 1;
+        } catch (InvalidActionException e) {
+            throw e;
         }
     }
 
