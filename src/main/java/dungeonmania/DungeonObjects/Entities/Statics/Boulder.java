@@ -4,7 +4,6 @@ import dungeonmania.DungeonObjects.Player;
 import dungeonmania.DungeonObjects.DungeonMap.DungeonMap;
 import dungeonmania.DungeonObjects.Entities.Entity;
 import dungeonmania.DungeonObjects.Entities.LogicEntities.Collectables.Bomb;
-import dungeonmania.DungeonObjects.Entities.LogicEntities.Statics.FloorSwitch;
 import dungeonmania.Interfaces.IStaticInteractable;
 import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.util.DungeonFactory.EntityStruct;
@@ -33,12 +32,6 @@ public class Boulder extends Entity implements IStaticInteractable {
         }
         // Finally, move the boulder
         move(newPos);
-        // activate switch
-        getMap().getEntitiesAt(newPos)
-                    .stream()
-                    .filter(e -> (e instanceof FloorSwitch))
-                    .map(e -> (FloorSwitch) e)
-                    .forEach(e -> e.active());
     }
 
     public Position determineNewPosition(Player player) {

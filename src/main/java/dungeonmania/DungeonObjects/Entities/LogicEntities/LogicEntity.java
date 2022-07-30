@@ -1,8 +1,13 @@
 package dungeonmania.DungeonObjects.Entities.LogicEntities;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.json.JSONObject;
 
 import dungeonmania.DungeonObjects.Entities.Entity;
+import dungeonmania.DungeonObjects.Entities.LogicEntities.Collectables.Bomb;
+import dungeonmania.DungeonObjects.Entities.LogicEntities.Statics.FloorSwitch;
 import dungeonmania.util.Position;
 import dungeonmania.util.DungeonFactory.EntityStruct;
 
@@ -30,11 +35,14 @@ public abstract class LogicEntity extends Entity {
     }
 
     public boolean isActive() {
-        if (this.logic == null) {
+        if (this.logic == null) {   // as non-logic entity
+            if (this instanceof Bomb) {
+                return playerCloseActiveSwitch();
+            }
             return false;
         }
 
-        switch (this.logic){
+        switch (this.logic){        // as logic entity
             case and:
                 return isActiveAnd();
             case or:
@@ -46,6 +54,32 @@ public abstract class LogicEntity extends Entity {
             default:
                 return false;
         }
+    }
+
+    private boolean playerCloseActiveSwitch() {
+        Position pos = getMap().getPlayerPos();
+
+        int x = pos.getX();
+        int y = pos.getY();
+
+        Position up = new Position(x - 1, y);
+        Position down = new Position(x + 1, y);
+        Position left = new Position(x, y - 1);
+        Position right = new Position(x, y + 1);
+
+        List<Entity> entityList = new ArrayList<Entity>();
+        entityList.addAll(getMap().getEntitiesAt(up));
+        entityList.addAll(getMap().getEntitiesAt(down));
+        entityList.addAll(getMap().getEntitiesAt(left));
+        entityList.addAll(getMap().getEntitiesAt(right));
+
+        boolean activeSwitch = entityList
+                                .stream()
+                                .filter(e -> (e instanceof FloorSwitch))
+                                .map(e -> (FloorSwitch) e)
+                                .anyMatch(e -> e.isActive());
+
+        return activeSwitch;
     }
 
     private boolean isActiveAnd() {
