@@ -1,30 +1,14 @@
 package dungeonmania;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import static dungeonmania.TestUtils.getPlayer;
 import static dungeonmania.TestUtils.getEntities;
-import static dungeonmania.TestUtils.getInventory;
-import static dungeonmania.TestUtils.getGoals;
-import static dungeonmania.TestUtils.countEntityOfType;
-import static dungeonmania.TestUtils.getValueFromConfigFile;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import dungeonmania.exceptions.InvalidActionException;
-import dungeonmania.response.models.BattleResponse;
 import dungeonmania.response.models.DungeonResponse;
 import dungeonmania.response.models.EntityResponse;
-import dungeonmania.response.models.RoundResponse;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
@@ -40,8 +24,6 @@ public class BoulderTests {
         // Player set to POS(1, 1), Boulder set to POS(2,1), Exit set to POS(1,3)
         DungeonResponse dungeonRes = dmc.newGame(DIR_NAME + "d_boulderTest_moveEast", "c_DoorsKeysTest_useKeyWalkThroughOpenDoor");
         
-        // Get player info, then move it east into boulder (via dmc's tick() fnc)
-        EntityResponse player = getPlayer(dungeonRes).get();
         // Get boulder info 
         EntityResponse boulder = TestUtils.getEntityById(dungeonRes, "boulder");
         // Confirm boulder's existence
@@ -184,7 +166,7 @@ public class BoulderTests {
         DungeonResponse dungeonRes = dmc.newGame(DIR_NAME + "d_boulderTest_overlapsFloorSwitch", "c_DoorsKeysTest_useKeyWalkThroughOpenDoor");
         
         // Get switch info 
-        EntityResponse floorSwitch1 = TestUtils.getEntityById(dungeonRes, "switch");;
+        EntityResponse floorSwitch1 = TestUtils.getEntityById(dungeonRes, "switch");
         // Get boulder info 
         EntityResponse boulder1 = TestUtils.getEntityById(dungeonRes, "boulder");
         // Confirm boulder's existence
