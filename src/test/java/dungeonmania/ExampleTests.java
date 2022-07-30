@@ -174,7 +174,7 @@ public class ExampleTests {
          * player  [  ]  merc  wall
          *  wall   wall  wall  wall
          */
-        DungeonResponse initialResponse = controller.newGame("d_battleTest_basicMercenary", configFile);
+        DungeonResponse initialResponse = controller.newGame("d_CombatTests/d_battleTest_basicMercenary", configFile);
         int mercenaryCount = countEntityOfType(initialResponse, "mercenary");
         
         assertEquals(1, countEntityOfType(initialResponse, "player"));

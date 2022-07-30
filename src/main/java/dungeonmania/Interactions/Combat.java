@@ -40,22 +40,28 @@ public class Combat {
 
     /*Calculates player and npc health per round and adds record to this.rounds*/
     public void resolveCombat(){
+        for (ItemResponse item : this.items){
+            try {
+                player.useEquipment(item.getId());
+            } catch (Exception e) {
+                continue;
+            }
+        }
+        
         while (playerHealth > 0 && enemyHealth > 0) {
             /*If a potion is used then combat is ended prematurely*/
             if (player.isInvincible()){
                 enemy.death();
+                rounds.add(new RoundResponse(0, enemyHealth, this.items));
                 return;
             }
             
             double playerHealthDelta = player.attackedBy(enemyAttackDamage);
-            double enemyHealthDelta = (playerAttackDamage / 5);
-            enemyHealth -= enemyHealthDelta;
+            double enemyHealthDelta = enemy.attacked(playerAttackDamage);
+            enemyHealth = enemy.getHealth();
             playerHealth = player.getHealth();
 
-            rounds.add(new RoundResponse( -playerHealthDelta,  -enemyHealthDelta, items));
-        }
-        if (enemyHealth <= 0) {
-            enemy.death();
+            rounds.add(new RoundResponse(playerHealthDelta, enemyHealthDelta, items));
         }
         return;
     }

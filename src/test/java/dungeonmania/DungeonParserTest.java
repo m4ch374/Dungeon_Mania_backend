@@ -28,6 +28,6 @@ public class DungeonParserTest {
     public void testAbleToLoad() {
 
         DungeonManiaController dmc = new DungeonManiaController();
-        assertDoesNotThrow(() -> dmc.newGame("d_battleTest_basicMercenary", "c_spiderTest_basicMovement"));
+        assertDoesNotThrow(() -> dmc.newGame("d_CombatTests/d_battleTest_basicMercenary", "c_spiderTest_basicMovement"));
     }
 }

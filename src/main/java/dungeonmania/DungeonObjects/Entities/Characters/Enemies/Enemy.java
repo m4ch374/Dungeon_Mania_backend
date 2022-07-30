@@ -1,16 +1,16 @@
 package dungeonmania.DungeonObjects.Entities.Characters.Enemies;
 
-import org.json.JSONObject;
-
-import dungeonmania.DungeonObjects.EntityTypes;
-import dungeonmania.DungeonObjects.Player;
 import dungeonmania.DungeonObjects.DungeonMap.DungeonMap;
 import dungeonmania.DungeonObjects.Entities.Entity;
 import dungeonmania.DungeonObjects.Entities.Statics.SwampTile;
+import dungeonmania.DungeonObjects.EntityTypes;
+import dungeonmania.DungeonObjects.Player;
 import dungeonmania.Interfaces.IEnemy;
 import dungeonmania.util.DungeonFactory.EntityStruct;
 import dungeonmania.util.Tracker.GoalTypes;
 import dungeonmania.util.Tracker.Tracker;
+import org.json.JSONObject;
+
 
 public abstract class Enemy extends Entity implements IEnemy {
     protected static final String DEFAULT_OBSERVE_ID = "player";
@@ -75,5 +75,18 @@ public abstract class Enemy extends Entity implements IEnemy {
     @Override
     public String getClasString() {
         return super.getType();
+    }
+
+    public void setHealth(double health){
+        this.health = health;
+    }
+
+    @Override
+    public double attacked(double attack){
+        this.health = this.health - (attack / 5);
+        if (this.health <= 0){
+            this.death();
+        }
+        return -(attack / 5);
     }
 }
