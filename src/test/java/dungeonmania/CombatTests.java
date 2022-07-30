@@ -29,13 +29,29 @@ import org.junit.jupiter.api.Test;
 
 public class CombatTests {
 
+    private static final String DIR_NAME = "d_CombatTests/";
+
+
+    private static DungeonResponse spiderSequence(DungeonManiaController controller, String configFile) {
+        /*
+         *  exit  
+         * player  spider
+         */
+        DungeonResponse initialResponse = controller.newGame(DIR_NAME + "d_battleTest_basicMercenary", configFile);
+        int spiderCount = countEntityOfType(initialResponse, "spider");
+        
+        // assertEquals(1, countEntityOfType(initialResponse, "player"));
+        // assertEquals(1, spiderCount);
+        return controller.tick(Direction.RIGHT);
+    }
+
     private static DungeonResponse genericMercenarySequence(DungeonManiaController controller, String configFile) {
         /*
          *  exit   wall  wall  wall
          * player  [  ]  merc  wall
          *  wall   wall  wall  wall
          */
-        DungeonResponse initialResponse = controller.newGame("d_battleTest_basicMercenary", configFile);
+        DungeonResponse initialResponse = controller.newGame(DIR_NAME + "d_battleTest_basicMercenary", configFile);
         int mercenaryCount = countEntityOfType(initialResponse, "mercenary");
         
         assertEquals(1, countEntityOfType(initialResponse, "player"));
@@ -49,7 +65,7 @@ public class CombatTests {
          * player  [  ]  merc  wall
          *  sword  wall  wall  wall
          */
-        DungeonResponse initialResponse = controller.newGame("d_battleTest_withSword", configFile);
+        DungeonResponse initialResponse = controller.newGame(DIR_NAME + "d_battleTest_withSword", configFile);
         int mercenaryCount = countEntityOfType(initialResponse, "mercenary");
         
         assertEquals(1, countEntityOfType(initialResponse, "player"));
@@ -64,7 +80,7 @@ public class CombatTests {
          * player  merc  merc  wall
          *  trea   wall  wall  wall
          */
-        DungeonResponse initialResponse = controller.newGame("d_battleTest_ally1Kill1", configFile);
+        DungeonResponse initialResponse = controller.newGame(DIR_NAME + "d_battleTest_ally1Kill1", configFile);
         int mercenaryCount = countEntityOfType(initialResponse, "mercenary");
 
         assertEquals(1, countEntityOfType(initialResponse, "player"));
@@ -197,5 +213,14 @@ public class CombatTests {
         DungeonResponse postBattleResponse = mercAllyCombatSequence(controller, "c_battleTests_basicMercenaryMercenaryDies");
         BattleResponse battle = postBattleResponse.getBattles().get(0);
         assertAlliedBattleCalculations("mercenary", battle, true, "c_battleTests_basicMercenaryMercenaryDies");
+    }
+
+    @Test
+    @DisplayName("Test Combat w/ Spider")
+    public void testCombatWithSpider(){
+        DungeonManiaController controller = new DungeonManiaController();
+        DungeonResponse postBattleResponse = spiderSequence(controller, "c_battleTests_basicMercenaryMercenaryDies");
+        BattleResponse battle = postBattleResponse.getBattles().get(0);
+        assertBattleCalculations("spider", battle, true, "c_battleTests_basicMercenaryMercenaryDies");
     }
 }

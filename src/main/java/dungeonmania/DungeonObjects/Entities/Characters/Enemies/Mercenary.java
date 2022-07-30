@@ -1,5 +1,11 @@
 package dungeonmania.DungeonObjects.Entities.Characters.Enemies;
 
+import dungeonmania.DungeonObjects.DungeonMap.DungeonMap;
+import dungeonmania.DungeonObjects.Entities.Characters.Friendlies.FriendlyCharacter;
+import dungeonmania.DungeonObjects.Entities.Characters.Friendlies.MindControlledCharacter;
+import dungeonmania.DungeonObjects.Entities.Entity;
+import dungeonmania.DungeonObjects.Entities.Statics.Portal;
+import dungeonmania.DungeonObjects.Player;
 import dungeonmania.Interfaces.IMovingStrategy;
 import dungeonmania.Interfaces.IPlayerInteractable;
 import dungeonmania.MovingStrategies.ConfusedMoveStrat;
@@ -7,20 +13,14 @@ import dungeonmania.MovingStrategies.CowerMoveStrat;
 import dungeonmania.MovingStrategies.SeekerMoveStrat;
 import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.response.models.EntityResponse;
-import dungeonmania.util.Position;
 import dungeonmania.util.DungeonFactory.EntityStruct;
+import dungeonmania.util.Position;
 import dungeonmania.util.Tracker.Tracker;
-
-import org.json.JSONObject;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.json.JSONObject;
 
-import dungeonmania.DungeonObjects.Player;
-import dungeonmania.DungeonObjects.DungeonMap.DungeonMap;
-import dungeonmania.DungeonObjects.Entities.Entity;
-import dungeonmania.DungeonObjects.Entities.Characters.Friendlies.FriendlyCharacter;
-import dungeonmania.DungeonObjects.Entities.Characters.Friendlies.MindControlledCharacter;
-import dungeonmania.DungeonObjects.Entities.Statics.Portal;
+
 
 public class Mercenary extends Enemy implements IPlayerInteractable {
     private static final String ATK_STR = "mercenary_attack";

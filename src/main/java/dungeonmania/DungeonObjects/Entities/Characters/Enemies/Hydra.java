@@ -1,9 +1,9 @@
 package dungeonmania.DungeonObjects.Entities.Characters.Enemies;
 
-import org.json.JSONObject;
-
 import dungeonmania.util.DungeonFactory.EntityStruct;
 import dungeonmania.util.Tracker.Tracker;
+import org.json.JSONObject;
+
 
 // Might extend it to zombies idk
 public class Hydra extends ZombieToast {
@@ -25,5 +25,22 @@ public class Hydra extends ZombieToast {
 
     public double getHealthIncreaseAmt() {
         return healthIncreaseAmt;
+    }
+
+    @Override
+    public double attacked(double attack){
+        boolean healthIncreases = Math.random() <= healthIncreaseRate;
+
+        if (healthIncreases){
+            this.setHealth((this.getHealth() + healthIncreaseAmt));
+            if (this.getHealth() <= 0){
+                this.death();
+            }
+            return healthIncreaseAmt;
+        }
+
+        this.setHealth(this.getHealth() - (attack / 5));
+
+        return -(attack / 5);
     }
 }
