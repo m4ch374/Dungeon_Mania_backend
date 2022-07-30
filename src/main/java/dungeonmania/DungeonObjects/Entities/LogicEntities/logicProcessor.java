@@ -9,6 +9,8 @@ import org.json.JSONObject;
 import dungeonmania.DungeonObjects.DungeonMap.DungeonMap;
 import dungeonmania.DungeonObjects.Entities.Entity;
 import dungeonmania.DungeonObjects.Entities.LogicEntities.Statics.FloorSwitch;
+import dungeonmania.DungeonObjects.Entities.LogicEntities.Statics.LightBulb;
+import dungeonmania.DungeonObjects.Entities.LogicEntities.Statics.SwitchDoor;
 import dungeonmania.DungeonObjects.Entities.LogicEntities.Statics.Wire;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
@@ -41,8 +43,14 @@ public abstract class logicProcessor {
         return (wires > 0);
     }
 
-    private static char[][] get2DMap(int x, int y) {
-        char[][] matrix = new char[x][y];
+    private static String[][] get2DMap(int x, int y) {
+        String[][] matrix = new String[x][y];
+
+        for (int i = 0; i < x; i++) {
+            for (int j = 0; j < y; j++) {
+                matrix[i][j] = "0";
+            }
+        }
 
         return matrix;
     }
@@ -57,6 +65,16 @@ public abstract class logicProcessor {
         return hasSwitch;
     }
 
+    private static boolean hasLogicEntityAt(Position pos, DungeonMap map) {
+        List<Entity> list = map.getEntitiesAt(pos);
+        boolean hasSwitch = (list.stream()
+                            .filter(e -> ((e instanceof FloorSwitch) || (e instanceof Wire) || (e instanceof LightBulb) || (e instanceof SwitchDoor)))
+                            .collect(Collectors.toList())
+                            .size() > 0);
+
+        return hasSwitch;
+    }
+
     /**
      * get all entities in four dirct, check their state
      * @param pos
@@ -65,7 +83,7 @@ public abstract class logicProcessor {
     public static JSONObject getAdjacentActive(Position pos, DungeonMap map) {
         int switch_num = 0;
         int active_switch_num = 0;
-        int active_wire_num = 0;
+        int active_entity_num = 0;
 
         // four dirct
         Position up = pos.translateBy(Direction.UP);
@@ -73,23 +91,28 @@ public abstract class logicProcessor {
         Position left = pos.translateBy(Direction.LEFT);
         Position right = pos.translateBy(Direction.RIGHT);
 
-        List<Position> dest_pos = new ArrayList<>();
-        dest_pos.add(up);
-        dest_pos.add(down);
-        dest_pos.add(left);
-        dest_pos.add(right);
+        ArrayList<Position> dest_pos = new ArrayList<Position>();
+        ArrayList<Entity> e_4_dirct = new ArrayList<Entity>();
 
-        // entities at four dirct
-        List<Entity> e_up = map.getEntitiesAt(up);
-        List<Entity> e_down = map.getEntitiesAt(down);
-        List<Entity> e_left = map.getEntitiesAt(left);
-        List<Entity> e_right = map.getEntitiesAt(right);
+        if (hasLogicEntityAt(up, map)) {
+            dest_pos.add(up);
+            e_4_dirct.addAll(map.getEntitiesAt(up));
+        }
+        if (hasLogicEntityAt(down, map)) {
+            dest_pos.add(down);
+            e_4_dirct.addAll(map.getEntitiesAt(down));
+        }
+        if (hasLogicEntityAt(left, map)) {
+            dest_pos.add(left);
+            e_4_dirct.addAll(map.getEntitiesAt(left));
+        }
+        if (hasLogicEntityAt(right, map)) {
+            dest_pos.add(right);
+            e_4_dirct.addAll(map.getEntitiesAt(right));
+        }
 
         // count the number of switchs
-        switch_num += getListSzieOfSwitch(e_up);
-        switch_num += getListSzieOfSwitch(e_down);
-        switch_num += getListSzieOfSwitch(e_left);
-        switch_num += getListSzieOfSwitch(e_right);
+        switch_num += getListSzieOfSwitch(e_4_dirct);
 
         // position of all active switch
         List<FloorSwitch> active_switchs= map.getLookup().keySet()
@@ -104,23 +127,19 @@ public abstract class logicProcessor {
                     .stream()
                     .forEach(e -> active_switchs_pos.add(map.getLookup().get(e)));
 
-        // final int row_start = getMapSize().get("max_y");        // max y for map
-        // final int row_end = getMapSize().get("min_y");;         // min y for map
-        // final int col_start = getMapSize().get("max_x");;       // max x for map
-        // final int col_end = getMapSize().get("min_x");;         // min x for map
-        final int row_start = map.getBottomBound();                 // max y for map
-        final int row_end = map.getTopBound();                      // min y for map
+        final int row_start = map.getTopBound();                    // max y for map
+        final int row_end = map.getBottomBound();                   // min y for map
         final int col_start = map.getLeftBound();                   // max x for map
         final int col_end = map.getRightBound();                    // min x for map
-        final int rows = Math.abs(row_end - row_start);
-        final int cols = Math.abs(col_end - col_start);
+        final int rows = Math.abs(row_end - row_start) + 10;
+        final int cols = Math.abs(col_end - col_start) + 10;
 
         // for each adjacent cell, there is at least one source connect to it
         for (Position destPos : dest_pos) {
             for (Position A_S_pos : active_switchs_pos) {
 
                 // build up the map for current dest and source
-                char[][] matrix = get2DMap(rows, cols);
+                String[][] matrix = get2DMap(rows, cols);
                 for (int i = row_start; i <= row_end; i++) {
                     for (int j = col_start; j <= col_end; j++) {
                         Position new_pos = new Position(j, i); // mirror
@@ -132,29 +151,37 @@ public abstract class logicProcessor {
                         final int c = j - col_start;
 
                         if (entities != null) { // might empty
-                            if (new_pos.equals(pos)) {
-                                matrix[r][c] = 'D'; // current dest
+                            if (new_pos.equals(destPos)) {
+                                matrix[r][c] = "D"; // current dest
                             } else if (new_pos.equals(A_S_pos) && hasSource(entities)) {
-                                matrix[r][c] = 'S'; // current source
+                                matrix[r][c] = "S"; // current source
                             } else if (hasWire(entities)) {
-                                matrix[r][c] = '1'; // wire
+                                matrix[r][c] = "1"; // wire
                             } else {
-                                matrix[r][c] = '0'; // consider as block
+                                matrix[r][c] = "0"; // consider as block
                             }
                         } else {
-                            matrix[r][c] = '0'; // consider as block
+                            matrix[r][c] = "0"; // consider as block
                         }
                     }
                 }
 
-                if (LogicPathFinder.hasPath(matrix)) {
+                // for (int i = 0; i < rows; i++) {
+                //     for (int j = 0; j < cols; j++) {
+                //         System.out.printf("%s ", matrix[i][j]);
+                //     }
+                //     System.out.println(".");
+                // }
+
+                if (LogicPathFinder.hasPath(matrix, rows, cols)) {
                     if (hasSwitchAt(destPos, map)) {
                         // adjacent active switch
                         active_switch_num++;
                     }
-                    // adjacent active wire
-                    active_wire_num++;
-                    break; // only one active source path needed for each adjacent cell
+
+                    // adjacent active entity
+                    active_entity_num++;
+                    break; // only one active path from source is needed for each adjacent cell
                 }
             }
         }
@@ -166,7 +193,7 @@ public abstract class logicProcessor {
         // is all adjacent switch number active?
         json.put("all_switch_is_avtive", active_switch_num == switch_num);
         // number of adjacent active entities
-        json.put("active_num", active_wire_num);
+        json.put("active_num", active_entity_num);
 
         return json;
     }

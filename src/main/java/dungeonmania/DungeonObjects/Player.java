@@ -203,10 +203,10 @@ public class Player extends Entity {
 
     public void openDoor(int key) throws InvalidActionException {
         if (!backpack.hasSunStone()) {
-            if (!backpack.hasAKey() || !backpack.hasTheKey(key)) {
-                throw new InvalidActionException("ERROR: Can not open the door");
-            } else {
+            if (backpack.hasAKey() && backpack.hasTheKey(key)) {
                 backpack.useKey();
+            } else {
+                throw new InvalidActionException("ERROR: Can not open the door");
             }
         }
     }

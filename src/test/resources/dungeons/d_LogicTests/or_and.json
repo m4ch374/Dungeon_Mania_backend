@@ -1,0 +1,105 @@
+{
+    "entities": [
+        {
+            "type" : "sun_stone",
+            "x" : 6,
+            "y" : 1
+        },
+        {
+            "type" : "key",
+            "x" : 6,
+            "y" : 2,
+            "key" : 1
+        },
+        {
+            "type" : "player",
+            "x" : 6,
+            "y" : 3
+        },
+        {
+            "type" : "boulder",
+            "x" : 2,
+            "y" : 3
+        },
+        {
+            "type" : "switch",
+            "x" : 2,
+            "y" : 4
+        },
+        {
+            "type" : "wire",
+            "x" : 3,
+            "y" : 4
+        },
+        {
+            "type" : "wire",
+            "x" : 4,
+            "y" : 4
+        },
+        {
+            "type" : "light_bulb_off",
+            "x" : 5,
+            "y" : 4,
+            "logic" : "or"
+        },
+        {
+            "type" : "switch_door",
+            "x" : 6,
+            "y" : 4,
+            "key" : 1,
+            "logic" : "or"
+        },
+        {
+            "type" : "wire",
+            "x" : 2,
+            "y" : 5
+        },
+        {
+            "type" : "wire",
+            "x" : 2,
+            "y" : 6
+        },
+        {
+            "type" : "bomb",
+            "x" : 1,
+            "y" : 7
+        },
+        {
+            "type" : "wire",
+            "x" : 2,
+            "y" : 7
+        },
+        {
+            "type" : "bomb",
+            "x" : 2,
+            "y" : 8,
+            "logic" : "and"
+        },
+        {
+            "type" : "wire",
+            "x" : 2,
+            "y" : 9
+        },
+        {
+            "type" : "wire",
+            "x" : 2,
+            "y" : 10
+        },
+        {
+            "type" : "wire",
+            "x" : 2,
+            "y" : 11
+        },
+        {
+            "type" : "boulder",
+            "x" : 1,
+            "y" : 12
+        },
+        {
+            "type" : "switch",
+            "x" : 2,
+            "y" : 12
+        }
+    ],
+    "goal-condition": {"goal": "exit"}
+}
