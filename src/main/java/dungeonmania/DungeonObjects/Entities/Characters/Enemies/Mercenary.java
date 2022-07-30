@@ -19,6 +19,7 @@ import dungeonmania.DungeonObjects.Player;
 import dungeonmania.DungeonObjects.DungeonMap.DungeonMap;
 import dungeonmania.DungeonObjects.Entities.Entity;
 import dungeonmania.DungeonObjects.Entities.Characters.Friendlies.FriendlyCharacter;
+import dungeonmania.DungeonObjects.Entities.Characters.Friendlies.MindControlledCharacter;
 import dungeonmania.DungeonObjects.Entities.Statics.Portal;
 
 public class Mercenary extends Enemy implements IPlayerInteractable {
@@ -28,6 +29,7 @@ public class Mercenary extends Enemy implements IPlayerInteractable {
     private int bribeRadius;
     private int brinbeAmount;
 
+    private JSONObject config;
     private DungeonMap map = super.getMap();
     private IMovingStrategy moveStrat = new SeekerMoveStrat(this, this.map, DEFAULT_OBSERVE_ID);
 
@@ -35,6 +37,7 @@ public class Mercenary extends Enemy implements IPlayerInteractable {
         super(metaData, tracker, config, ATK_STR, HEALTH_STR);
         this.bribeRadius = config.getInt("bribe_radius");
         this.brinbeAmount = config.getInt("bribe_amount");
+        this.config = config;
     }
 
     // For mercenary-like entities
@@ -42,6 +45,7 @@ public class Mercenary extends Enemy implements IPlayerInteractable {
         super(metaData, tracker, config, attackStr, healthStr);
         this.bribeRadius = config.getInt(radiusStr);
         this.brinbeAmount = config.getInt(amtStr);
+        this.config = config;
     }
 
     @Override
@@ -90,21 +94,10 @@ public class Mercenary extends Enemy implements IPlayerInteractable {
 
     @Override
     public void interactedByPlayer(Player player) throws InvalidActionException {
-        Position currPos = map.getEntityPos(this);
-        Position playerPos = map.getEntityPos(player);
-
-        Position distance = Position.calculatePositionBetween(currPos, playerPos);
-
-        if (Math.abs(distance.getX()) > bribeRadius || Math.abs(distance.getY()) > bribeRadius)
-            throw new InvalidActionException("Error: out of radius");
-
-        player.bribe(brinbeAmount);
-
-        // Switch state to friendly merc
-        EntityStruct struct = new EntityStruct(super.getId(), super.getType(), super.getMap());
-        FriendlyCharacter friendlyMerc = new FriendlyCharacter(struct);
-        map.removeEntity(this);
-        map.placeEntityAt(friendlyMerc, currPos);
+        if (player.holdingSceptre())
+            mindControlsByPlayer(player);
+        else
+            bribedByPlayer(player);
     }
     
     private void switchMoveStrat() {
@@ -127,5 +120,33 @@ public class Mercenary extends Enemy implements IPlayerInteractable {
             moveStrat = new SeekerMoveStrat(this, map, observing.getId());
             return;
         }
+    }
+
+    private void mindControlsByPlayer(Player player) {
+        Position currPos = map.getEntityPos(this);
+        
+        EntityStruct metaData = new EntityStruct(super.getId(), super.getType(), map);
+        MindControlledCharacter character = new MindControlledCharacter(metaData, config, this, map);
+
+        map.removeEntity(this);
+        map.placeEntityAt(character, currPos);
+    }
+
+    private void bribedByPlayer(Player player) throws InvalidActionException {
+        Position currPos = map.getEntityPos(this);
+        Position playerPos = map.getEntityPos(player);
+
+        Position distance = Position.calculatePositionBetween(currPos, playerPos);
+
+        if (Math.abs(distance.getX()) > bribeRadius || Math.abs(distance.getY()) > bribeRadius)
+            throw new InvalidActionException("Error: out of radius");
+
+        player.bribe(brinbeAmount);
+
+        // Switch state to friendly merc
+        EntityStruct struct = new EntityStruct(super.getId(), super.getType(), super.getMap());
+        FriendlyCharacter friendlyMerc = new FriendlyCharacter(struct);
+        map.removeEntity(this);
+        map.placeEntityAt(friendlyMerc, currPos);
     }
 }
