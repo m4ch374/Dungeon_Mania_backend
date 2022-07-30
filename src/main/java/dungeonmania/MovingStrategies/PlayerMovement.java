@@ -145,7 +145,6 @@ public class PlayerMovement {
 
             // deal with Exit if its at new Pos
             interactWithExit(destination);
-
             // deal with interaction of overlapped portal
             Portal portal = getOverlapPortal();
             if (portal != null) {
@@ -153,14 +152,14 @@ public class PlayerMovement {
                 List<Position> destinationList = portal.getDestinations(getDirection());
                 for (Position destinationPos : destinationList) {
                     try {
+                        // Make sure the new destination is safe to travel to
+                        if (!ableToMove(destinationPos)) {return;}
                         // Call recursively on each new destination, IFF theres another Portal there
                         if (this.haveFoundFinalDest == true) {return;}
                         move(destinationPos);
                         // If exception not thrown, it is Safe to move into current Position in loop 
                         if (this.haveFoundFinalDest == true) {return;}
-                        map.moveEntityTo(player, destinationPos); this.haveFoundFinalDest = true;//throw new InvalidActionException("Success multi-teleportaion");
-                        // // throw exception here? so the final portal's destination down the line doesnt get overriden via backtracing in recursion
-                        // System.out.println("Player new pos" + getPos() + ", in move()");
+                        map.moveEntityTo(player, destinationPos); this.haveFoundFinalDest = true;
                         // break;
                     } catch (InvalidActionException e) {
                         // nothing here, just let the player overlap with portal without teleport

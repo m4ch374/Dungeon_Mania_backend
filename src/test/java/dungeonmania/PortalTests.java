@@ -1,30 +1,14 @@
 package dungeonmania;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import static dungeonmania.TestUtils.getPlayer;
-import static dungeonmania.TestUtils.getEntities;
-import static dungeonmania.TestUtils.getInventory;
-import static dungeonmania.TestUtils.getGoals;
-import static dungeonmania.TestUtils.countEntityOfType;
-import static dungeonmania.TestUtils.getValueFromConfigFile;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import dungeonmania.exceptions.InvalidActionException;
-import dungeonmania.response.models.BattleResponse;
 import dungeonmania.response.models.DungeonResponse;
 import dungeonmania.response.models.EntityResponse;
-import dungeonmania.response.models.RoundResponse;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
@@ -111,7 +95,7 @@ public class PortalTests {
     // SYNOPSIS:
     // Player at (3,2) attempts to move east into Portal at (4,2), 
     // Then its Pair, Portal1 at (4,4) determines Player needs to be teleported east of it,
-    // BUT Portal1 detects Wall at (5,4) and does not teleport player
+    // BUT Portal1 detects Wall at (5,4) and does not teleport player, so player simply overlaps the player
     public void testPortalNotTeleportsPlayerCauseWall() {
         DungeonManiaController dmc = new DungeonManiaController();
         DungeonResponse dungeonRes = dmc.newGame(DIR_NAME + "d_portalTest_twoPairBoulderWall", "c_DoorsKeysTest_useKeyWalkThroughOpenDoor");
@@ -126,8 +110,9 @@ public class PortalTests {
 
         // Player attempts to moves East into Portal (4,2), but doesnt teleport to east of Portal1 (5,2), as there is a Wall there
         dungeonRes = dmc.tick(Direction.RIGHT);
-        // Assert player stays in same position
-        assertEquals(new Position(3, 2), player.getPosition());
+        // Assert player now overlaps portal
+        player = getPlayer(dungeonRes).get();
+        assertEquals(portal.getPosition(), player.getPosition());
     }
     
 

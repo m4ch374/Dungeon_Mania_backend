@@ -382,51 +382,6 @@ public class PlayerCollectionTest {
         }
     }
 
-    @Test
-    @DisplayName("Drop item: Active switch after drop a bomb")
-    public void testActiveAfter() {
-        DungeonManiaController dmc = new DungeonManiaController();
-        DungeonResponse DungonRes = dmc.newGame("d_playerCollectionTest", "c_playerCollectionTest");
-
-        assertEquals(22, DungonRes.getEntities().size());
-
-        dmc.tick(Direction.LEFT);
-        dmc.tick(Direction.UP);
-        dmc.tick(Direction.UP);
-        dmc.tick(Direction.DOWN);
-
-
-        DungonRes = dmc.getDungeonResponseModel();
-        assertEquals(20, DungonRes.getEntities().size());
-
-        ArrayList<String> bomb_id = new ArrayList<String>();
-        DungonRes.getInventory()
-                .stream()
-                .filter(e -> e.getType().equals(EntityTypes.BOMB.toString()))
-                .forEach(e -> bomb_id.add(e.getId()));
-
-        assertEquals(1, bomb_id.size());
-
-        try {
-            DungonRes = dmc.tick(bomb_id.get(0));
-            assertEquals(21, DungonRes.getEntities().size());
-        } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
-            assertEquals(true, false);
-        } catch (InvalidActionException e) {
-            System.out.println(e.getMessage());
-            assertEquals(true, false);
-        }
-
-        dmc.tick(Direction.LEFT);
-        dmc.tick(Direction.UP);
-        dmc.tick(Direction.LEFT);
-        dmc.tick(Direction.LEFT);
-        dmc.tick(Direction.DOWN);
-        DungonRes = dmc.tick(Direction.RIGHT);
-
-        assertEquals(9, DungonRes.getEntities().size());
-    }
 
     private void pickAll2(DungeonManiaController dmc) {
         dmc.tick(Direction.LEFT);
