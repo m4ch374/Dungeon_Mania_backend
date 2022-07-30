@@ -182,6 +182,7 @@ public class Player extends Entity {
 
     public void tick(String action, Direction direction, String item) throws InvalidActionException, IllegalArgumentException {
         if (action.equals(EntityTypes.PLAYERUSE.toString())) {
+            movement.playerStays();
             useItem(item);
         } else if (action.equals(EntityTypes.PLAYERMAKE.toString())) {
             make(item);

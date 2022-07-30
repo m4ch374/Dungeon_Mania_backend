@@ -103,28 +103,6 @@ public class Mercenary extends Enemy implements IPlayerInteractable {
         else
             bribedByPlayer(player);
     }
-    
-    private void switchMoveStrat() {
-        Player observing = getObservingEntity();
-
-        boolean invincible = observing.isInvincible();
-        boolean invisible = observing.isInvisible();
-
-        if (invincible && !(moveStrat instanceof CowerMoveStrat)) {
-            moveStrat = new CowerMoveStrat(this, map, observing.getId());
-            return;
-        }
-
-        if (invisible && !(moveStrat instanceof ConfusedMoveStrat)) {
-            moveStrat = new ConfusedMoveStrat(this, map);
-            return;
-        }
-
-        if (!invincible && !invisible && !(moveStrat instanceof SeekerMoveStrat)) {
-            moveStrat = new SeekerMoveStrat(this, map, observing.getId());
-            return;
-        }
-    }
 
     private void mindControlsByPlayer(Player player) {
         Position currPos = map.getEntityPos(this);
@@ -153,5 +131,36 @@ public class Mercenary extends Enemy implements IPlayerInteractable {
         FriendlyCharacter friendlyMerc = new FriendlyCharacter(struct);
         map.removeEntity(this);
         map.placeEntityAt(friendlyMerc, currPos);
+    }
+
+    protected void switchMoveStrat() {
+        Player observing = getObservingEntity();
+
+        boolean invincible = observing.isInvincible();
+        boolean invisible = observing.isInvisible();
+
+        if (invincible && !(moveStrat instanceof CowerMoveStrat)) {
+            moveStrat = new CowerMoveStrat(this, map, observing.getId());
+            return;
+        }
+
+        if (invisible && !(moveStrat instanceof ConfusedMoveStrat)) {
+            moveStrat = new ConfusedMoveStrat(this, map);
+            return;
+        }
+
+        if (!invincible && !invisible && !(moveStrat instanceof SeekerMoveStrat)) {
+            moveStrat = new SeekerMoveStrat(this, map, observing.getId());
+            return;
+        }
+    }
+
+    // Any non merc-like entities will not be able to access these
+    protected void setMoveStrat(IMovingStrategy moveStrat) {
+        this.moveStrat = moveStrat;
+    }
+
+    protected IMovingStrategy getMoveStrat() {
+        return moveStrat;
     }
 }
