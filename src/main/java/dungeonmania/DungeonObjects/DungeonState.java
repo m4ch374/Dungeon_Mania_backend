@@ -1,11 +1,5 @@
 package dungeonmania.DungeonObjects;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.stream.Collectors;
-
-import org.json.JSONObject;
-
 import dungeonmania.DungeonObjects.DungeonMap.DungeonMap;
 import dungeonmania.DungeonObjects.Entities.Entity;
 import dungeonmania.Interfaces.IPlayerInteractable;
@@ -16,6 +10,12 @@ import dungeonmania.response.models.EntityResponse;
 import dungeonmania.util.Direction;
 import dungeonmania.util.DungeonFactory.DungeonBuilder;
 import dungeonmania.util.Tracker.Tracker;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.json.JSONObject;
+
+
 
 public class DungeonState {
     // Metadata
@@ -62,9 +62,26 @@ public class DungeonState {
             System.out.println("DungeonState: Player " + e.getMessage());
         }
 
+        List<BattleResponse> playerMoveBattle = player.initiateBattle();
+        if ( playerMoveBattle != null) {
+            playerMoveBattle.stream().forEach(b -> battles.add(b));
+        }
+
+        if (player.isDead()){
+            return;
+        }
+
         map.updateCharPos();
 
         map.spawnEntites(config, currTick, tracker);
+
+        if (!player.isDead()){
+            List<BattleResponse> enemyMoveBattle = player.initiateBattle();
+            if ( enemyMoveBattle != null) {
+                enemyMoveBattle.stream().forEach(b -> battles.add(b));
+            }
+        }
+        
 
         // Structure would be something like this:
         //
@@ -80,10 +97,7 @@ public class DungeonState {
         // spawner.spawnItems() ---> spawns zombies
 
         // player.initiateBattle() ---> initiates battle with all overlapped enemies
-        List<BattleResponse> battle = player.initiateBattle();
-        if ( battle != null) {
-            battle.stream().forEach(b -> battles.add(b));
-        }
+        
     }
 
     public void build(String buildable) throws IllegalArgumentException, InvalidActionException {
