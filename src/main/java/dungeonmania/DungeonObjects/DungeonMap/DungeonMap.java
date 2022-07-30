@@ -15,6 +15,7 @@ import dungeonmania.DungeonObjects.Entities.Characters.Enemies.ZombieToast;
 import dungeonmania.DungeonObjects.Entities.LogicEntities.Collectables.Bomb;
 import dungeonmania.Interfaces.IMovable;
 import dungeonmania.Interfaces.ISpawnable;
+import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 import dungeonmania.util.Tracker.Tracker;
 
@@ -193,5 +194,14 @@ public class DungeonMap {
 
     public Map<Entity, Position> getLookup() {
         return this.lookup;
+    }
+
+    public void activeBombIfActive() {
+        getAllEntities()
+                    .stream()
+                    .filter(e -> (e instanceof Bomb))
+                    .map(e -> (Bomb) e)
+                    .filter(e -> (e.isActive() && !e.isCollectible()))
+                    .forEach(e -> e.activate(getEntityPos(e)));
     }
 }
