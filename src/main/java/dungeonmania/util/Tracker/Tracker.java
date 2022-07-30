@@ -29,6 +29,8 @@ public class Tracker {
     public String getUnfinishedGoals(DungeonMap map) {
         if (allBoulderOnSwitch(map))
             rootNode.notifyTracker(GoalTypes.BOULDERS);
+        else
+            rootNode.unnotifyTracker(GoalTypes.BOULDERS);
 
         if (!playerOnExit(map))
             rootNode.unnotifyTracker(GoalTypes.EXIT);
