@@ -120,4 +120,51 @@ public class ZombieToastSpawnerDestructionTest {
         res = dmc.tick(Direction.UP);
         assertTrue(TestUtils.getEntities(res, "zombie_toast_spawner").size() == 0);
     }
+
+    @Test
+    @DisplayName("Test player destroy with bow")
+    public void testDestruction_withBow() {
+        DungeonManiaController dmc = new DungeonManiaController();
+
+        DungeonResponse res = dmc.newGame(DIR_NAME + "d_zombieSpawnerTest_generalTest", "c_movementTest_testMovementDown");
+        assertTrue(TestUtils.getEntities(res, "player").size() == 1);
+        assertTrue(TestUtils.getEntities(res, "zombie_toast_spawner").size() == 1);
+        
+        dmc.tick(Direction.DOWN);
+        dmc.tick(Direction.RIGHT);
+        res = dmc.tick(Direction.DOWN);
+
+        assertTrue(TestUtils.getEntities(res, "arrow").size() == 0);
+        assertTrue(TestUtils.getEntities(res, "wood").size() == 0);
+        assertDoesNotThrow(() -> dmc.build("bow"));
+
+        assertDoesNotThrow(() -> dmc.interact("zombie_toast_spawner"));
+        
+        res = dmc.tick(Direction.UP);
+        assertTrue(TestUtils.getEntities(res, "zombie_toast_spawner").size() == 0);
+    }
+
+    @Test
+    @DisplayName("Test player destry with bow and sword")
+    public void testDestruction_bowAndSword() {
+        DungeonManiaController dmc = new DungeonManiaController();
+
+        DungeonResponse res = dmc.newGame(DIR_NAME + "d_zombieSpawnerTest_generalTest", "c_movementTest_testMovementDown");
+        assertTrue(TestUtils.getEntities(res, "player").size() == 1);
+        assertTrue(TestUtils.getEntities(res, "zombie_toast_spawner").size() == 1);
+        
+        dmc.tick(Direction.RIGHT);
+        dmc.tick(Direction.DOWN);
+        res = dmc.tick(Direction.DOWN);
+
+        assertTrue(TestUtils.getEntities(res, "bow").size() == 0);
+        assertTrue(TestUtils.getEntities(res, "arrow").size() == 0);
+        assertTrue(TestUtils.getEntities(res, "wood").size() == 0);
+        assertDoesNotThrow(() -> dmc.build("bow"));
+
+        assertDoesNotThrow(() -> dmc.interact("zombie_toast_spawner"));
+        
+        res = dmc.tick(Direction.UP);
+        assertTrue(TestUtils.getEntities(res, "zombie_toast_spawner").size() == 0);
+    }
 }

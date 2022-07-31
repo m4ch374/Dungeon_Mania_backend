@@ -686,4 +686,68 @@ public class AssassinBehaviourTest {
         res = dmc.tick(Direction.RIGHT);
         assertEquals(new Position(3, 0), TestUtils.getEntityById(res, "assassin").getPosition());
     }
+
+    // Purely to boost coverage
+    @Test
+    @DisplayName("Test assassin cannot track exceed recon radius")
+    public void testTrack_cannotTrack() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame(DIR_NAME + "d_assassinTest_getsConfused", "c_assassinTests_reconTest");
+
+        assertEquals(new Position(20, 20), TestUtils.getEntityById(res, "assassin").getPosition());
+
+        dmc.tick(Direction.RIGHT);
+
+        assertDoesNotThrow(() -> {
+                dmc.tick("invisibility_potion");
+            }
+        );
+
+        dmc.tick(Direction.RIGHT);
+        dmc.tick(Direction.RIGHT);
+    }
+
+    // Purely to boost coverage
+    @Test
+    @DisplayName("Test assassin fleeing gets blocked")
+    public void testflee_getsBlocked() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame(DIR_NAME + "d_assassinTest_fleeGetsBlockedByWall", "c_msic_longPotionDuration_noDamage");
+
+        res = dmc.tick(Direction.RIGHT);
+        Position originalMercPos = TestUtils.getEntityById(res, "assassin").getPosition();
+        assertEquals(new Position(4, 1), TestUtils.getEntityById(res, "player").getPosition());
+        assertEquals(new Position(1, 1), originalMercPos);
+        assertTrue(TestUtils.getEntities(res, "invincibility_potion").size() == 0);
+
+        assertDoesNotThrow(() -> dmc.tick("invincibility_potion"));
+
+        for (int i = 1; i <= 98; i++) {
+            res = dmc.tick(Direction.RIGHT);
+        }
+
+        assertEquals(new Position(1, 1), TestUtils.getEntityById(res, "assassin").getPosition());
+    }
+
+    // Purely to boost coverage
+    @Test
+    @DisplayName("Test assassin fleeing gets blocked by door")
+    public void testflee_getsBlocked_byDoor() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame(DIR_NAME + "d_assassinTest_fleeGetsBlockedByDoor", "c_msic_longPotionDuration_noDamage");
+
+        res = dmc.tick(Direction.RIGHT);
+        Position originalMercPos = TestUtils.getEntityById(res, "assassin").getPosition();
+        assertEquals(new Position(4, 1), TestUtils.getEntityById(res, "player").getPosition());
+        assertEquals(new Position(1, 1), originalMercPos);
+        assertTrue(TestUtils.getEntities(res, "invincibility_potion").size() == 0);
+
+        assertDoesNotThrow(() -> dmc.tick("invincibility_potion"));
+
+        for (int i = 1; i <= 98; i++) {
+            res = dmc.tick(Direction.RIGHT);
+        }
+
+        assertEquals(new Position(1, 1), TestUtils.getEntityById(res, "assassin").getPosition());
+    }
 }

@@ -69,6 +69,20 @@ public class SpawningTests {
     }
 
     @Test
+    @DisplayName("Test spider spawns every tick in a big map")
+    public void testSpiderSpawn_everyTick_bigMap() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame(D_DIR_NAME + "d_spawnTest_spiderSpawn_bigMap", C_DIR_NAME + "c_spawnTests_spiderSpawnEachTick");
+
+        assertTrue(TestUtils.getEntities(res, "spider").size() == 0);
+
+        for (int i = 0; i < 100; i++) {
+            res = dmc.tick(Direction.UP);
+            assertTrue(TestUtils.getEntities(res, "spider").size() == i + 1);
+        }
+    }
+
+    @Test
     @DisplayName("Test zombie toast spawner spawns zombies for each tick")
     public void testZombieToasSpawnerSpawns_spawnsEachTick() {
         DungeonManiaController dmc = new DungeonManiaController();

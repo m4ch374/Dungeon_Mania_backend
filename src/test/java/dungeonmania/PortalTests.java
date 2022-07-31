@@ -206,4 +206,66 @@ public class PortalTests {
         assertEquals(new Position(1, 3), mercenary.getPosition());
     }
     
+    @Test
+    @DisplayName("Portal 7: Test Merc travels through portal end up overlapping boulder")
+    public void testPortalTeleportsMerc_overlapsBoulder() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse dungeonRes = dmc.newGame(DIR_NAME + "d_portalTest_mercTeleported_overlapsBoulder", "c_DoorsKeysTest_useKeyWalkThroughOpenDoor");
+        
+        // Get all portal info
+        EntityResponse portal = TestUtils.getEntityById(dungeonRes, "portal");
+        EntityResponse portal1 = TestUtils.getEntityById(dungeonRes, "portal1");
+        // assert positions of all 4 portals
+        assertEquals(new Position(3, 1), portal.getPosition());
+        assertEquals(new Position(2, 3), portal1.getPosition());
+        // get Merc info
+        EntityResponse mercenary = TestUtils.getEntityById(dungeonRes, "mercenary");
+
+
+        // Player moves West, Merc follows onto Portal(3,1), and gets teleported to east of Portal1(2,3) 
+        dungeonRes = dmc.tick(Direction.LEFT);
+        // Assert Merc is east (1,3) of Portal1(2,3)
+        mercenary = TestUtils.getEntityById(dungeonRes, "mercenary");
+        assertEquals(new Position(1, 3), mercenary.getPosition());
+    }
+
+    @Test
+    @DisplayName("Portal 8: Test player travels through portal and pushed boulder")
+    public void testPlayerTeleported_pushBoulder() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame(DIR_NAME + "d_portalTest_playerPushBoulder", "c_DoorsKeysTest_useKeyWalkThroughOpenDoor");
+
+        // Get all portal info
+        EntityResponse portal = TestUtils.getEntityById(res, "portal");
+        EntityResponse portal1 = TestUtils.getEntityById(res, "portal1");
+        // assert positions of all 4 portals
+        assertEquals(new Position(3, 1), portal.getPosition());
+        assertEquals(new Position(2, 3), portal1.getPosition());
+        assertEquals(new Position(3, 3), TestUtils.getEntityById(res, "boulder").getPosition());
+
+        res = dmc.tick(Direction.RIGHT);
+
+        assertEquals(new Position(3, 3), TestUtils.getEntityById(res, "player").getPosition());
+        assertEquals(new Position(4, 3), TestUtils.getEntityById(res, "boulder").getPosition());
+    }
+
+    @Test
+    @DisplayName("Portal 9: Test player cannot travel through portal due to boulder being stuck")
+    public void testPlayerCannotTeleport_boulderStuck() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame(DIR_NAME + "d_portalTest_cannotTravel_boulderStuck", "c_DoorsKeysTest_useKeyWalkThroughOpenDoor");
+
+        // Get all portal info
+        EntityResponse portal = TestUtils.getEntityById(res, "portal");
+        EntityResponse portal1 = TestUtils.getEntityById(res, "portal1");
+        // assert positions of all 4 portals
+        assertEquals(new Position(3, 1), portal.getPosition());
+        assertEquals(new Position(2, 3), portal1.getPosition());
+        assertEquals(new Position(3, 3), TestUtils.getEntityById(res, "boulder").getPosition());
+
+        res = dmc.tick(Direction.RIGHT);
+
+        assertEquals(new Position(3, 1), TestUtils.getEntityById(res, "player").getPosition());
+        assertEquals(new Position(3, 3), TestUtils.getEntityById(res, "boulder").getPosition());
+    }
 }
