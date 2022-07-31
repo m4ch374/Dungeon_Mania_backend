@@ -64,11 +64,7 @@ public class Portal extends Entity implements IStaticInteractable {
             }
         }
 
-        // IGNORE THIS NOTE, ITS WRONG
-        // NOTE: this ihteractedBy() is used to pass Player.java's ableToMove() fnc.
-        //      The multi-teleportation issue is apprehended in Player.java's move() fnc, which calls portal.getDestination(), 
-        //      and the next portal in line is recursively updated each time, 
-        //      whilst also going thru all the initial checkings (in this fnc), due to ableToMove() being called first in move()
+        
     }
     
     // Get List of Destinations entity can teleport to (which are cardinally adjacent to the Pair Portal),
