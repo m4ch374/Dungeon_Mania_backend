@@ -1,14 +1,11 @@
 {
     "entities": [
         {
-<<<<<<< HEAD:src/test/resources/dungeons/d_TimePortalTests/d_timePortal_VerySimple.json
-=======
             "type": "exit",
             "x": 1,
             "y": 3
         },
         {
->>>>>>> master:src/test/resources/dungeons/d_BoulderTests/d_boulderTest_moveOntoDoor.json
             "type": "player",
             "x": 1,
             "y": 1
@@ -19,11 +16,6 @@
             "y": 1
         }, 
         {
-<<<<<<< HEAD:src/test/resources/dungeons/d_TimePortalTests/d_timePortal_VerySimple.json
-            "type": "time_travelling_portal",
-            "x": 3,
-            "y": 2
-=======
             "type": "door",
             "x": 3,
             "y": 1,
@@ -34,7 +26,6 @@
             "x": 1,
             "y": 0,
             "key": 1
->>>>>>> master:src/test/resources/dungeons/d_BoulderTests/d_boulderTest_moveOntoDoor.json
         }
     ],
     "goal-condition": {
