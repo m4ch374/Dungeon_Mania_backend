@@ -3,6 +3,7 @@ package dungeonmania.DungeonObjects;
 import dungeonmania.DungeonObjects.DungeonMap.DungeonMap;
 import dungeonmania.DungeonObjects.Entities.Entity;
 import dungeonmania.Interfaces.IPlayerInteractable;
+import dungeonmania.Loader.DungeonLoader;
 import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.response.models.BattleResponse;
 import dungeonmania.response.models.DungeonResponse;
@@ -118,12 +119,24 @@ public class DungeonState {
         // TODO: stubbed
     }
 
-    public void loadGame(String name) {
-        // TODO: stubbed
+    public void loadGame(String name) throws IllegalArgumentException {
+        DungeonLoader load_game = new DungeonLoader(name);
+        if (! load_game.getSuccessfulLoad()){
+            throw new IllegalArgumentException("Error : " + name + "not a valid game name");
+        }
+        this.dungeonId       = load_game.getDungeonId();
+        this.dungeonName     = load_game.getDungeonName();
+        this.player          = load_game.getPlayer();
+        this.map             = load_game.getMap();
+        this.tracker         = load_game.getTracker();
+        this.config          = load_game.getConfig();
+        this.currTick        = load_game.getCurrTick();
+        this.battles         = load_game.getBattles();
     }
 
+
     public List<String> getAllGames() {
-        return null;
+        return DungeonLoader.getAllGames();
     }
 
     public DungeonResponse toDungeonResponse() {

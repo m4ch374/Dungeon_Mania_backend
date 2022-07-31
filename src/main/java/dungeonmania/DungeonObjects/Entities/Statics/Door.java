@@ -1,5 +1,7 @@
 package dungeonmania.DungeonObjects.Entities.Statics;
 
+import org.json.JSONObject;
+
 import dungeonmania.DungeonObjects.Player;
 import dungeonmania.DungeonObjects.Entities.Entity;
 import dungeonmania.DungeonObjects.Entities.LogicEntities.LogicEntity;
@@ -43,4 +45,13 @@ public class Door extends LogicEntity implements IStaticInteractable {
     public String getLogic() {
         return null;
     }
+
+    @Override
+    public JSONObject encode(){
+        JSONObject obj = super.encode();
+        obj.put("isOpen", this.isopen);
+        obj.put("keyId", this.keyId);
+        return obj;
+    }
+
 }
