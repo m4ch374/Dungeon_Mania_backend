@@ -276,4 +276,57 @@ public class BoulderTests {
         assertEquals(merc.getPosition(), boulder.getPosition());
     }
     
+    @Test
+    @DisplayName("Boulder 10: Test boulder blocks by locked door")
+    public void testBoulder_blocksByLockedDoor() {
+        // Player pushes boulder onto a wall, but player and boulder dont move
+        DungeonManiaController dmc = new DungeonManiaController();
+        // Player set to POS(1, 1), Boulder set to POS(2,1), Wall set to POS(3,1)
+        DungeonResponse dungeonRes = dmc.newGame(DIR_NAME + "d_boulderTest_moveOntoDoor", "c_DoorsKeysTest_useKeyWalkThroughOpenDoor");
+        
+        // EntityResponse player = getPlayer(dungeonRes).get();
+        // EntityResponse wall = getEntities(dungeonRes, "boulder").get(0);
+        EntityResponse boulder = getEntities(dungeonRes, "boulder").get(0);
+        // Confirm boulder's existence
+        EntityResponse expectedBoulder = new EntityResponse(boulder.getId(), boulder.getType(), new Position(2, 1), true);
+        assertEquals(expectedBoulder.getPosition(), boulder.getPosition());
+        // Move player east
+        dungeonRes = dmc.tick(Direction.RIGHT);
+        // Check the boulder has NOT moved
+        boulder = getEntities(dungeonRes, "boulder").get(0);
+        assertEquals(expectedBoulder.getPosition(), boulder.getPosition());
+    }
+    
+    @Test
+    @DisplayName("Boulder 11: Test boulder does not block by unlocked door")
+    public void testBoulder_movesThroughOpenDoor() {
+        // Player pushes boulder onto a wall, but player and boulder dont move
+        DungeonManiaController dmc = new DungeonManiaController();
+        // Player set to POS(1, 1), Boulder set to POS(2,1), Wall set to POS(3,1)
+        DungeonResponse dungeonRes = dmc.newGame(DIR_NAME + "d_boulderTest_moveOntoDoor", "c_DoorsKeysTest_useKeyWalkThroughOpenDoor");
+
+        // EntityResponse player = getPlayer(dungeonRes).get();
+        // EntityResponse wall = getEntities(dungeonRes, "boulder").get(0);
+        EntityResponse boulder = getEntities(dungeonRes, "boulder").get(0);
+        // Confirm boulder's existence
+        EntityResponse expectedBoulder = new EntityResponse(boulder.getId(), boulder.getType(), new Position(2, 1), true);
+        assertEquals(expectedBoulder.getPosition(), boulder.getPosition());
+
+        // Move player
+        dmc.tick(Direction.UP);
+        dmc.tick(Direction.RIGHT);
+        dmc.tick(Direction.RIGHT);
+        dmc.tick(Direction.RIGHT);
+        dmc.tick(Direction.DOWN);
+        dmc.tick(Direction.LEFT);
+        dmc.tick(Direction.DOWN);
+        dmc.tick(Direction.LEFT);
+        dmc.tick(Direction.LEFT);
+        dmc.tick(Direction.UP);
+        dungeonRes = dmc.tick(Direction.RIGHT);
+
+        // Check the boulder has moved
+        boulder = getEntities(dungeonRes, "boulder").get(0);
+        assertEquals(new Position(3, 1), boulder.getPosition());
+    }
 }
