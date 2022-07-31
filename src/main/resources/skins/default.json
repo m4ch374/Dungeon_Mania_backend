@@ -1,18 +1,20 @@
 {
     "main_menu": {
+        "background_music": "audio/POTC-Theme.ogg",
         "background_image": "images/backgrounds/main_menu.png",
-        "text_color": "white"
+        "text_color": "rgb(0, 255, 0)"
     },
     "game": {
+        "background_music": "audio/POTC-Theme.ogg",
         "background_image": {
             "images/tileset/walls/wooden/wood_floor_0.png": 5,
             "images/tileset/walls/wooden/wood_floor_1.png": 7,
             "images/tileset/walls/wooden/wood_floor_2.png": 10,
             "images/tileset/walls/wooden/wood_floor_3.png": 2
         },
-        "resolution_px": 16,
+        "resolution_px": 32,
         "item_box": "images/ui/box.png",
-        "text_color": "white"
+        "text_color": "red"
     },
     "entities": {
         "boulder": "images/tileset/entities/boulder_00.png",
@@ -39,6 +41,20 @@
         "zombie_toast_spawner": "images/tileset/entities/zombie_spawner.png",
         "zombie_toast": "images/tileset/entities/zombie.png",
         "boulders": "images/tileset/entities/boulder_00.png",
-        "enemies": "images/tileset/items/sword_silver.png"
+        "enemies": "images/tileset/items/sword_silver.png",
+
+        "assassin": "images/tileset/entities/assassin.png",
+        "hydra": "images/tileset/entities/hydra.png",
+        "light_bulb_off": "images/tileset/entities/lightbulboff.png",
+        "light_bulb_on": "images/tileset/entities/lightbulbon.png",
+        "midnight_armour": "images/tileset/entities/midnight_armour.png",
+        "sceptre": "images/tileset/entities/sceptre.png",
+        "sun_stone": "images/tileset/entities/sun_stone.png",
+        "swamp_tile": "images/tileset/entities/swamp_tile.png",
+        "time_turner": "images/tileset/entities/time_turner.png",
+        "wire": "images/tileset/entities/wire.png",
+        "time_travelling_portal": "images/tileset/entities/time_portal.png",
+        "switch_door": "images/tileset/entities/switch_door.png"
+
     }
 }
