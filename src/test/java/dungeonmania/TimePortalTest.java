@@ -20,13 +20,13 @@ import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
 public class TimePortalTest {
-    private static final String DIR_NAME = "d_TimePortalTest/";
+    private static final String DIR_NAME = "d_TimePortalTests/";
 
     @Test
     @DisplayName("Time Portal 1: Very Simple, only two other entities")
     public void testTimePortalVerySimple() {
         DungeonManiaController dmc = new DungeonManiaController();
-        DungeonResponse dungeonResInitial = dmc.newGame(DIR_NAME + "d_TimePortalTest_VerySimple", "c_DoorsKeysTest_useKeyWalkThroughOpenDoor");
+        DungeonResponse dungeonResInitial = dmc.newGame(DIR_NAME + "d_timePortal_VerySimple", "c_DoorsKeysTest_useKeyWalkThroughOpenDoor");
         EntityResponse playerInit = getPlayer(dungeonResInitial).get();
         // Assert existence of the time travelling portal and boulder
         EntityResponse boulderInit = TestUtils.getEntityById(dungeonResInitial, "boulder");
@@ -45,7 +45,7 @@ public class TimePortalTest {
         EntityResponse player = getPlayer(dungeonRes).get();
         EntityResponse boulder = TestUtils.getEntityById(dungeonResInitial, "boulder");
         // assert currBoulder is the same as initBoulder
-        assertNotEquals(boulder.getPosition(), boulderInit.getPosition());
+        assertEquals(boulder.getPosition(), boulderInit.getPosition());
 
         // assertFalse(zombie.getPosition().equals(movedZombie.getPosition()));
     }
